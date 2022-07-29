@@ -10,6 +10,8 @@
         <link rel="icon" type="image/png" sizes="32x32" href="/ico/favicon-32x32.png">
         <link rel="icon" type="image/png" sizes="16x16" href="/ico/favicon-16x16.png">
         <link rel="manifest" href="/manifest.json">
+        @viteReactRefresh
+        @vite('resources/js/App.tsx')
 
         <!-- Styles -->
         <style>
@@ -34,10 +36,6 @@
                     }
                 });
             </script>
-            <!-- Include Frontend Application (webpack mix) -->
-            <script defer src="/js/manifest.js"></script>
-            <script defer src="/js/vendor.js"></script>
-            <script defer src="/js/app.js"></script>
     </head>
     <body>
         <div id="app"></div>
