@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import NavBar from '../../components/NavBar/NavBar';
-import { Container, CssBaseline } from '@mui/material';
-import Copyright from '../../components/Copyright/Copyright';
-import { Outlet, useSearchParams } from 'react-router-dom';
-import BackFAButton from '../../components/BackFAButton/BackFAButton';
-import { setBaseState } from '../../reducers/userReducer';
 import { useDispatch } from 'react-redux';
+import { Container, CssBaseline } from '@mui/material';
+import { Outlet, useSearchParams } from 'react-router-dom';
+
+import Copyright from 'components/Copyright/Copyright';
+import { setBaseState } from 'reducers/userReducer';
+import NavBar from 'components/NavBar/NavBar';
 
 const UserLayout = () => {
     const [searchParams, setSearchParams] = useSearchParams();

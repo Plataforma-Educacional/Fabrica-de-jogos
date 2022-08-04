@@ -1,46 +1,48 @@
-import React, { useState } from 'react';
-import { FormControl, Grid, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import React, { Dispatch, SetStateAction } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
-import { useGetUserInfoQuery } from '../../services/portal';
+import { useGetUserInfoQuery } from 'services/portal';
 
-export default function DisciplineSelect() {
+interface Props {
+    value: string;
+    setValue: Dispatch<SetStateAction<string>>;
+}
+
+export default function DisciplineSelect({ value, setValue }: Props) {
     const { token, origin } = useSelector((state: RootState) => state.user);
     const { data } = useGetUserInfoQuery({ token, origin });
-    const [discipline, setDiscipline] = useState<string>('');
-
-    if (!data) return <></>;
 
     const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
+        const newValue = event.target.value;
+        if (newValue !== null && newValue !== value) {
+            setValue(newValue);
         }
     };
 
+    if (!data) return <></>;
+
     return (
-        <>
-            <FormControl sx={{ minWidth: 140, maxWidth: { sm: 290, xs: 260 } }}>
-                <InputLabel>Componente</InputLabel>
-                <Select
-                    required
-                    value={discipline}
-                    onChange={disciplineChange}
-                    autoWidth
-                    label="Componente"
-                    sx={{
-                        minWidth: 140,
-                    }}
-                >
-                    {Object.keys(data.data.disciplinas).map((key: string) => {
-                        return (
-                            <MenuItem key={key} value={key}>
-                                <>{data.data.disciplinas[key]}</>
-                            </MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-        </>
+        <FormControl sx={{ minWidth: 140, maxWidth: { sm: 290, xs: 260 } }}>
+            <InputLabel>Componente</InputLabel>
+            <Select
+                required
+                value={value}
+                onChange={disciplineChange}
+                autoWidth
+                label="Componente"
+                sx={{
+                    minWidth: 140,
+                }}
+            >
+                {Object.keys(data.data.disciplinas).map((key: string) => {
+                    return (
+                        <MenuItem key={key} value={key}>
+                            <>{data.data.disciplinas[key]}</>
+                        </MenuItem>
+                    );
+                })}
+            </Select>
+        </FormControl>
     );
 }

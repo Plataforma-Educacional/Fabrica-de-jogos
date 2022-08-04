@@ -1,20 +1,21 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import { balloonOptions, gameObj, gameState } from '../../../types';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import { Alert, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import { convertToRaw, EditorState } from 'draft-js';
-import { useCreateBalloonsMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import draftToText from '../../../utils/draftToText';
-import RichTextField from '../../../components/RichTextField/RichTextField';
-import { getError } from '../../../utils/errors';
-import BalloonsCell from '../../../components/BalloonsCell/BalloonsCell';
+import { useSelector } from 'react-redux';
+
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
+import RichTextField from 'components/RichTextField/RichTextField';
+import BalloonsWords from 'components/BalloonsWords/BalloonsWords';
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import BackFAButton from 'components/BackFAButton/BackFAButton';
+import { useCreateGameObjectMutation } from 'services/portal';
+import { balloonOptions, gameObj, gameState } from 'types';
+import { useCreateBalloonsMutation } from 'services/games';
+import draftToText from 'utils/draftToText';
+import { getError } from 'utils/errors';
+import { RootState } from 'store';
 
 export default function NewBalloonsPage({}) {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -29,6 +30,7 @@ export default function NewBalloonsPage({}) {
     const [alternatives, setAlternatives] = useState<string[]>(['', '', '', '', '']);
     const [createBalloons, response] = useCreateBalloonsMutation();
     const [createGameObject, responsePortal] = useCreateGameObjectMutation();
+
     const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
         if (newLayout === null) {
             return;
@@ -139,125 +141,111 @@ export default function NewBalloonsPage({}) {
         <>
             <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Estoura Balões</b>
-                        </Typography>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                justifyContent={{ lg: 'flex-end', md: 'none' }}
-                                display={{ lg: 'flex', md: 'block' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Estoura Balões</b>
+                    </Typography>
+                </Grid>
+                <Grid
+                    alignSelf="center"
+                    item
+                    xl={4}
+                    lg={3}
+                    md={12}
+                    justifyContent={{ lg: 'flex-end', md: 'none' }}
+                    display={{ lg: 'flex', md: 'block' }}
+                >
+                    <SeriesSelect serie={serie} callback={seriesChange} />
+                </Grid>
+                <Grid item alignSelf="center" xl={4} lg={3}>
+                    <TextField
+                        label="Nome"
+                        name="name"
+                        variant="outlined"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        required
+                        sx={{ minWidth: { sm: 290, xs: 260 } }}
+                        fullWidth
+                    />
+                </Grid>
+                <Grid
+                    alignSelf="center"
+                    item
+                    justifyContent={{
+                        lg: 'flex-start',
+                        md: 'none',
+                    }}
+                    display={{ lg: 'flex', md: 'block' }}
+                    xl={4}
+                    lg={3}
+                    md={12}
+                >
+                    <DisciplineSelect value={discipline} onChange={disciplineChange} />
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    <LayoutSelect value={layout} onChange={handleLayout} />
+                </Grid>
+                <Grid item alignSelf="left" xs={3}>
+                    <RichTextField
+                        editorState={question}
+                        onChange={(value: EditorState) => setQuestion(value)}
+                        label={'Enunciado'}
+                        maxLength={160}
+                    />
+                </Grid>
+                <Grid item alignSelf="center" lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
+                                >
+                                    {alert}
+                                </Alert>
                             </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    md: 'none',
-                                }}
-                                display={{ lg: 'flex', md: 'block' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="left" xs={3}>
-                        <RichTextField
-                            editorState={question}
-                            onChange={(value: EditorState) => setQuestion(value)}
-                            label={'Enunciado'}
-                            maxLength={160}
-                        />
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            <Grid item xs={12} sm={6}>
-                                <BalloonsCell
-                                    answers={answers}
-                                    correct={true}
-                                    handleItemChange={handleAnswerChange}
-                                    handleAddItem={handleAddAnswer}
-                                    handleRemoveItem={handleRemoveAnswer}
-                                />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <BalloonsCell
-                                    answers={alternatives}
-                                    correct={false}
-                                    handleItemChange={handleAlternativeChange}
-                                    handleAddItem={handleAddAlternative}
-                                    handleRemoveItem={handleRemoveAlternative}
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
                         )}
+                        <Grid item xs={12} sm={6}>
+                            <BalloonsWords
+                                answers={answers}
+                                correct={true}
+                                handleItemChange={handleAnswerChange}
+                                handleAddItem={handleAddAnswer}
+                                handleRemoveItem={handleRemoveAnswer}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <BalloonsWords
+                                answers={alternatives}
+                                correct={false}
+                                handleItemChange={handleAlternativeChange}
+                                handleAddItem={handleAddAlternative}
+                                handleRemoveItem={handleRemoveAlternative}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
 }

@@ -1,8 +1,8 @@
-import { Box, Card, Grid, ToggleButton, Typography } from '@mui/material';
+import React, { MouseEvent, Dispatch, SetStateAction } from 'react';
+import { styled } from '@mui/system';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import React from 'react';
-import { styled } from '@mui/system';
+import { Box, Card, Grid, ToggleButton, Typography } from '@mui/material';
 
 const ImageToggleButton = styled(ToggleButton)({
     '&.Mui-selected': {
@@ -30,75 +30,75 @@ const responsive = {
 };
 const layouts = [1, 2, 3, 4, 5, 6, 7];
 
-type Props = {
-    callback: Function;
-    selectedLayout: Number;
-};
+interface Props {
+    value: number;
+    setValue: Dispatch<SetStateAction<number>>;
+}
 
-const LayoutSelect = ({ callback, selectedLayout }: Props) => {
+const LayoutSelect = ({ value, setValue }: Props) => {
+    const handleLayout = (event: MouseEvent<HTMLElement>, newLayout: number) => {
+        if (newLayout === null) {
+            return;
+        }
+        setValue(newLayout);
+    };
     return (
-        <>
-            {/* @ts-ignore*/}
-            <Grid item align="center" xs={12}>
-                <Grid container alignItems="center">
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1">Tema:</Typography>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" margin="auto" xs={12} md={9}>
-                        <Carousel responsive={responsive} infinite={true} shouldResetAutoplay={false}>
-                            {layouts.map((layout, i) => {
-                                return (
-                                    <Box
-                                        sx={{
-                                            width: { sx: 180, sm: 250 },
-                                            height: 145,
-                                        }}
-                                        key={i}
-                                    >
-                                        <ImageToggleButton
-                                            selected={selectedLayout === layout}
-                                            value={layout}
-                                            color="primary"
-                                            size="small"
-                                            sx={{
-                                                padding: 0,
-                                            }}
-                                            onChange={(event, value) => {
-                                                callback(event, value);
-                                            }}
-                                        >
-                                            <Card
-                                                sx={
-                                                    selectedLayout === i
-                                                        ? {
-                                                              width: 250,
-                                                              height: 125,
-                                                          }
-                                                        : {
-                                                              width: 250,
-                                                              height: 125,
-                                                              borderRadius: 0,
-                                                          }
-                                                }
-                                                elevation={5}
-                                            >
-                                                <img
-                                                    src={`/storage/layout/layout${layout}.png`}
-                                                    alt={`Layout ${layout}`}
-                                                    width="100%"
-                                                    height="100%"
-                                                />
-                                            </Card>
-                                        </ImageToggleButton>
-                                    </Box>
-                                );
-                            })}
-                        </Carousel>
-                    </Grid>
-                </Grid>
+        <Grid container alignSelf="center" alignItems="center">
+            <Grid item xs={12}>
+                <Typography variant="subtitle1">Tema:</Typography>
             </Grid>
-        </>
+            <Grid item alignSelf="center" margin="auto" xs={12} md={9}>
+                <Carousel responsive={responsive} infinite={true} shouldResetAutoplay={false}>
+                    {layouts.map((layout, i) => {
+                        return (
+                            <Box
+                                sx={{
+                                    width: { sx: 180, sm: 250 },
+                                    height: 145,
+                                }}
+                                key={i}
+                            >
+                                <ImageToggleButton
+                                    selected={value === layout}
+                                    value={layout}
+                                    color="primary"
+                                    size="small"
+                                    sx={{
+                                        padding: 0,
+                                    }}
+                                    onChange={(event, value) => {
+                                        handleLayout(event, value);
+                                    }}
+                                >
+                                    <Card
+                                        sx={
+                                            value === layout
+                                                ? {
+                                                      width: 250,
+                                                      height: 125,
+                                                  }
+                                                : {
+                                                      width: 250,
+                                                      height: 125,
+                                                      borderRadius: 0,
+                                                  }
+                                        }
+                                        elevation={5}
+                                    >
+                                        <img
+                                            src={`/storage/layout/layout${layout}.png`}
+                                            alt={`Layout ${layout}`}
+                                            width="100%"
+                                            height="100%"
+                                        />
+                                    </Card>
+                                </ImageToggleButton>
+                            </Box>
+                        );
+                    })}
+                </Carousel>
+            </Grid>
+        </Grid>
     );
 };
 
