@@ -1,8 +1,8 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
-import Group from '../../../components/group-sort/layout/Group';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
+import GroupSortCell from '../../../components/GroupSortCell/GroupSortCell';
 import { gameState, groupSortOptions } from '../../../types';
 import { useParams } from 'react-router-dom';
 import { useUpdateGroupSortMutation, useGetGroupSortBySlugQuery } from '../../../services/games';
@@ -95,7 +95,7 @@ export default function EditGroupSort({}) {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Box
                 sx={{
                     marginTop: 8,
@@ -132,7 +132,7 @@ export default function EditGroupSort({}) {
                             {groups.map((group, index) => {
                                 return (
                                     <Grid key={index} item xs={12} md={6} lg={4}>
-                                        <Group
+                                        <GroupSortCell
                                             group={group}
                                             index={index}
                                             handleTitleChange={handleTitleChange}

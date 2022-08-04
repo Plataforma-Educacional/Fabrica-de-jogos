@@ -1,7 +1,7 @@
 import React, { FormEventHandler, useEffect, useState } from 'react';
 import { Button, Grid, Alert, Box, CircularProgress, Typography, TextField } from '@mui/material';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
 import { useUpdateWordleMutation, useGetWordleBySlugQuery } from '../../../services/games';
 import { getError } from '../../../utils/errors';
@@ -58,7 +58,7 @@ const EditWordSearch = () => {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);

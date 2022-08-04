@@ -1,17 +1,17 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import BackFAButton from '../../../components/_layout/BackFAButton';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
 import { useCreatePaintMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj } from '../../../types';
 import { getError } from '../../../utils/errors';
-import ImageSelect from '../../../components/paint/layout/ImageSelect';
+import ImageSelect from '../../../components/PaintSelect/PaintSelect';
 
 const NewPaintPage: FunctionComponent = ({}) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -94,7 +94,7 @@ const NewPaintPage: FunctionComponent = ({}) => {
     return (
         <>
             <BackFAButton />
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <Box
                 sx={{
                     marginTop: 8,

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Routes as Router, Route } from 'react-router-dom';
-import GamePage from './components/_game/GamePage';
+import GamePage from './Pages/GamePage/GamePage';
 import NewQuizPage from './Pages/Quiz/NewQuizPage/NewQuizPage';
 import EditQuiz from './Pages/Quiz/EditQuizPage/EditQuizPage';
 import NewAnagramPage from './Pages/Anagram/NewAnagramPage/NewAnagramPage';
@@ -13,7 +13,7 @@ import NewMatchUpPage from './Pages/MatchUp/NewMatchUpPage/NewMatchUpPage';
 import EditMatchUp from './Pages/MatchUp/EditMatchUpPage/EditMatchUpPage';
 import CreateMemorygame from './Pages/Memory/NewMemoryPage/CreateMemory';
 import EditMemorygame from './Pages/Memory/EditMemoryPage/UpdateMemory';
-import HomePage from './components/_home/HomePage';
+import HomePage from './Pages/HomePage/HomePage';
 import CreateWordle from './Pages/Wordle/NewWordlePage/NewWordlePage';
 import EditWordle from './Pages/Wordle/EditWordlePage/EditWordlePage';
 import { CircularProgress } from '@mui/material';
@@ -33,8 +33,9 @@ import NewPuzzlePage from './Pages/Puzzle/NewPuzzlePage/NewPuzzlePage';
 import EditPuzzle from './Pages/Puzzle/EditPuzzlePage/EditPuzzlePage';
 import NewPaintPage from './Pages/Paint/NewPaintPage/NewPaintPage';
 import EditPaint from './Pages/Paint/EditPaintPage/EditPaintPage';
-
-import UserLayout from './Layouts/UserLayout/UserLayout';
+import UserLayout from './layouts/UserLayout/UserLayout';
+import NewLayout from './layouts/NewGameLayout/NewGameLayout';
+import EditGameLayout from './layouts/EditGameLayout/EditGameLayout';
 
 const Routes = () => {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -72,7 +73,7 @@ const Routes = () => {
             <Route path="/" element={<UserLayout />}>
                 {/* Home Routes */}
                 <Route index element={<HomePage />} />
-                <Route path="create/" element={<CreateGamePage />}>
+                <Route path="create/" element={<NewLayout />}>
                     <Route path="anagram" element={<NewAnagramPage />} />
                     <Route path="bloons" element={<NewBalloonsPage />} />
                     <Route path="cryptogram" element={<NewCryptogramPage />} />
@@ -87,7 +88,7 @@ const Routes = () => {
                     <Route path="puzzle" element={<NewPuzzlePage />} />
                     <Route path="wordle" element={<CreateWordle />} />
                 </Route>
-                <Route path="edit/" element={<UpdateGamePage />}>
+                <Route path="edit/" element={<EditGameLayout />}>
                     <Route path="anagram/:slug" element={<EditAnagramPage />} />
                     <Route path="bloons/:slug" element={<EditBalloons />} />
                     <Route path="cryptogram/:slug" element={<EditCryptogram />} />

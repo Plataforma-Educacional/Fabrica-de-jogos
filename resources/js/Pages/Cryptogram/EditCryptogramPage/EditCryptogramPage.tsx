@@ -6,11 +6,11 @@ import { useGetCryptogramBySlugQuery, useUpdateCryptogramMutation } from '../../
 import draftToText from '../../../utils/draftToText';
 import textToDraft from '../../../utils/textToDraft';
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import AddIcon from '@mui/icons-material/Add';
-import WordCard from '../../../components/word-search/layout/WordCard';
-import Copyright from '../../../components/_layout/Copyright';
+import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { getError } from '../../../utils/errors';
 
 export default function EditCryptogram({}) {
@@ -147,7 +147,7 @@ export default function EditCryptogram({}) {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);
@@ -192,7 +192,7 @@ export default function EditCryptogram({}) {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordCard
+                                    <WordSearchCell
                                         item={item}
                                         key={index}
                                         index={index}

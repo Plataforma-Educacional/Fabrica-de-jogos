@@ -1,11 +1,11 @@
 import React, { useState, useEffect, ChangeEvent, FormEventHandler } from 'react';
 import { Alert, Button, Grid, Box, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import Page from '../../../components/anagram/layout/Page';
-import Copyright from '../../../components/_layout/Copyright';
+import AnagramCell from '../../../components/AnagramCell/AnagramCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { useGetAnagramBySlugQuery, useUpdateAnagramMutation } from '../../../services/games';
 import { getError } from '../../../utils/errors';
 
@@ -102,7 +102,7 @@ export default function EditAnagramPage() {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Box
                 sx={{
                     marginTop: 8,
@@ -140,7 +140,7 @@ export default function EditAnagramPage() {
                             )}
                             {pages.map((page, index) => {
                                 return (
-                                    <Page
+                                    <AnagramCell
                                         key={index}
                                         page={page}
                                         index={index}

@@ -2,12 +2,12 @@ import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react
 import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import QuestionCard from '../../../components/quiz/layout/QuestionCard';
-import Copyright from '../../../components/_layout/Copyright';
+import QuizCell from '../../../components/QuizCell/QuizCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { Box } from '@mui/system';
 import { useUpdateQuizMutation, useGetQuizBySlugQuery } from '../../../services/games';
 import { quizQuestion as questionObj, quizQuestion } from '../../../types';
@@ -157,7 +157,7 @@ const EditQuiz = () => {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);
@@ -205,7 +205,7 @@ const EditQuiz = () => {
                             )}
                             {questions.map((question: quizQuestion, index: number) => {
                                 return (
-                                    <QuestionCard
+                                    <QuizCell
                                         key={index}
                                         question={question}
                                         index={index}

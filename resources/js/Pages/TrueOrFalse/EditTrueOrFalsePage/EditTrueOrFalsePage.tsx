@@ -2,12 +2,12 @@ import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react
 import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import QuestionCard from '../../../components/true-or-false/layout/QuestionCard';
-import Copyright from '../../../components/_layout/Copyright';
+import TrueOrFalseCell from '../../../components/TrueOrFalseCell/TrueOrFalseCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { useUpdateTrueOrFalseMutation, useGetTrueOrFalseBySlugQuery } from '../../../services/games';
 import { trueOrFalseQuestion } from '../../../types';
 import textToDraft from '../../../utils/textToDraft';
@@ -125,7 +125,7 @@ const EditTrueOrFalse = () => {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);
@@ -174,7 +174,7 @@ const EditTrueOrFalse = () => {
                             )}
                             {questions.map((question: trueOrFalseQuestion, index: number) => {
                                 return (
-                                    <QuestionCard
+                                    <TrueOrFalseCell
                                         key={index}
                                         question={question}
                                         index={index}

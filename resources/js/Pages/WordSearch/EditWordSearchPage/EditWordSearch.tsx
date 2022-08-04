@@ -1,13 +1,13 @@
 import React, { FormEventHandler, useEffect, useState } from 'react';
 import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import { convertToRaw, EditorState } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import WordCard from '../../../components/word-search/layout/WordCard';
-import Copyright from '../../../components/_layout/Copyright';
+import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from '../../../services/games';
 import { wordObj } from '../../../types';
 import textToDraft from '../../../utils/textToDraft';
@@ -147,7 +147,7 @@ const EditWordSearch = () => {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);
@@ -192,7 +192,7 @@ const EditWordSearch = () => {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordCard
+                                    <WordSearchCell
                                         item={item}
                                         key={index}
                                         index={index}

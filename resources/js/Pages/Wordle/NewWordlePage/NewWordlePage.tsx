@@ -1,15 +1,15 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent, FormEventHandler } from 'react';
 import { Alert, Button, Grid, TextField, Box, SelectChangeEvent, Typography, CircularProgress } from '@mui/material';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { RootState } from '../../../store';
 import { useCreateWordleMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewWordlePage = () => {
@@ -88,7 +88,7 @@ const NewWordlePage = () => {
     return (
         <>
             <BackFAButton />
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <Box
                 sx={{
                     marginTop: 8,

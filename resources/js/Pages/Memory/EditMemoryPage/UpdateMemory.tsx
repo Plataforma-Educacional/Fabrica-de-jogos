@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Grid, Button, CircularProgress, Alert, Typography } from '@mui/material';
-import ImageEditor from '../../../components/memory-game/layout/ImageEditor';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import ImageEditor from '../../../components/ImageEditor/ImageEditor';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import GridSelect from '../../../components/memory-game/layout/GridSelect';
-import Copyright from '../../../components/_layout/Copyright';
+import GridSelect from '../../../components/GridSelect/GridSelect';
+import Copyright from '../../../components/Copyright/Copyright';
 import { Box } from '@mui/system';
 import { useUpdateMemoryGameMutation, useGetMemoryGameBySlugQuery } from '../../../services/games';
 import { getError } from '../../../utils/errors';
@@ -96,7 +96,7 @@ const EditMemoryGame = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Box
                 sx={{
                     marginTop: 8,

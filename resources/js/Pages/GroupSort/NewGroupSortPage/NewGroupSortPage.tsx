@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
 import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
-import BackFAButton from '../../../components/_layout/BackFAButton';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
-import Group from '../../../components/group-sort/layout/Group';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
+import GroupSortCell from '../../../components/GroupSortCell/GroupSortCell';
 import { gameObj, gameState, groupSortOptions } from '../../../types';
 import { useCreateGroupSortMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
@@ -127,7 +127,7 @@ export default function NewGroupSortPage({}) {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -206,7 +206,7 @@ export default function NewGroupSortPage({}) {
                             {groups.map((group, index) => {
                                 return (
                                     <Grid key={index} item xs={12} md={6} lg={4}>
-                                        <Group
+                                        <GroupSortCell
                                             group={group}
                                             index={index}
                                             handleTitleChange={handleTitleChange}

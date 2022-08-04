@@ -7,15 +7,15 @@ import { useCreateCryptogramMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { Alert, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { Box } from '@mui/system';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import AddIcon from '@mui/icons-material/Add';
-import WordCard from '../../../components/word-search/layout/WordCard';
-import Copyright from '../../../components/_layout/Copyright';
+import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { getError } from '../../../utils/errors';
 
 export default function NewCryptogramPage({}) {
@@ -177,7 +177,7 @@ export default function NewCryptogramPage({}) {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -265,7 +265,7 @@ export default function NewCryptogramPage({}) {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordCard
+                                    <WordSearchCell
                                         item={item}
                                         key={index}
                                         index={index}

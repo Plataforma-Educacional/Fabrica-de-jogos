@@ -3,18 +3,18 @@ import { Button, TextField, Grid, Alert, Box, SelectChangeEvent, CircularProgres
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import QuestionCard from '../../../components/quiz/layout/QuestionCard';
-import Copyright from '../../../components/_layout/Copyright';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import QuizCell from '../../../components/QuizCell/QuizCell';
+import Copyright from '../../../components/Copyright/Copyright';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { RootState } from '../../../store';
 import { useCreateQuizMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj, quizQuestion, quizOptions, gameState } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewQuizPage = () => {
@@ -161,7 +161,7 @@ const NewQuizPage = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -253,7 +253,7 @@ const NewQuizPage = () => {
                             )}
                             {questions.map((question: quizQuestion, index: number) => {
                                 return (
-                                    <QuestionCard
+                                    <QuizCell
                                         key={index}
                                         question={question}
                                         index={index}

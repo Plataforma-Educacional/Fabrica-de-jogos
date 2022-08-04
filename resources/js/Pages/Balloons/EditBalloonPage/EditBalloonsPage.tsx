@@ -1,13 +1,13 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
-import Group from '../../../components/balloons/layout/Group';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
+import BalloonsCell from '../../../components/BalloonsCell/BalloonsCell';
 import { convertToRaw, EditorState } from 'draft-js';
 import { useUpdateBalloonsMutation, useGetBalloonsBySlugQuery } from '../../../services/games';
 import draftToText from '../../../utils/draftToText';
-import RichTextField from '../../../components/_layout/RichTextField';
+import RichTextField from '../../../components/RichTextField/RichTextField';
 import { useParams } from 'react-router-dom';
 import textToDraft from '../../../utils/textToDraft';
 import { getError } from '../../../utils/errors';
@@ -111,7 +111,7 @@ export default function EditBalloons({}) {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <BackFAButton />
             <Box
                 sx={{
@@ -156,7 +156,7 @@ export default function EditBalloons({}) {
                                 </Grid>
                             )}
                             <Grid item xs={12} sm={6}>
-                                <Group
+                                <BalloonsCell
                                     answers={answers}
                                     correct={true}
                                     handleItemChange={handleAnswerChange}
@@ -165,7 +165,7 @@ export default function EditBalloons({}) {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Group
+                                <BalloonsCell
                                     answers={alternatives}
                                     correct={false}
                                     handleItemChange={handleAlternativeChange}

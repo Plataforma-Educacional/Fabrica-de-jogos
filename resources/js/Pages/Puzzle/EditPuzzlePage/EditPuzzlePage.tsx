@@ -1,12 +1,12 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 import { useParams } from 'react-router-dom';
 import { useGetPuzzleBySlugQuery, useUpdatePuzzleMutation } from '../../../services/games';
-import PiecesSelect from '../../../components/puzzle/layout/PiecesSelect';
-import ImageSelect from '../../../components/puzzle/layout/ImageSelect';
+import PiecesSelect from '../../../components/PiecesSelect/PiecesSelect';
+import ImageSelect from '../../../components/PuzzleSelect/PuzzleSelect';
 
 const EditPuzzle: FunctionComponent = ({}) => {
     const { slug } = useParams();
@@ -74,7 +74,7 @@ const EditPuzzle: FunctionComponent = ({}) => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Box
                 sx={{
                     marginTop: 8,

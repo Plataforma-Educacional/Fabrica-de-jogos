@@ -1,11 +1,11 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 import { useParams } from 'react-router-dom';
 import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from '../../../services/games';
-import FormatSelect from '../../../components/drag-drop/layout/FormatSelect';
+import FormatSelect from '../../../components/DragNDropFormat/DragNDropFormat';
 
 const EditDragNDrop: FunctionComponent = ({}) => {
     const { slug } = useParams();
@@ -65,7 +65,7 @@ const EditDragNDrop: FunctionComponent = ({}) => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={() => setOpen(false)} />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Box
                 sx={{
                     marginTop: 8,

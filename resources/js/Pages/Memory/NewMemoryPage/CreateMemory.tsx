@@ -11,21 +11,21 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import ImageEditor from '../../../components/memory-game/layout/ImageEditor';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import ImageEditor from '../../../components/ImageEditor/ImageEditor';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import Copyright from '../../../components/_layout/Copyright';
+import Copyright from '../../../components/Copyright/Copyright';
 import { Box } from '@mui/system';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { RootState } from '../../../store';
 import { useCreateMemoryGameMutation } from '../../../services/games';
 import { gameObj } from '../../../types';
 import { useCreateGameObjectMutation } from '../../../services/portal';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
-import GridSelect from '../../../components/memory-game/layout/GridSelect';
+import GridSelect from '../../../components/GridSelect/GridSelect';
 
 const CreateMemorygame = () => {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -128,7 +128,7 @@ const CreateMemorygame = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{

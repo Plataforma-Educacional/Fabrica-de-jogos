@@ -1,18 +1,18 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent, FormEventHandler } from 'react';
 import { Alert, Button, Grid, TextField, Box, SelectChangeEvent, Typography, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import Page from '../../../components/anagram/layout/Page';
-import BackFAButton from '../../../components/_layout/BackFAButton';
-import Copyright from '../../../components/_layout/Copyright';
+import AnagramCell from '../../../components/AnagramCell/AnagramCell';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
+import Copyright from '../../../components/Copyright/Copyright';
 import { RootState } from '../../../store';
 import { useCreateAnagramMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewAnagramPage = () => {
@@ -125,7 +125,7 @@ const NewAnagramPage = () => {
     return (
         <>
             <BackFAButton />
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <Box
                 sx={{
                     marginTop: 8,
@@ -214,7 +214,7 @@ const NewAnagramPage = () => {
                             )}
                             {pages.map((page: string[], index: number) => {
                                 return (
-                                    <Page
+                                    <AnagramCell
                                         key={index}
                                         page={page}
                                         index={index}

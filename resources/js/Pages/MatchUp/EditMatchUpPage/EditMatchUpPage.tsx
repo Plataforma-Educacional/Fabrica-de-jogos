@@ -2,12 +2,12 @@ import React, { FormEventHandler, useEffect, useState } from 'react';
 import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
-import LayoutPicker from '../../../components/_layout/LayoutSelect';
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import Page from '../../../components/match-up/layout/Page';
-import Copyright from '../../../components/_layout/Copyright';
+import MatchUpCell from '../../../components/MatchUpCell/MatchUpCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { useUpdateMatchUpMutation, useGetMatchUpBySlugQuery } from '../../../services/games';
 import { matchUpPage } from '../../../types';
 import textToDraft from '../../../utils/textToDraft';
@@ -170,7 +170,7 @@ const EditMatchUp = () => {
 
     return (
         <>
-            <SuccessDialog
+            <SuccessModal
                 open={open}
                 handleClose={() => {
                     setOpen(false);
@@ -214,7 +214,7 @@ const EditMatchUp = () => {
                             )}
                             {pages.map((page: matchUpPage, index: number) => {
                                 return (
-                                    <Page
+                                    <MatchUpCell
                                         key={index}
                                         page={page}
                                         index={index}

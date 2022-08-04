@@ -3,18 +3,18 @@ import { Button, TextField, Grid, Alert, Box, SelectChangeEvent, CircularProgres
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import Page from '../../../components/match-up/layout/Page';
-import Copyright from '../../../components/_layout/Copyright';
+import MatchUpCell from '../../../components/MatchUpCell/MatchUpCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { RootState } from '../../../store';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { useCreateMatchUpMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj, matchUpObj, matchUpPage, matchUpOptions, gameState } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewMatchUpPage = () => {
@@ -195,7 +195,7 @@ const NewMatchUpPage = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -291,7 +291,7 @@ const NewMatchUpPage = () => {
                             )}
                             {pages.map((page: matchUpPage, index: number) => {
                                 return (
-                                    <Page
+                                    <MatchUpCell
                                         key={index}
                                         page={page}
                                         index={index}

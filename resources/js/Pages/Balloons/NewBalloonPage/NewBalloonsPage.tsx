@@ -1,10 +1,10 @@
 import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { balloonOptions, gameObj, gameState } from '../../../types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store';
@@ -12,9 +12,9 @@ import { convertToRaw, EditorState } from 'draft-js';
 import { useCreateBalloonsMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import draftToText from '../../../utils/draftToText';
-import RichTextField from '../../../components/_layout/RichTextField';
+import RichTextField from '../../../components/RichTextField/RichTextField';
 import { getError } from '../../../utils/errors';
-import Group from '../../../components/balloons/layout/Group';
+import BalloonsCell from '../../../components/BalloonsCell/BalloonsCell';
 
 export default function NewBalloonsPage({}) {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -137,7 +137,7 @@ export default function NewBalloonsPage({}) {
     }, [responsePortal.isLoading]);
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -227,7 +227,7 @@ export default function NewBalloonsPage({}) {
                                 </Grid>
                             )}
                             <Grid item xs={12} sm={6}>
-                                <Group
+                                <BalloonsCell
                                     answers={answers}
                                     correct={true}
                                     handleItemChange={handleAnswerChange}
@@ -236,7 +236,7 @@ export default function NewBalloonsPage({}) {
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
-                                <Group
+                                <BalloonsCell
                                     answers={alternatives}
                                     correct={false}
                                     handleItemChange={handleAlternativeChange}

@@ -3,19 +3,19 @@ import { Button, Grid, TextField, Alert, SelectChangeEvent, Typography } from '@
 import AddIcon from '@mui/icons-material/Add';
 import { convertToRaw, EditorState } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import WordCard from '../../../components/word-search/layout/WordCard';
-import Copyright from '../../../components/_layout/Copyright';
+import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import Copyright from '../../../components/Copyright/Copyright';
 import { Box } from '@mui/system';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { RootState } from '../../../store';
 import { useCreateWordSearchMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj, wordObj } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewWordSearchPage = () => {
@@ -177,7 +177,7 @@ const NewWordSearchPage = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -265,7 +265,7 @@ const NewWordSearchPage = () => {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordCard
+                                    <WordSearchCell
                                         item={item}
                                         key={index}
                                         index={index}

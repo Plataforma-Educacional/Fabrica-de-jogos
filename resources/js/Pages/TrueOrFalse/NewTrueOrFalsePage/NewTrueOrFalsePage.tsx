@@ -3,18 +3,18 @@ import { Button, TextField, Grid, Alert, Box, SelectChangeEvent, Typography } fr
 import AddIcon from '@mui/icons-material/Add';
 import { EditorState, convertToRaw } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
-import SuccessDialog from '../../../components/_layout/SuccessDialog';
+import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import QuestionCard from '../../../components/true-or-false/layout/QuestionCard';
-import Copyright from '../../../components/_layout/Copyright';
-import BackFAButton from '../../../components/_layout/BackFAButton';
+import TrueOrFalseCell from '../../../components/TrueOrFalseCell/TrueOrFalseCell';
+import Copyright from '../../../components/Copyright/Copyright';
+import BackFAButton from '../../../components/BackFAButton/BackFAButton';
 import { RootState } from '../../../store';
 import { useCreateTrueOrFalseMutation } from '../../../services/games';
 import { useCreateGameObjectMutation } from '../../../services/portal';
 import { gameObj, gameState, trueOrFalseOptions, trueOrFalseQuestion } from '../../../types';
-import SeriesSelect from '../../../components/_layout/SeriesSelect';
-import DisciplineSelect from '../../../components/_layout/DisciplineSelect';
-import LayoutSelect from '../../../components/_layout/LayoutSelect';
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
 import { getError } from '../../../utils/errors';
 
 const NewTrueOrFalsePage = () => {
@@ -141,7 +141,7 @@ const NewTrueOrFalsePage = () => {
 
     return (
         <>
-            <SuccessDialog open={open} handleClose={handleClose} />
+            <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
             <Box
                 sx={{
@@ -232,7 +232,7 @@ const NewTrueOrFalsePage = () => {
                             )}
                             {questions.map((question: trueOrFalseQuestion, index: number) => {
                                 return (
-                                    <QuestionCard
+                                    <TrueOrFalseCell
                                         key={index}
                                         question={question}
                                         index={index}
