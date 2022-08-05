@@ -1,43 +1,44 @@
-import React, { FormEventHandler, useEffect, useState } from 'react';
-import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import React, { FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material';
 import { EditorState, convertToRaw } from 'draft-js';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
-import draftToText from '../../../utils/draftToText';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import AddIcon from '@mui/icons-material/Add';
 import { useParams } from 'react-router-dom';
-import MatchUpCell from '../../../components/MatchUpCell/MatchUpCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { useUpdateMatchUpMutation, useGetMatchUpBySlugQuery } from '../../../services/games';
-import { matchUpPage } from '../../../types';
-import textToDraft from '../../../utils/textToDraft';
-import { getError } from '../../../utils/errors';
 
-const EditMatchUp = () => {
+import { useUpdateMatchUpMutation, useGetMatchUpBySlugQuery } from 'services/games';
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import MatchUpCell from 'components/MatchUpCell/MatchUpCell';
+import textToDraft from 'utils/textToDraft';
+import draftToText from 'utils/draftToText';
+import { getError } from 'utils/errors';
+import { matchUpPage } from 'types';
+
+const initialState: matchUpPage[] = [
+    [
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+    ],
+];
+
+const EditMatchUpPage: FunctionComponent = () => {
     const { slug } = useParams();
     const [open, setOpen] = useState(false);
     const [alert, setAlert] = useState('');
     const [layout, setLayout] = useState(1);
-    const initialState: matchUpPage[] = [
-        [
-            {
-                word: '',
-                meaning: EditorState.createEmpty(),
-            },
-            {
-                word: '',
-                meaning: EditorState.createEmpty(),
-            },
-            {
-                word: '',
-                meaning: EditorState.createEmpty(),
-            },
-            {
-                word: '',
-                meaning: EditorState.createEmpty(),
-            },
-        ],
-    ];
     const [pages, setPages] = useState(initialState);
     const { data, error, isLoading } = useGetMatchUpBySlugQuery(slug as string);
     const [updateMatchUp, response] = useUpdateMatchUpMutation();
@@ -57,57 +58,9 @@ const EditMatchUp = () => {
             setAlert('O número máximo de páginas para esse jogo é 10!');
             return;
         }
-        setPages([
-            ...pages,
-            [
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-            ],
-        ]);
+        setPages([...pages, ...initialState]);
     };
-    const handleRemovePage = (index: number) => {
-        let p = [...pages];
-        p.splice(index, 1);
-        setPages(p);
-    };
-    const handleWordChange = (event: React.ChangeEvent<HTMLInputElement>, index: number, i: number) => {
-        let p = [...pages];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.word = event.target.value;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setPages(p);
-    };
-    const handleMeaningChange = (editorState: EditorState, index: number, i: number) => {
-        let p = [...pages];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.meaning = editorState;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setPages(p);
-    };
-    const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
+
     const handleSubmit: FormEventHandler = (event: React.FormEvent<HTMLInputElement>) => {
         event.preventDefault();
         let matchUpsJSON: matchUpPage[] = [];
@@ -170,83 +123,56 @@ const EditMatchUp = () => {
 
     return (
         <>
-            <SuccessModal
-                open={open}
-                handleClose={() => {
-                    setOpen(false);
-                }}
-            />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
-            >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
-                    <Typography color="primary" variant="h2" component="h2">
-                        <b>Combinação</b>
-                    </Typography>
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
+            <Grid item alignSelf="center" textAlign="center" sx={{ marginTop: 8 }} xs={12}>
+                <Typography color="primary" variant="h2" component="h2">
+                    <b>Combinação</b>
+                </Typography>
+            </Grid>
+            <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item alignSelf="center" xs={12}>
+                    <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                        Adicionar página
+                    </Button>
                 </Grid>
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                            Adicionar página
-                        </Button>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {pages.map((page: matchUpPage, index: number) => {
-                                return (
-                                    <MatchUpCell
-                                        key={index}
-                                        page={page}
-                                        index={index}
-                                        handleWordChange={handleWordChange}
-                                        handleMeaningChange={handleMeaningChange}
-                                        handleDelete={handleRemovePage}
-                                    />
-                                );
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" xs={12}>
+                    <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        {pages.map((page: matchUpPage, index: number) => {
+                            return (
+                                <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
+                                    <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
+                                </Grid>
+                            );
+                        })}
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
 };
 
-export default EditMatchUp;
+export default EditMatchUpPage;

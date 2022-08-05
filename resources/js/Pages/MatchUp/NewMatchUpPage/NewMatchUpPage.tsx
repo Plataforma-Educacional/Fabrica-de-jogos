@@ -1,23 +1,44 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import { Button, TextField, Grid, Alert, Box, SelectChangeEvent, CircularProgress, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Button, TextField, Grid, Alert, CircularProgress, Typography } from '@mui/material';
 import { EditorState, convertToRaw } from 'draft-js';
-import draftToText from '../../../utils/draftToText';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
+import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
-import MatchUpCell from '../../../components/MatchUpCell/MatchUpCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { RootState } from '../../../store';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import { useCreateMatchUpMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import { gameObj, matchUpObj, matchUpPage, matchUpOptions, gameState } from '../../../types';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import { getError } from '../../../utils/errors';
 
-const NewMatchUpPage = () => {
+import { gameObj, matchUpObj, matchUpPage, matchUpOptions, gameState } from 'types';
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import BackFAButton from 'components/BackFAButton/BackFAButton';
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
+import { useCreateGameObjectMutation } from 'services/portal';
+import MatchUpCell from 'components/MatchUpCell/MatchUpCell';
+import { useCreateMatchUpMutation } from 'services/games';
+import draftToText from 'utils/draftToText';
+import { getError } from 'utils/errors';
+import { RootState } from 'store';
+
+const initialState: matchUpPage[] = [
+    [
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+        {
+            word: '',
+            meaning: EditorState.createEmpty(),
+        },
+    ],
+];
+
+const NewMatchUpPage: FunctionComponent = () => {
     const [createMatchUp, response] = useCreateMatchUpMutation();
     const [createGameObject, responsePortal] = useCreateGameObjectMutation();
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -25,14 +46,6 @@ const NewMatchUpPage = () => {
     const [layout, setLayout] = useState<number>(1);
     const [serie, setSerie] = useState<string[]>([]);
     const [discipline, setDiscipline] = useState<string>('');
-    const initialState: matchUpPage[] = [
-        [
-            { word: '', meaning: EditorState.createEmpty() },
-            { word: '', meaning: EditorState.createEmpty() },
-            { word: '', meaning: EditorState.createEmpty() },
-            { word: '', meaning: EditorState.createEmpty() },
-        ],
-    ];
     const [open, setOpen] = useState(false);
     const [alert, setAlert] = useState('');
     const [pages, setPages] = useState(initialState);
@@ -41,96 +54,13 @@ const NewMatchUpPage = () => {
             setAlert('O número máximo de páginas para esse jogo é 10!');
             return;
         }
-        setPages([
-            ...pages,
-            [
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-            ],
-        ]);
-    };
-    const handleRemovePage = (index: number) => {
-        if (pages.length === 1) {
-            return;
-        }
-        let p = [...pages];
-        p.splice(index, 1);
-        setPages(p);
-    };
-    const handleWordChange = (event: ChangeEvent<HTMLInputElement>, index: number, i: number) => {
-        let p = [...pages];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.word = event.target.value;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setPages(p);
-    };
-    const handleMeaningChange = (editorState: EditorState, index: number, i: number) => {
-        let p = [...pages];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.meaning = editorState;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setPages(p);
-    };
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
+        setPages([...pages, ...initialState]);
     };
     const handleClose = () => {
         setLayout(1);
         setName('');
-        setPages([
-            [
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-                {
-                    word: '',
-                    meaning: EditorState.createEmpty(),
-                },
-            ],
-        ]);
+        setPages([...initialState]);
         setOpen(false);
-    };
-    const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value;
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
-        }
-    };
-    const disciplineChange = (event: SelectChangeEvent) => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
-        }
     };
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -197,124 +127,102 @@ const NewMatchUpPage = () => {
         <>
             <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                sx={{ marginTop: 8 }}
+                component="form"
+                justifyContent="center"
+                alignItems="center"
+                onSubmit={handleSubmit}
+                spacing={3}
             >
-                <Grid
-                    container
-                    // @ts-ignore
-                    align="center"
-                    component="form"
-                    justifyContent="center"
-                    alignItems="center"
-                    onSubmit={handleSubmit}
-                    spacing={3}
-                >
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Combinação</b>
-                        </Typography>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                justifyContent={{ lg: 'flex-end', md: 'none' }}
-                                display={{ lg: 'flex', md: 'block' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    md: 'none',
-                                }}
-                                display={{ lg: 'flex', md: 'block' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Combinação</b>
+                    </Typography>
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    <Grid container justifyContent="center" spacing={1} display="flex">
+                        <Grid
+                            alignSelf="center"
+                            item
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            justifyContent={{ lg: 'flex-end', md: 'none' }}
+                            display={{ lg: 'flex', md: 'block' }}
+                        >
+                            <SeriesSelect value={serie} setValue={setSerie} />
                         </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                            Adicionar página
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {pages.map((page: matchUpPage, index: number) => {
-                                return (
-                                    <MatchUpCell
-                                        key={index}
-                                        page={page}
-                                        index={index}
-                                        handleWordChange={handleWordChange}
-                                        handleMeaningChange={handleMeaningChange}
-                                        handleDelete={handleRemovePage}
-                                    />
-                                );
-                            })}
+                        <Grid item alignSelf="center" xl={4} lg={3}>
+                            <TextField
+                                label="Nome"
+                                name="name"
+                                variant="outlined"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                required
+                                sx={{ minWidth: { sm: 290, xs: 260 } }}
+                                fullWidth
+                            />
                         </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
-                        )}
+                        <Grid
+                            alignSelf="center"
+                            item
+                            justifyContent={{
+                                lg: 'flex-start',
+                                md: 'none',
+                            }}
+                            display={{ lg: 'flex', md: 'block' }}
+                            xl={4}
+                            lg={3}
+                            md={12}
+                        >
+                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                        </Grid>
+                        <Grid item alignSelf="center" xs={12}>
+                            <LayoutSelect value={layout} setValue={setLayout} />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                        Adicionar página
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
+                        {alert && (
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
+                                >
+                                    {alert}
+                                </Alert>
+                            </Grid>
+                        )}
+                        {pages.map((page: matchUpPage, index: number) => {
+                            return (
+                                <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
+                                    <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
 };

@@ -1,14 +1,15 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import GroupSortCell from '../../../components/GroupSortCell/GroupSortCell';
-import { gameState, groupSortOptions } from '../../../types';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { useUpdateGroupSortMutation, useGetGroupSortBySlugQuery } from '../../../services/games';
-import { getError } from '../../../utils/errors';
 
-export default function EditGroupSort({}) {
+import { useUpdateGroupSortMutation, useGetGroupSortBySlugQuery } from 'services/games';
+import GroupSortCell from 'components/GroupSortCell/GroupSortCell';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
+import { gameState, groupSortOptions } from 'types';
+import { getError } from 'utils/errors';
+
+const EditGroupSortPage: FunctionComponent = ({}) => {
     const { slug } = useParams();
     const { data, error, isLoading } = useGetGroupSortBySlugQuery(slug as string);
     const [updateGroupSort, response] = useUpdateGroupSortMutation();
@@ -19,38 +20,7 @@ export default function EditGroupSort({}) {
         { title: '', items: ['', ''] },
         { title: '', items: ['', ''] },
     ]);
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
-    const handleTitleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index: number) => {
-        let g = [...groups];
-        g[index].title = event.target.value;
-        setGroups(g);
-    };
 
-    const handleAddItem = (index: number) => {
-        if (groups[index].items.length === 5) {
-            return;
-        }
-        let g = [...groups];
-        g[index].items.push('');
-        setGroups(g);
-    };
-
-    const handleRemoveItem = (index: number, i: number) => {
-        let g = [...groups];
-        g[index].items.splice(i, 1);
-        setGroups(g);
-    };
-
-    const handleItemChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, i: number) => {
-        let g = [...groups];
-        g[index].items[i] = event.target.value;
-        setGroups(g);
-    };
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault();
         if (groups[0].items.length === 0 || groups[1].items.length === 0) {
@@ -62,7 +32,6 @@ export default function EditGroupSort({}) {
             layout: layout,
             options: groups,
         };
-        console.log(body, slug);
         updateGroupSort({ slug, ...body });
     };
 
@@ -96,74 +65,59 @@ export default function EditGroupSort({}) {
     return (
         <>
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                alignItems="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" alignItems="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Agrupamentos</b>
-                        </Typography>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Grid container justifyContent="center" spacing={3}>
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {groups.map((group, index) => {
-                                return (
-                                    <Grid key={index} item xs={12} md={6} lg={4}>
-                                        <GroupSortCell
-                                            group={group}
-                                            index={index}
-                                            handleTitleChange={handleTitleChange}
-                                            handleItemChange={handleItemChange}
-                                            handleAddItem={handleAddItem}
-                                            handleRemoveItem={handleRemoveItem}
-                                        />
-                                    </Grid>
-                                );
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Agrupamentos</b>
+                    </Typography>
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    <LayoutSelect value={layout} setValue={setLayout} />
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    <Grid container justifyContent="center" spacing={3}>
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        {groups.map((group, index) => {
+                            return (
+                                <Grid key={index} item xs={12} md={6} lg={4}>
+                                    <GroupSortCell index={index} value={group} state={groups} setState={setGroups} />
+                                </Grid>
+                            );
+                        })}
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
-}
+};
+
+export default EditGroupSortPage;

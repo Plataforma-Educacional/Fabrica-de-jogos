@@ -1,11 +1,11 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
+import React, { FormEvent, FormEventHandler, useEffect, useState, FunctionComponent } from 'react';
 import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { convertToRaw, EditorState } from 'draft-js';
 import { useParams } from 'react-router-dom';
 
 import { useUpdateBalloonsMutation, useGetBalloonsBySlugQuery } from 'services/games';
 import RichTextField from 'components/RichTextField/RichTextField';
-import BalloonsWords from 'components/BalloonsWords/BalloonsWords';
+import BalloonCell from 'components/BalloonCell/BalloonCell';
 import SuccessModal from 'components/SuccessModal/SuccessModal';
 import BackFAButton from 'components/BackFAButton/BackFAButton';
 import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
@@ -14,7 +14,7 @@ import draftToText from 'utils/draftToText';
 import textToDraft from 'utils/textToDraft';
 import { getError } from 'utils/errors';
 
-export default function EditBalloons({}) {
+const EditBalloonsPage: FunctionComponent = ({}) => {
     const { slug } = useParams();
     const [open, setOpen] = useState(false);
     const [alert, setAlert] = useState('');
@@ -25,44 +25,6 @@ export default function EditBalloons({}) {
     const [updateBalloons, response] = useUpdateBalloonsMutation();
     const { data, error, isLoading } = useGetBalloonsBySlugQuery(slug as string);
 
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
-    const handleAnswerChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let ans = [...answers];
-        ans[index] = event.target.value;
-        setAnswers(ans);
-    };
-    const handleAddAnswer = () => {
-        if (answers.length > 15) {
-            return;
-        }
-        setAnswers([...answers, '']);
-    };
-    const handleRemoveAnswer = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let ans = [...answers];
-        ans.splice(index, 1);
-        setAnswers(ans);
-    };
-    const handleAlternativeChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let alt = [...alternatives];
-        alt[index] = event.target.value;
-        setAlternatives(alt);
-    };
-    const handleAddAlternative = () => {
-        if (alternatives.length > 15) {
-            return;
-        }
-        setAlternatives([...alternatives, '']);
-    };
-    const handleRemoveAlternative = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let alt = [...alternatives];
-        alt.splice(index, 1);
-        setAlternatives(alt);
-    };
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault();
         if (answers.length > alternatives.length) {
@@ -129,7 +91,7 @@ export default function EditBalloons({}) {
                     </Typography>
                 </Grid>
                 <Grid item alignSelf="center" xs={12}>
-                    <LayoutSelect callback={handleLayout} selectedLayout={layout} />
+                    <LayoutSelect value={layout} setValue={setLayout} />
                 </Grid>
                 <Grid item alignSelf="left" xs={3}>
                     <RichTextField
@@ -154,22 +116,10 @@ export default function EditBalloons({}) {
                             </Grid>
                         )}
                         <Grid item xs={12} sm={6}>
-                            <BalloonsWords
-                                answers={answers}
-                                correct={true}
-                                handleItemChange={handleAnswerChange}
-                                handleAddItem={handleAddAnswer}
-                                handleRemoveItem={handleRemoveAnswer}
-                            />
+                            <BalloonCell value={answers} setValue={setAnswers} correct={true} />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <BalloonsWords
-                                answers={alternatives}
-                                correct={false}
-                                handleItemChange={handleAlternativeChange}
-                                handleAddItem={handleAddAlternative}
-                                handleRemoveItem={handleRemoveAlternative}
-                            />
+                            <BalloonCell value={alternatives} setValue={setAlternatives} correct={false} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -185,4 +135,6 @@ export default function EditBalloons({}) {
             </Grid>
         </>
     );
-}
+};
+
+export default EditBalloonsPage;

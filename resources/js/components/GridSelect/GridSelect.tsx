@@ -1,12 +1,12 @@
 import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 
 type Props = {
     size: number;
     handleSize: Function;
 };
 
-const GridSelect = ({ size, handleSize }: Props) => {
+const GridSelect: FunctionComponent<Props> = ({ size, handleSize }) => {
     return (
         <Grid item xs={12}>
             <ToggleButtonGroup

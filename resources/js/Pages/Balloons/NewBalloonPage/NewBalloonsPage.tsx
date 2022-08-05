@@ -1,11 +1,11 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import { Alert, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
+import React, { FormEvent, FormEventHandler, useEffect, useState, FunctionComponent } from 'react';
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { convertToRaw, EditorState } from 'draft-js';
 import { useSelector } from 'react-redux';
 
 import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
 import RichTextField from 'components/RichTextField/RichTextField';
-import BalloonsWords from 'components/BalloonsWords/BalloonsWords';
+import BalloonCell from 'components/BalloonCell/BalloonCell';
 import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
 import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
 import SuccessModal from 'components/SuccessModal/SuccessModal';
@@ -17,7 +17,7 @@ import draftToText from 'utils/draftToText';
 import { getError } from 'utils/errors';
 import { RootState } from 'store';
 
-export default function NewBalloonsPage({}) {
+const NewBalloonsPage: FunctionComponent = ({}) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
     const [alert, setAlert] = useState('');
@@ -31,44 +31,6 @@ export default function NewBalloonsPage({}) {
     const [createBalloons, response] = useCreateBalloonsMutation();
     const [createGameObject, responsePortal] = useCreateGameObjectMutation();
 
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
-    const handleAnswerChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let ans = [...answers];
-        ans[index] = event.target.value;
-        setAnswers(ans);
-    };
-    const handleAddAnswer = () => {
-        if (answers.length > 15) {
-            return;
-        }
-        setAnswers([...answers, '']);
-    };
-    const handleRemoveAnswer = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let ans = [...answers];
-        ans.splice(index, 1);
-        setAnswers(ans);
-    };
-    const handleAlternativeChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let alt = [...alternatives];
-        alt[index] = event.target.value;
-        setAlternatives(alt);
-    };
-    const handleAddAlternative = () => {
-        if (alternatives.length > 15) {
-            return;
-        }
-        setAlternatives([...alternatives, '']);
-    };
-    const handleRemoveAlternative = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let alt = [...alternatives];
-        alt.splice(index, 1);
-        setAlternatives(alt);
-    };
     const handleClose = () => {
         setName('');
         setQuestion(EditorState.createEmpty());
@@ -78,18 +40,6 @@ export default function NewBalloonsPage({}) {
         setDiscipline('');
         setLayout(1);
         setOpen(false);
-    };
-    const seriesChange = (event: SelectChangeEvent<string[]>): void => {
-        const value = event.target.value;
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
-        }
-    };
-    const disciplineChange = (event: SelectChangeEvent) => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
-        }
     };
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -163,7 +113,7 @@ export default function NewBalloonsPage({}) {
                     justifyContent={{ lg: 'flex-end', md: 'none' }}
                     display={{ lg: 'flex', md: 'block' }}
                 >
-                    <SeriesSelect serie={serie} callback={seriesChange} />
+                    <SeriesSelect value={serie} setValue={setSerie} />
                 </Grid>
                 <Grid item alignSelf="center" xl={4} lg={3}>
                     <TextField
@@ -189,10 +139,10 @@ export default function NewBalloonsPage({}) {
                     lg={3}
                     md={12}
                 >
-                    <DisciplineSelect value={discipline} onChange={disciplineChange} />
+                    <DisciplineSelect value={discipline} setValue={setDiscipline} />
                 </Grid>
                 <Grid item alignSelf="center" xs={12}>
-                    <LayoutSelect value={layout} onChange={handleLayout} />
+                    <LayoutSelect value={layout} setValue={setLayout} />
                 </Grid>
                 <Grid item alignSelf="left" xs={3}>
                     <RichTextField
@@ -217,22 +167,10 @@ export default function NewBalloonsPage({}) {
                             </Grid>
                         )}
                         <Grid item xs={12} sm={6}>
-                            <BalloonsWords
-                                answers={answers}
-                                correct={true}
-                                handleItemChange={handleAnswerChange}
-                                handleAddItem={handleAddAnswer}
-                                handleRemoveItem={handleRemoveAnswer}
-                            />
+                            <BalloonCell value={answers} setValue={setAnswers} correct={true} />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <BalloonsWords
-                                answers={alternatives}
-                                correct={false}
-                                handleItemChange={handleAlternativeChange}
-                                handleAddItem={handleAddAlternative}
-                                handleRemoveItem={handleRemoveAlternative}
-                            />
+                            <BalloonCell value={alternatives} setValue={setAlternatives} correct={false} />
                         </Grid>
                     </Grid>
                 </Grid>
@@ -248,4 +186,6 @@ export default function NewBalloonsPage({}) {
             </Grid>
         </>
     );
-}
+};
+
+export default NewBalloonsPage;

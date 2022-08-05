@@ -1,11 +1,12 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
-import { getError } from '../../../utils/errors';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from '../../../services/games';
-import FormatSelect from '../../../components/DragNDropFormat/DragNDropFormat';
+
+import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from 'services/games';
+import FormatSelect from 'components/DragNDropFormat/DragNDropFormat';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
+import { getError } from 'utils/errors';
 
 const EditDragNDrop: FunctionComponent = ({}) => {
     const { slug } = useParams();
@@ -15,18 +16,7 @@ const EditDragNDrop: FunctionComponent = ({}) => {
     const [alert, setAlert] = useState('');
     const [layout, setLayout] = useState<number>(1);
     const [format, setFormat] = useState<number>(0);
-    const handleFormat = (event: ChangeEvent<HTMLInputElement>, newFormat: number) => {
-        if (newFormat === null) {
-            return;
-        }
-        setFormat(newFormat);
-    };
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
+
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
         event.preventDefault();
 
@@ -66,57 +56,49 @@ const EditDragNDrop: FunctionComponent = ({}) => {
     return (
         <>
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                justifyContent="center"
+                component="form"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container justifyContent="center" component="form" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Arrasta e Solta</b>
-                        </Typography>
-                    </Grid>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    <Grid item lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            <FormatSelect selectedFormat={format} callback={handleFormat} />
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Arrasta e Solta</b>
+                    </Typography>
+                </Grid>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        <FormatSelect value={format} setValue={setFormat} />
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
 };

@@ -1,16 +1,31 @@
-import React from 'react';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
 import { Button, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-type Props = {
-    answers: string[];
+interface Props {
+    value: string[];
+    setValue: Dispatch<SetStateAction<string[]>>;
     correct: boolean;
-    handleAddItem: Function;
-    handleRemoveItem: Function;
-    handleItemChange: Function;
-};
+}
 
-export default function BalloonsWords({ answers, correct, handleAddItem, handleRemoveItem, handleItemChange }: Props) {
+const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+        let ans = [...value];
+        ans[index] = event.target.value;
+        setValue(ans);
+    };
+    const handleAdd = () => {
+        if (value.length > 15) {
+            return;
+        }
+        setValue([...value, '']);
+    };
+    const handleRemove = (index: number) => {
+        let ans = [...value];
+        ans.splice(index, 1);
+        setValue(ans);
+    };
+
     return (
         <Paper elevation={3} sx={{ p: 2 }}>
             <Grid container alignSelf="center" alignItems="flex-start" justifyContent="center" spacing={2}>
@@ -20,11 +35,11 @@ export default function BalloonsWords({ answers, correct, handleAddItem, handleR
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button onClick={handleAddItem as any} variant="contained" size="small">
+                    <Button onClick={handleAdd} variant="contained" size="small">
                         Adicionar {correct ? 'Resposta' : 'Alternativa'}
                     </Button>
                 </Grid>
-                {answers.map((item, i) => {
+                {value.map((item, i) => {
                     return (
                         <Grid key={i} item xs={12} md={6}>
                             <Grid
@@ -45,14 +60,14 @@ export default function BalloonsWords({ answers, correct, handleAddItem, handleR
                                         }}
                                         color={correct ? 'success' : 'error'}
                                         value={item}
-                                        onChange={(event) => handleItemChange(event, i)}
+                                        onChange={(event) => handleChange(event, i)}
                                         required
                                     />
                                 </Grid>
                                 <Grid item xs={2}>
                                     <IconButton
                                         onClick={() => {
-                                            handleRemoveItem(i);
+                                            handleRemove(i);
                                         }}
                                     >
                                         <DeleteIcon fontSize="small" />
@@ -65,4 +80,6 @@ export default function BalloonsWords({ answers, correct, handleAddItem, handleR
             </Grid>
         </Paper>
     );
-}
+};
+
+export default BalloonCell;

@@ -5,7 +5,7 @@ import { convertToRaw, EditorState } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
 import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useSelector } from 'react-redux';
-import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import WordTipCell from 'components/WordTipCell/WordTipCell';
 import Copyright from '../../../components/Copyright/Copyright';
 import { Box } from '@mui/system';
 import BackFAButton from '../../../components/BackFAButton/BackFAButton';
@@ -265,7 +265,7 @@ const NewWordSearchPage = () => {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordSearchCell
+                                    <WordTipCell
                                         item={item}
                                         key={index}
                                         index={index}

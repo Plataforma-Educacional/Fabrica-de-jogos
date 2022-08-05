@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent, FormEventHandler } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEventHandler, FunctionComponent } from 'react';
 import { Alert, Button, Grid, CircularProgress, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useParams } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useGetAnagramBySlugQuery, useUpdateAnagramMutation } from 'services/games';
 import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
 import SuccessModal from 'components/SuccessModal/SuccessModal';
-import AnagramPage from 'components/AnagramPage/AnagramPage';
+import AnagramCell from 'components/AnagramCell/AnagramCell';
 import { getError } from 'utils/errors';
 
 const sliceIntoChunks = (arr: string[], chunkSize: number): string[][] => {
@@ -18,7 +18,7 @@ const sliceIntoChunks = (arr: string[], chunkSize: number): string[][] => {
     return res;
 };
 
-export default function EditAnagramPage() {
+const EditAnagramPage: FunctionComponent = () => {
     const { slug } = useParams();
     const { data, error, isLoading } = useGetAnagramBySlugQuery(slug as string);
     const [updateAnagram, response] = useUpdateAnagramMutation();
@@ -123,7 +123,7 @@ export default function EditAnagramPage() {
                         {pages.map((page, index) => {
                             return (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                                    <AnagramPage index={index} value={page} state={pages} setState={setPages} />
+                                    <AnagramCell index={index} value={page} state={pages} setState={setPages} />
                                 </Grid>
                             );
                         })}
@@ -143,4 +143,6 @@ export default function EditAnagramPage() {
             </Grid>
         </>
     );
-}
+};
+
+export default EditAnagramPage;

@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Container, CssBaseline } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { CircularProgress, Container, CssBaseline } from '@mui/material';
 import { Outlet, useSearchParams } from 'react-router-dom';
 
 import Copyright from 'components/Copyright/Copyright';
 import { setBaseState } from 'reducers/userReducer';
 import NavBar from 'components/NavBar/NavBar';
+import { RootState } from '../../store';
+import { useGetUserInfoQuery } from 'services/portal';
 
 const UserLayout = () => {
     const [searchParams, setSearchParams] = useSearchParams();
+    const { token, origin } = useSelector((state: RootState) => state.user);
+    const { data, error, isLoading } = useGetUserInfoQuery({ token, origin });
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -20,16 +24,30 @@ const UserLayout = () => {
             searchParams.delete('api_address');
             searchParams.delete('user_token');
             setSearchParams(searchParams);
-            return;
+            window.location.reload();
         }
         if (!localStorage.getItem('token') || !localStorage.getItem('origin')) {
             window.location.href = '/401';
         }
     }, []);
 
+    if (error) window.location.href = '/401';
+
+    if (isLoading)
+        return (
+            <CircularProgress
+                sx={{
+                    position: 'absolute',
+                    left: '50%',
+                    top: '50%',
+                    transform: 'translate(-50%, -50%)',
+                }}
+            />
+        );
+
     return (
         <>
-            <NavBar />
+            <NavBar data={data} />
             <CssBaseline />
             <Container maxWidth="xl" component="main">
                 <Outlet />

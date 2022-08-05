@@ -1,19 +1,19 @@
-import React, { FormEventHandler, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { wordObj } from '../../../types';
+import React, { FormEventHandler, useEffect, useState, FunctionComponent } from 'react';
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
 import { convertToRaw, EditorState } from 'draft-js';
-import { useGetCryptogramBySlugQuery, useUpdateCryptogramMutation } from '../../../services/games';
-import draftToText from '../../../utils/draftToText';
-import textToDraft from '../../../utils/textToDraft';
-import { Alert, Box, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
 import AddIcon from '@mui/icons-material/Add';
-import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { getError } from '../../../utils/errors';
+import { useParams } from 'react-router-dom';
 
-export default function EditCryptogram({}) {
+import { useGetCryptogramBySlugQuery, useUpdateCryptogramMutation } from 'services/games';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
+import WordTipCell from 'components/WordTipCell/WordTipCell';
+import draftToText from 'utils/draftToText';
+import formatTips from 'utils/formatTips';
+import { getError } from 'utils/errors';
+import { wordObj } from 'types';
+
+const EditCryptogram: FunctionComponent = () => {
     const { slug } = useParams();
     const initialState: wordObj[] = [
         {
@@ -35,6 +35,7 @@ export default function EditCryptogram({}) {
     const [layout, setLayout] = useState(1);
     const { data, error, isLoading } = useGetCryptogramBySlugQuery(slug as string);
     const [updateCryptogram, response] = useUpdateCryptogramMutation();
+
     const handleAddWord = () => {
         if (words.length >= 8) {
             setAlert('O numero máximo de palavras nesse jogo é 8!');
@@ -46,34 +47,6 @@ export default function EditCryptogram({}) {
             tip: EditorState.createEmpty(),
         });
         setWords(p);
-    };
-    const handleRemoveWord = (index: number) => {
-        if (words.length === 1) {
-            return;
-        }
-        let p = [...words];
-        p.splice(index, 1);
-        setWords(p);
-    };
-    const handleWordChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.word = event.target.value;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
-    const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.tip = editorState;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
-    const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
     };
     const handleSubmit: FormEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -106,16 +79,6 @@ export default function EditCryptogram({}) {
             options: wordsJSON,
         };
         updateCryptogram({ slug, ...body });
-    };
-
-    const formatTips = (raw: wordObj[]): wordObj[] => {
-        raw.map((word: wordObj) => {
-            if (typeof word.tip !== 'string') {
-                return;
-            }
-            word.tip = textToDraft(word.tip);
-        });
-        return raw;
     };
 
     useEffect(() => {
@@ -153,76 +116,62 @@ export default function EditCryptogram({}) {
                     setOpen(false);
                 }}
             />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Criptograma</b>
-                        </Typography>
-                    </Grid>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                            Adicionar Palavra
-                        </Button>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                /* @ts-ignore*/
-                                <Grid item align="center" xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {words.map((item: wordObj, index: number) => {
-                                return (
-                                    <WordSearchCell
-                                        item={item}
-                                        key={index}
-                                        index={index}
-                                        handleWordChange={handleWordChange}
-                                        handleRemoveWord={handleRemoveWord}
-                                        handleTipChange={handleTipChange}
-                                    />
-                                );
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Criptograma</b>
+                    </Typography>
+                </Grid>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item alignSelf="center" xs={12}>
+                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                        Adicionar Palavra
+                    </Button>
+                </Grid>
+                <Grid item alignSelf="center" lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
+                            <Grid item alignSelf="center" xs={12}>
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        {words.map((item: wordObj, index: number) => {
+                            return (
+                                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                    <WordTipCell index={index} value={item} state={words} setState={setWords} />
+                                </Grid>
+                            );
+                        })}
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
-}
+};
+
+export default EditCryptogram;

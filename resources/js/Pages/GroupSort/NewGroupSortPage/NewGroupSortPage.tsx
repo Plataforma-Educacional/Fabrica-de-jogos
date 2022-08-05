@@ -1,19 +1,20 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import GroupSortCell from '../../../components/GroupSortCell/GroupSortCell';
-import { gameObj, gameState, groupSortOptions } from '../../../types';
-import { useCreateGroupSortMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
-import { getError } from '../../../utils/errors';
 
-export default function NewGroupSortPage({}) {
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
+import GroupSortCell from 'components/GroupSortCell/GroupSortCell';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import BackFAButton from 'components/BackFAButton/BackFAButton';
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
+import { gameObj, gameState, groupSortOptions } from 'types';
+import { useCreateGameObjectMutation } from 'services/portal';
+import { useCreateGroupSortMutation } from 'services/games';
+import { getError } from 'utils/errors';
+import { RootState } from 'store';
+
+const NewGroupSortPage: FunctionComponent = ({}) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
     const [name, setName] = useState<string>('');
     const [layout, setLayout] = useState<number>(1);
@@ -27,24 +28,6 @@ export default function NewGroupSortPage({}) {
     ]);
     const [createGroupSort, response] = useCreateGroupSortMutation();
     const [createGameObject, responsePortal] = useCreateGameObjectMutation();
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
-    const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value;
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
-        }
-    };
-    const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
-        }
-    };
     const handleClose = () => {
         setName('');
         setLayout(1);
@@ -54,33 +37,6 @@ export default function NewGroupSortPage({}) {
             { title: '', items: ['', ''] },
             { title: '', items: ['', ''] },
         ]);
-    };
-
-    const handleTitleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index: number) => {
-        let g = [...groups];
-        g[index].title = event.target.value;
-        setGroups(g);
-    };
-
-    const handleAddItem = (index: number) => {
-        if (groups[index].items.length === 5) {
-            return;
-        }
-        let g = [...groups];
-        g[index].items.push('');
-        setGroups(g);
-    };
-
-    const handleRemoveItem = (index: number, i: number) => {
-        let g = [...groups];
-        g[index].items.splice(i, 1);
-        setGroups(g);
-    };
-
-    const handleItemChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, i: number) => {
-        let g = [...groups];
-        g[index].items[i] = event.target.value;
-        setGroups(g);
     };
 
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
@@ -129,108 +85,98 @@ export default function NewGroupSortPage({}) {
         <>
             <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                alignItems="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" alignItems="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Agrupamentos</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            <Grid
-                                alignSelf="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                justifyContent={{ lg: 'flex-end', md: 'none' }}
-                                display={{ lg: 'flex', md: 'block' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            <Grid item alignSelf="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid
-                                alignSelf="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    md: 'none',
-                                }}
-                                display={{ lg: 'flex', md: 'block' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Agrupamentos</b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container justifyContent="center" spacing={1} display="flex">
+                        <Grid
+                            alignSelf="center"
+                            item
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            justifyContent={{ lg: 'flex-end', md: 'none' }}
+                            display={{ lg: 'flex', md: 'block' }}
+                        >
+                            <SeriesSelect value={serie} setValue={setSerie} />
                         </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Grid container justifyContent="center" spacing={3}>
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {groups.map((group, index) => {
-                                return (
-                                    <Grid key={index} item xs={12} md={6} lg={4}>
-                                        <GroupSortCell
-                                            group={group}
-                                            index={index}
-                                            handleTitleChange={handleTitleChange}
-                                            handleItemChange={handleItemChange}
-                                            handleAddItem={handleAddItem}
-                                            handleRemoveItem={handleRemoveItem}
-                                        />
-                                    </Grid>
-                                );
-                            })}
+                        <Grid item alignSelf="center" xl={4} lg={3}>
+                            <TextField
+                                label="Nome"
+                                name="name"
+                                variant="outlined"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                required
+                                sx={{ minWidth: { sm: 290, xs: 260 } }}
+                                fullWidth
+                            />
                         </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
-                        )}
+                        <Grid
+                            alignSelf="center"
+                            item
+                            justifyContent={{
+                                lg: 'flex-start',
+                                md: 'none',
+                            }}
+                            display={{ lg: 'flex', md: 'block' }}
+                            xl={4}
+                            lg={3}
+                            md={12}
+                        >
+                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                        </Grid>
+                        <Grid item alignSelf="center" xs={12}>
+                            <LayoutSelect value={layout} setValue={setLayout} />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item alignSelf="center" xs={12}>
+                    <Grid container justifyContent="center" spacing={3}>
+                        {alert && (
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('');
+                                    }}
+                                >
+                                    {alert}
+                                </Alert>
+                            </Grid>
+                        )}
+                        {groups.map((group, index) => {
+                            return (
+                                <Grid key={index} item xs={12} md={6} lg={4}>
+                                    <GroupSortCell index={index} value={group} state={groups} setState={setGroups} />
+                                </Grid>
+                            );
+                        })}
+                    </Grid>
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
-}
+};
+
+export default NewGroupSortPage;

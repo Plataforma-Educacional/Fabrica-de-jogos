@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { FunctionComponent } from 'react';
 import { Routes as Router, Route } from 'react-router-dom';
-import { CircularProgress } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
 
 import HomePage from 'pages/HomePage/HomePage';
 import GamePage from 'pages/GamePage/GamePage';
@@ -32,46 +30,15 @@ import EditPuzzle from 'pages/Puzzle/EditPuzzlePage/EditPuzzlePage';
 import NewPaintPage from 'pages/Paint/NewPaintPage/NewPaintPage';
 import EditPaint from 'pages/Paint/EditPaintPage/EditPaintPage';
 import UserLayout from 'layouts/UserLayout/UserLayout';
-import { useGetUserInfoQuery } from 'services/portal';
-import { setBaseState } from 'reducers/userReducer';
-import { RootState } from 'store';
 
-const Routes = () => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const { data, error, isLoading } = useGetUserInfoQuery({ token, origin });
-    const dispatch = useDispatch();
-
-    if (error) dispatch(setBaseState());
-
-    useEffect(() => {
-        setTimeout(() => {
-            if (localStorage.getItem('token') === null) {
-                window.location.href = '/401';
-            }
-            dispatch(setBaseState());
-        }, 500);
-    }, []);
-
-    if (isLoading)
-        return (
-            <CircularProgress
-                sx={{
-                    position: 'absolute',
-                    left: '50%',
-                    top: '50%',
-                    transform: 'translate(-50%, -50%)',
-                }}
-            />
-        );
-
+const Routes: FunctionComponent = () => {
     return (
         <Router>
-            {/* Game Routes */}
-            <Route path="/game/:category/:slug" element={<GamePage />} />
-
             <Route path="/" element={<UserLayout />}>
                 {/* Home Route */}
                 <Route index element={<HomePage />} />
+                {/* Game Routes */}
+                <Route path="/game/:category/:slug" element={<GamePage />} />
                 {/* Create Routes */}
                 <Route path="create/anagram" element={<NewAnagramPage />} />
                 <Route path="create/bloons" element={<NewBalloonsPage />} />

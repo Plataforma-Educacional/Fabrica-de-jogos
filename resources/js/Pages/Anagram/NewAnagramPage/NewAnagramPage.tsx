@@ -1,4 +1,4 @@
-import React, { useState, useEffect, FormEvent, FormEventHandler } from 'react';
+import React, { useState, useEffect, FormEvent, FormEventHandler, FunctionComponent } from 'react';
 import { Alert, Button, Grid, TextField, Typography, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useSelector } from 'react-redux';
@@ -8,13 +8,13 @@ import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
 import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
 import SuccessModal from 'components/SuccessModal/SuccessModal';
 import BackFAButton from 'components/BackFAButton/BackFAButton';
-import AnagramPage from 'components/AnagramPage/AnagramPage';
+import AnagramCell from 'components/AnagramCell/AnagramCell';
 import { useCreateGameObjectMutation } from 'services/portal';
 import { useCreateAnagramMutation } from 'services/games';
 import { getError } from 'utils/errors';
 import { RootState } from 'store';
 
-const NewAnagramPage = () => {
+const NewAnagramPage: FunctionComponent = ({}) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
     const [open, setOpen] = useState(false);
     const [alert, setAlert] = useState('');
@@ -171,14 +171,13 @@ const NewAnagramPage = () => {
                         {pages.map((page: string[], index: number) => {
                             return (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                                    <AnagramPage index={index} value={page} state={pages} setState={setPages} />
+                                    <AnagramCell index={index} value={page} state={pages} setState={setPages} />
                                 </Grid>
                             );
                         })}
                     </Grid>
                 </Grid>
-                {/* @ts-ignore */}
-                <Grid item align="center" xs={12}>
+                <Grid item alignSelf="center" xs={12}>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

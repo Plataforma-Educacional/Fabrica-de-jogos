@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, FunctionComponent } from 'react';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
@@ -9,7 +9,7 @@ interface Props {
     setValue: Dispatch<SetStateAction<string>>;
 }
 
-export default function DisciplineSelect({ value, setValue }: Props) {
+const DisciplineSelect: FunctionComponent<Props> = ({ value, setValue }) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
     const { data } = useGetUserInfoQuery({ token, origin });
 
@@ -45,4 +45,6 @@ export default function DisciplineSelect({ value, setValue }: Props) {
             </Select>
         </FormControl>
     );
-}
+};
+
+export default DisciplineSelect;

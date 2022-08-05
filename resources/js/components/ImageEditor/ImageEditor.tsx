@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, FunctionComponent } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop, Crop, PixelCrop } from 'react-image-crop';
-import { canvasPreview } from '../../utils/canvasPreview';
-import { useDebounceEffect } from '../../utils/useDebounceEffect';
+import { canvasPreview } from 'utils/canvasPreview';
+import { useDebounceEffect } from 'utils/useDebounceEffect';
 import 'react-image-crop/dist/ReactCrop.css';
 import { Modal, Box, Grid, Card, Button } from '@mui/material';
 
@@ -39,7 +39,7 @@ type Props = {
     callback: Function;
 };
 
-export const ImageEditor: FunctionComponent<Props> = ({ image, index, callback }) => {
+const ImageEditor: FunctionComponent<Props> = ({ image, index, callback }) => {
     const [imgSrc, setImgSrc] = useState('');
     const previewCanvasRef = useRef<HTMLCanvasElement>(null);
     const imgRef = useRef<HTMLImageElement>(null);

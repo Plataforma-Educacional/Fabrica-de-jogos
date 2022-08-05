@@ -1,15 +1,15 @@
-import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
 import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-type Props = {
+interface Props {
     index: number;
     value: string[];
     state: string[][];
     setState: Dispatch<SetStateAction<string[][]>>;
-};
+}
 
-const AnagramPage = ({ index, value, state, setState }: Props) => {
+const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }) => {
     const handleWordChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, i: number) => {
         let p = [...state];
         let page = p[index];
@@ -71,4 +71,4 @@ const AnagramPage = ({ index, value, state, setState }: Props) => {
     );
 };
 
-export default AnagramPage;
+export default AnagramCell;

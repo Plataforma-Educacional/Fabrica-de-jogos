@@ -6,7 +6,7 @@ import { convertToRaw, EditorState } from 'draft-js';
 import draftToText from '../../../utils/draftToText';
 import SuccessModal from '../../../components/SuccessModal/SuccessModal';
 import { useParams } from 'react-router-dom';
-import WordSearchCell from '../../../components/WordSearchCell/WordSearchCell';
+import WordTipCell from 'components/WordTipCell/WordTipCell';
 import Copyright from '../../../components/Copyright/Copyright';
 import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from '../../../services/games';
 import { wordObj } from '../../../types';
@@ -192,7 +192,7 @@ const EditWordSearch = () => {
                             )}
                             {words.map((item: wordObj, index: number) => {
                                 return (
-                                    <WordSearchCell
+                                    <WordTipCell
                                         item={item}
                                         key={index}
                                         index={index}

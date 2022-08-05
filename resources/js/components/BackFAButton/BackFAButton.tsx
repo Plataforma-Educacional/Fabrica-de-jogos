@@ -1,9 +1,9 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Fab } from '@mui/material';
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const BackFAButton = ({}) => {
+const BackFAButton: FunctionComponent = ({}) => {
     const navigate = useNavigate();
     return (
         <Fab

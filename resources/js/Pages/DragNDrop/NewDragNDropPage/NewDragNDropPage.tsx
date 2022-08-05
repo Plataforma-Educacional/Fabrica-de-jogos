@@ -1,17 +1,18 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
-import { useCreateDragNDropMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import { gameObj } from '../../../types';
-import { getError } from '../../../utils/errors';
-import FormatSelect from '../../../components/DragNDropFormat/DragNDropFormat';
+
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
+import FormatSelect from 'components/DragNDropFormat/DragNDropFormat';
+import BackFAButton from 'components/BackFAButton/BackFAButton';
+import SuccessModal from 'components/SuccessModal/SuccessModal';
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
+import { useCreateGameObjectMutation } from 'services/portal';
+import { useCreateDragNDropMutation } from 'services/games';
+import { getError } from 'utils/errors';
+import { RootState } from 'store';
+import { gameObj } from 'types';
 
 const NewDragNDropPage: FunctionComponent = ({}) => {
     const { token, origin } = useSelector((state: RootState) => state.user);
@@ -24,34 +25,11 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
     const [serie, setSerie] = useState<string[]>([]);
     const [discipline, setDiscipline] = useState<string>('');
     const [format, setFormat] = useState<number>(0);
-    const handleFormat = (event: ChangeEvent<HTMLInputElement>, newFormat: number) => {
-        if (newFormat === null) {
-            return;
-        }
-        setFormat(newFormat);
-    };
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
+
     const handleClose = () => {
         setLayout(1);
         setName('');
         setOpen(false);
-    };
-    const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value;
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
-        }
-    };
-    const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
-        }
     };
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
         event.preventDefault();
@@ -95,105 +73,94 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
         <>
             <BackFAButton />
             <SuccessModal open={open} handleClose={handleClose} />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                alignSelf="center"
+                alignItems="center"
+                justifyContent="center"
+                component="form"
+                sx={{ marginTop: 8 }}
+                onSubmit={handleSubmit}
+                spacing={3}
             >
-                <Grid
-                    container
-                    alignSelf="center"
-                    alignItems="center"
-                    justifyContent="center"
-                    component="form"
-                    onSubmit={handleSubmit}
-                    spacing={3}
-                >
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Arrastar e Soltar</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                sm={12}
-                                xs={12}
-                                justifyContent={{ lg: 'flex-end', xs: 'none' }}
-                                display={{ lg: 'flex', xs: '' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    xs: 'none',
-                                }}
-                                display={{ lg: 'flex', xs: '' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                sm={12}
-                                xs={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Arrastar e Soltar</b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container justifyContent="center" spacing={1} display="flex">
+                        <Grid
+                            alignSelf="center"
+                            item
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            justifyContent={{ lg: 'flex-end', xs: 'none' }}
+                            display={{ lg: 'flex', xs: '' }}
+                        >
+                            <SeriesSelect value={serie} setValue={setSerie} />
                         </Grid>
-                    </Grid>
-                    {alert && (
-                        <Grid item xs={12}>
-                            <Alert
-                                severity="warning"
-                                onClick={() => {
-                                    setAlert('');
-                                }}
-                            >
-                                {alert}
-                            </Alert>
+                        <Grid item alignSelf="center" xl={4} lg={3}>
+                            <TextField
+                                label="Nome"
+                                name="name"
+                                variant="outlined"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                required
+                                sx={{ minWidth: { sm: 290, xs: 260 } }}
+                                fullWidth
+                            />
                         </Grid>
-                    )}
-                    <FormatSelect selectedFormat={format} callback={handleFormat} />
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
-                        )}
+                        <Grid
+                            alignSelf="center"
+                            item
+                            justifyContent={{
+                                lg: 'flex-start',
+                                xs: 'none',
+                            }}
+                            display={{ lg: 'flex', xs: '' }}
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                        >
+                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                        </Grid>
+                        <Grid item alignSelf="center" xs={12}>
+                            <LayoutSelect value={layout} setValue={setLayout} />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                {alert && (
+                    <Grid item xs={12}>
+                        <Alert
+                            severity="warning"
+                            onClick={() => {
+                                setAlert('');
+                            }}
+                        >
+                            {alert}
+                        </Alert>
+                    </Grid>
+                )}
+                <Grid item alignSelf="center" xs={12}>
+                    <FormatSelect value={format} setValue={setFormat} />
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
     );
 };

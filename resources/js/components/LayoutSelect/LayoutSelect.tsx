@@ -1,4 +1,4 @@
-import React, { MouseEvent, Dispatch, SetStateAction } from 'react';
+import React, { MouseEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
 import { styled } from '@mui/system';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
@@ -35,7 +35,7 @@ interface Props {
     setValue: Dispatch<SetStateAction<number>>;
 }
 
-const LayoutSelect = ({ value, setValue }: Props) => {
+const LayoutSelect: FunctionComponent<Props> = ({ value, setValue }) => {
     const handleLayout = (event: MouseEvent<HTMLElement>, newLayout: number) => {
         if (newLayout === null) {
             return;
