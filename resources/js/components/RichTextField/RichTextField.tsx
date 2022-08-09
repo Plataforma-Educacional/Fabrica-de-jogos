@@ -1,7 +1,7 @@
-import React from 'react';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import { Card, Grid, IconButton, Paper } from '@mui/material';
-import 'draft-js/dist/Draft.css';
+import React, { FunctionComponent } from 'react'
+import { Editor, EditorState, RichUtils } from 'draft-js'
+import { Card, Grid, IconButton, Paper } from '@mui/material'
+import 'draft-js/dist/Draft.css'
 import {
     FormatItalicOutlined,
     FormatBoldOutlined,
@@ -9,114 +9,114 @@ import {
     FormatStrikethroughOutlined,
     UndoOutlined,
     RedoOutlined,
-} from '@mui/icons-material';
+} from '@mui/icons-material'
 
 type Props = {
-    editorState: EditorState;
-    onChange: Function;
-    index?: number;
-    i?: number;
-    label: string;
-    maxLength: number;
-};
+    editorState: EditorState
+    onChange: Function
+    index?: number
+    i?: number
+    label: string
+    maxLength: number
+}
 
-const RichTextField = ({ editorState, onChange, index, i, label, maxLength }: Props) => {
+const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index, i, label, maxLength }) => {
     const activeStyles = {
         BOLD: false,
         ITALIC: false,
         STRIKETHROUGH: false,
         UNDERLINE: false,
-    };
+    }
     Object.keys(activeStyles).map((style: string) => {
-        activeStyles[style as keyof typeof activeStyles] = editorState.getCurrentInlineStyle().contains(style);
-    });
+        activeStyles[style as keyof typeof activeStyles] = editorState.getCurrentInlineStyle().contains(style)
+    })
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
-        const newState = RichUtils.handleKeyCommand(editorState, command);
+        const newState = RichUtils.handleKeyCommand(editorState, command)
         if (newState) {
-            onChange(newState);
-            return 'handled';
+            onChange(newState)
+            return 'handled'
         }
-        return 'not-handled';
-    };
+        return 'not-handled'
+    }
 
     const onUnderlineClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'), index, i);
-    };
+        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'), index, i)
+    }
     const onBoldClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'), index, i);
-    };
+        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'), index, i)
+    }
     const onItalicClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'), index, i);
-    };
+        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'), index, i)
+    }
     const onStrikethroughClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'), index, i);
-    };
+        onChange(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'), index, i)
+    }
     const handleUndo = (): void => {
-        onChange(EditorState.undo(editorState), index, i);
-    };
+        onChange(EditorState.undo(editorState), index, i)
+    }
     const handleRedo = (): void => {
-        onChange(EditorState.redo(editorState), index, i);
-    };
+        onChange(EditorState.redo(editorState), index, i)
+    }
 
     const getSelectedTextLength = (): number => {
-        const currentSelection = editorState.getSelection();
-        const isCollapsed = currentSelection.isCollapsed();
+        const currentSelection = editorState.getSelection()
+        const isCollapsed = currentSelection.isCollapsed()
 
-        let length = 0;
+        let length = 0
 
         if (!isCollapsed) {
-            const currentContent = editorState.getCurrentContent();
-            const startKey = currentSelection.getStartKey();
-            const endKey = currentSelection.getEndKey();
-            const startBlock = currentContent.getBlockForKey(startKey);
-            const isStartAndEndBlockAreTheSame = startKey === endKey;
-            const startBlockTextLength = startBlock.getLength();
-            const startSelectedTextLength = startBlockTextLength - currentSelection.getStartOffset();
-            const endSelectedTextLength = currentSelection.getEndOffset();
-            const keyAfterEnd = currentContent.getKeyAfter(endKey);
+            const currentContent = editorState.getCurrentContent()
+            const startKey = currentSelection.getStartKey()
+            const endKey = currentSelection.getEndKey()
+            const startBlock = currentContent.getBlockForKey(startKey)
+            const isStartAndEndBlockAreTheSame = startKey === endKey
+            const startBlockTextLength = startBlock.getLength()
+            const startSelectedTextLength = startBlockTextLength - currentSelection.getStartOffset()
+            const endSelectedTextLength = currentSelection.getEndOffset()
+            const keyAfterEnd = currentContent.getKeyAfter(endKey)
             if (isStartAndEndBlockAreTheSame) {
-                length += currentSelection.getEndOffset() - currentSelection.getStartOffset();
+                length += currentSelection.getEndOffset() - currentSelection.getStartOffset()
             } else {
-                let currentKey = startKey;
+                let currentKey = startKey
 
                 while (currentKey && currentKey !== keyAfterEnd) {
                     if (currentKey === startKey) {
-                        length += startSelectedTextLength + 1;
+                        length += startSelectedTextLength + 1
                     } else if (currentKey === endKey) {
-                        length += endSelectedTextLength;
+                        length += endSelectedTextLength
                     } else {
-                        length += currentContent.getBlockForKey(currentKey).getLength() + 1;
+                        length += currentContent.getBlockForKey(currentKey).getLength() + 1
                     }
 
-                    currentKey = currentContent.getKeyAfter(currentKey);
+                    currentKey = currentContent.getKeyAfter(currentKey)
                 }
             }
         }
-        return length;
-    };
+        return length
+    }
 
     const handleBeforeInput = () => {
-        const currentContent = editorState.getCurrentContent();
-        const currentContentLength: number = currentContent.getPlainText('').length;
-        const selectedTextLength: number = getSelectedTextLength();
+        const currentContent = editorState.getCurrentContent()
+        const currentContentLength: number = currentContent.getPlainText('').length
+        const selectedTextLength: number = getSelectedTextLength()
 
         if (currentContentLength - selectedTextLength > maxLength - 1) {
-            return 'handled';
+            return 'handled'
         }
-        return 'not-handled';
-    };
+        return 'not-handled'
+    }
 
     const handlePastedText = (pastedText: string) => {
-        const currentContent = editorState.getCurrentContent();
-        const currentContentLength = currentContent.getPlainText('').length;
-        const selectedTextLength = getSelectedTextLength();
+        const currentContent = editorState.getCurrentContent()
+        const currentContentLength = currentContent.getPlainText('').length
+        const selectedTextLength = getSelectedTextLength()
 
         if (currentContentLength + pastedText.length - selectedTextLength > maxLength) {
-            return 'handled';
+            return 'handled'
         }
-        return 'not-handled';
-    };
+        return 'not-handled'
+    }
 
     return (
         <>
@@ -201,13 +201,13 @@ const RichTextField = ({ editorState, onChange, index, i, label, maxLength }: Pr
                     handleBeforeInput={handleBeforeInput}
                     handlePastedText={handlePastedText}
                     onChange={(value) => {
-                        onChange(value, index, i);
+                        onChange(value, index, i)
                     }}
                     placeholder={label}
                 />
             </Card>
         </>
-    );
-};
+    )
+}
 
-export default React.memo(RichTextField);
+export default React.memo(RichTextField)

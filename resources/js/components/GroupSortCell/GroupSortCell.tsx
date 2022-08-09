@@ -1,42 +1,42 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { Button, Grid, IconButton, Paper, TextField } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { groupObj } from 'types';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { Button, Grid, IconButton, Paper, TextField } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { groupObj } from 'types'
 
 interface Props {
-    index: number;
-    value: groupObj;
-    state: groupObj[];
-    setState: Dispatch<SetStateAction<groupObj[]>>;
+    index: number
+    value: groupObj
+    state: groupObj[]
+    setState: Dispatch<SetStateAction<groupObj[]>>
 }
 
 const GroupSortCell: FunctionComponent<Props> = ({ index, value, state, setState }) => {
     const handleTitleChange = (event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>, index: number) => {
-        let g = [...state];
-        g[index].title = event.target.value;
-        setState(g);
-    };
+        let g = [...state]
+        g[index].title = event.target.value
+        setState(g)
+    }
 
     const handleAddItem = (index: number) => {
         if (state[index].items.length === 5) {
-            return;
+            return
         }
-        let g = [...state];
-        g[index].items.push('');
-        setState(g);
-    };
+        let g = [...state]
+        g[index].items.push('')
+        setState(g)
+    }
 
     const handleRemoveItem = (index: number, i: number) => {
-        let g = [...state];
-        g[index].items.splice(i, 1);
-        setState(g);
-    };
+        let g = [...state]
+        g[index].items.splice(i, 1)
+        setState(g)
+    }
 
     const handleItemChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, i: number) => {
-        let g = [...state];
-        g[index].items[i] = event.target.value;
-        setState(g);
-    };
+        let g = [...state]
+        g[index].items[i] = event.target.value
+        setState(g)
+    }
     return (
         <>
             <Paper elevation={3} sx={{ p: 2 }}>
@@ -88,7 +88,7 @@ const GroupSortCell: FunctionComponent<Props> = ({ index, value, state, setState
                                     <Grid item xs={2}>
                                         <IconButton
                                             onClick={() => {
-                                                handleRemoveItem(index, i);
+                                                handleRemoveItem(index, i)
                                             }}
                                         >
                                             <DeleteIcon fontSize="small" />
@@ -96,12 +96,12 @@ const GroupSortCell: FunctionComponent<Props> = ({ index, value, state, setState
                                     </Grid>
                                 </Grid>
                             </Grid>
-                        );
+                        )
                     })}
                 </Grid>
             </Paper>
         </>
-    );
-};
+    )
+}
 
-export default GroupSortCell;
+export default GroupSortCell

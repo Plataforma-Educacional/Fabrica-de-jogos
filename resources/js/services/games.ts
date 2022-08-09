@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import {
     gameState,
     anagramOptions,
@@ -10,25 +10,25 @@ import {
     wordSearchOptions,
     balloonOptions,
     cryptogramOptions,
-} from '../types';
-import { RootState } from '../store';
+} from '../types'
+import { RootState } from '../store'
 
 type updateMemoryGameInput = {
-    slug?: string;
-    data: FormData;
-};
+    slug?: string
+    data: FormData
+}
 
 export const gameApi = createApi({
     reducerPath: 'gameApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'https://fabricadejogos.portaleducacional.tec.br/api/',
         prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).user.token;
+            const token = (getState() as RootState).user.token
             if (token) {
-                headers.set('authorization', `Bearer ${token}`);
+                headers.set('authorization', `Bearer ${token}`)
             }
-            headers.set('accept', 'application/json');
-            return headers;
+            headers.set('accept', 'application/json')
+            return headers
         },
     }),
     endpoints: (builder) => ({
@@ -299,7 +299,7 @@ export const gameApi = createApi({
             }),
         }),
     }),
-});
+})
 
 export const {
     useGetAnagramBySlugQuery,
@@ -341,6 +341,6 @@ export const {
     useGetWordleBySlugQuery,
     useCreateWordleMutation,
     useUpdateWordleMutation,
-} = gameApi;
+} = gameApi
 
-export default gameApi;
+export default gameApi

@@ -12,6 +12,6 @@ const gameCategories = {
     puzzle: 'https://fabrica-de-jogos-quebra-cabeca.netlify.app',
     paint: 'https://fabrica-de-jogos-atelie-criativo.netlify.app',
     wordle: 'https://fabrica-de-jogos-organize-as-letras.netlify.app',
-};
+}
 
-export default gameCategories;
+export default gameCategories

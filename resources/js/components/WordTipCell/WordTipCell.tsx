@@ -1,41 +1,41 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { Grid, IconButton, Paper, TextField } from '@mui/material';
-import { EditorState } from 'draft-js';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { Grid, IconButton, Paper, TextField } from '@mui/material'
+import { EditorState } from 'draft-js'
+import DeleteIcon from '@mui/icons-material/Delete'
 
-import RichTextField from 'components/RichTextField/RichTextField';
-import { wordObj } from 'types';
+import RichTextField from 'components/RichTextField/RichTextField'
+import { wordObj } from 'types'
 
 type Props = {
-    index: number;
-    value: wordObj;
-    state: wordObj[];
-    setState: Dispatch<SetStateAction<wordObj[]>>;
-};
+    index: number
+    value: wordObj
+    state: wordObj[]
+    setState: Dispatch<SetStateAction<wordObj[]>>
+}
 
 const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }) => {
     const handleRemoveWord = (index: number) => {
         if (state.length === 1) {
-            return;
+            return
         }
-        let p = [...state];
-        p.splice(index, 1);
-        setState(p);
-    };
+        let p = [...state]
+        p.splice(index, 1)
+        setState(p)
+    }
     const handleWordChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-        let p = [...state];
-        let word = p[index];
-        word.word = event.target.value;
-        p.splice(index, 1, word);
-        setState(p);
-    };
+        let p = [...state]
+        let word = p[index]
+        word.word = event.target.value
+        p.splice(index, 1, word)
+        setState(p)
+    }
     const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...state];
-        let word = p[index];
-        word.tip = editorState;
-        p.splice(index, 1, word);
-        setState(p);
-    };
+        let p = [...state]
+        let word = p[index]
+        word.tip = editorState
+        p.splice(index, 1, word)
+        setState(p)
+    }
     return (
         <Paper
             elevation={5}
@@ -51,7 +51,7 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                         variant="outlined"
                         value={value.word}
                         onChange={(event) => {
-                            handleWordChange(event, index);
+                            handleWordChange(event, index)
                         }}
                         inputProps={{
                             maxLength: 10,
@@ -63,7 +63,7 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 <Grid item xs={2}>
                     <IconButton
                         onClick={() => {
-                            handleRemoveWord(index);
+                            handleRemoveWord(index)
                         }}
                     >
                         <DeleteIcon />
@@ -80,7 +80,7 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 </Grid>
             </Grid>
         </Paper>
-    );
-};
+    )
+}
 
-export default WordTipCell;
+export default WordTipCell

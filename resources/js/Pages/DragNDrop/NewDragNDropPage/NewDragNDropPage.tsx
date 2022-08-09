@@ -1,55 +1,55 @@
-import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material'
+import { useSelector } from 'react-redux'
 
-import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
-import FormatSelect from 'components/DragNDropFormat/DragNDropFormat';
-import BackFAButton from 'components/BackFAButton/BackFAButton';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
-import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
-import { useCreateGameObjectMutation } from 'services/portal';
-import { useCreateDragNDropMutation } from 'services/games';
-import { getError } from 'utils/errors';
-import { RootState } from 'store';
-import { gameObj } from 'types';
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import FormatSelect from 'components/DragNDropFormat/DragNDropFormat'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import { useCreateGameObjectMutation } from 'services/portal'
+import { useCreateDragNDropMutation } from 'services/games'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
+import { gameObj } from 'types'
 
 const NewDragNDropPage: FunctionComponent = ({}) => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [createDragNDrop, response] = useCreateDragNDropMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [format, setFormat] = useState<number>(0);
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [createDragNDrop, response] = useCreateDragNDropMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [format, setFormat] = useState<number>(0)
 
     const handleClose = () => {
-        setLayout(1);
-        setName('');
-        setOpen(false);
-    };
+        setLayout(1)
+        setName('')
+        setOpen(false)
+    }
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
-        event.preventDefault();
+        event.preventDefault()
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
 
         const body = {
             name: name,
             layout: layout,
             options: [format],
-        };
+        }
 
-        createDragNDrop(body);
-    };
+        createDragNDrop(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -59,16 +59,16 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/drag-drop/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ origin, token, ...obj });
+            }
+            createGameObject({ origin, token, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
     return (
         <>
             <BackFAButton />
@@ -141,7 +141,7 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
                         <Alert
                             severity="warning"
                             onClick={() => {
-                                setAlert('');
+                                setAlert('')
                             }}
                         >
                             {alert}
@@ -162,7 +162,7 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
                 </Grid>
             </Grid>
         </>
-    );
-};
+    )
+}
 
-export default NewDragNDropPage;
+export default NewDragNDropPage

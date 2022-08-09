@@ -1,30 +1,30 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface Props {
-    index: number;
-    value: string[];
-    state: string[][];
-    setState: Dispatch<SetStateAction<string[][]>>;
+    index: number
+    value: string[]
+    state: string[][]
+    setState: Dispatch<SetStateAction<string[][]>>
 }
 
 const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }) => {
     const handleWordChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number, i: number) => {
-        let p = [...state];
-        let page = p[index];
-        page.splice(i, 1, event.target.value);
-        p.splice(index, 1, page);
-        setState(p);
-    };
+        let p = [...state]
+        let page = p[index]
+        page.splice(i, 1, event.target.value)
+        p.splice(index, 1, page)
+        setState(p)
+    }
     const handleRemovePage = (index: number) => {
         if (state.length === 1) {
-            return;
+            return
         }
-        let p = [...state];
-        p.splice(index, 1);
-        setState(p);
-    };
+        let p = [...state]
+        p.splice(index, 1)
+        setState(p)
+    }
 
     return (
         <Paper
@@ -40,7 +40,7 @@ const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 <Grid item xs={3}>
                     <IconButton
                         onClick={() => {
-                            handleRemovePage(index);
+                            handleRemovePage(index)
                         }}
                     >
                         <DeleteIcon fontSize="small" />
@@ -58,17 +58,17 @@ const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }
                                     maxLength: 16,
                                 }}
                                 onChange={(event) => {
-                                    handleWordChange(event, index, i);
+                                    handleWordChange(event, index, i)
                                 }}
                                 fullWidth
                                 required
                             />
                         </Grid>
-                    );
+                    )
                 })}
             </Grid>
         </Paper>
-    );
-};
+    )
+}
 
-export default AnagramCell;
+export default AnagramCell

@@ -1,54 +1,54 @@
-import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material'
+import { useParams } from 'react-router-dom'
 
-import { useUpdateGroupSortMutation, useGetGroupSortBySlugQuery } from 'services/games';
-import GroupSortCell from 'components/GroupSortCell/GroupSortCell';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
-import { gameState, groupSortOptions } from 'types';
-import { getError } from 'utils/errors';
+import { useUpdateGroupSortMutation, useGetGroupSortBySlugQuery } from 'services/games'
+import GroupSortCell from 'components/GroupSortCell/GroupSortCell'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import { gameState, groupSortOptions } from 'types'
+import { getError } from 'utils/errors'
 
 const EditGroupSortPage: FunctionComponent = ({}) => {
-    const { slug } = useParams();
-    const { data, error, isLoading } = useGetGroupSortBySlugQuery(slug as string);
-    const [updateGroupSort, response] = useUpdateGroupSortMutation();
-    const [layout, setLayout] = useState<number>(1);
-    const [open, setOpen] = useState<boolean>(false);
-    const [alert, setAlert] = useState<string>('');
+    const { slug } = useParams()
+    const { data, error, isLoading } = useGetGroupSortBySlugQuery(slug as string)
+    const [updateGroupSort, response] = useUpdateGroupSortMutation()
+    const [layout, setLayout] = useState<number>(1)
+    const [open, setOpen] = useState<boolean>(false)
+    const [alert, setAlert] = useState<string>('')
     const [groups, setGroups] = useState<groupSortOptions>([
         { title: '', items: ['', ''] },
         { title: '', items: ['', ''] },
-    ]);
+    ])
 
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
-        event.preventDefault();
+        event.preventDefault()
         if (groups[0].items.length === 0 || groups[1].items.length === 0) {
-            setAlert('Adicione ao menos um item em cada grupo!');
-            return;
+            setAlert('Adicione ao menos um item em cada grupo!')
+            return
         }
 
         const body: Partial<gameState<groupSortOptions>> = {
             layout: layout,
             options: groups,
-        };
-        updateGroupSort({ slug, ...body });
-    };
+        }
+        updateGroupSort({ slug, ...body })
+    }
 
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            let deep_copy = JSON.parse(JSON.stringify(data.options));
-            setGroups(deep_copy);
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            let deep_copy = JSON.parse(JSON.stringify(data.options))
+            setGroups(deep_copy)
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -60,7 +60,7 @@ const EditGroupSortPage: FunctionComponent = ({}) => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
@@ -88,7 +88,7 @@ const EditGroupSortPage: FunctionComponent = ({}) => {
                                 <Alert
                                     severity="warning"
                                     onClick={() => {
-                                        setAlert('');
+                                        setAlert('')
                                     }}
                                 >
                                     {alert}
@@ -100,7 +100,7 @@ const EditGroupSortPage: FunctionComponent = ({}) => {
                                 <Grid key={index} item xs={12} md={6} lg={4}>
                                     <GroupSortCell index={index} value={group} state={groups} setState={setGroups} />
                                 </Grid>
-                            );
+                            )
                         })}
                     </Grid>
                 </Grid>
@@ -117,7 +117,7 @@ const EditGroupSortPage: FunctionComponent = ({}) => {
                 </Grid>
             </Grid>
         </>
-    );
-};
+    )
+}
 
-export default EditGroupSortPage;
+export default EditGroupSortPage

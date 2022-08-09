@@ -1,26 +1,26 @@
-import React, { Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { useGetUserInfoQuery } from 'services/portal';
+import React, { Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store'
+import { useGetUserInfoQuery } from 'services/portal'
 
 interface Props {
-    value: string;
-    setValue: Dispatch<SetStateAction<string>>;
+    value: string
+    setValue: Dispatch<SetStateAction<string>>
 }
 
 const DisciplineSelect: FunctionComponent<Props> = ({ value, setValue }) => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const { data } = useGetUserInfoQuery({ token, origin });
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const { data } = useGetUserInfoQuery({ token, origin })
 
     const disciplineChange = (event: SelectChangeEvent): void => {
-        const newValue = event.target.value;
+        const newValue = event.target.value
         if (newValue !== null && newValue !== value) {
-            setValue(newValue);
+            setValue(newValue)
         }
-    };
+    }
 
-    if (!data) return <></>;
+    if (!data) return <></>
 
     return (
         <FormControl sx={{ minWidth: 140, maxWidth: { sm: 290, xs: 260 } }}>
@@ -40,11 +40,11 @@ const DisciplineSelect: FunctionComponent<Props> = ({ value, setValue }) => {
                         <MenuItem key={key} value={key}>
                             <>{data.data.disciplinas[key]}</>
                         </MenuItem>
-                    );
+                    )
                 })}
             </Select>
         </FormControl>
-    );
-};
+    )
+}
 
-export default DisciplineSelect;
+export default DisciplineSelect

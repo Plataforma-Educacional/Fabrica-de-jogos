@@ -1,23 +1,23 @@
-import React, { useEffect, FunctionComponent } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, { useEffect, FunctionComponent } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-import gameCategories from 'utils/gameCategories';
-import { RootState } from 'store';
+import gameCategories from 'utils/gameCategories'
+import { RootState } from 'store'
 
 const GamePage: FunctionComponent = () => {
-    const { slug, category } = useParams();
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [searchParams] = useSearchParams();
-    let gameAddress = gameCategories[category as keyof typeof gameCategories];
+    const { slug, category } = useParams()
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [searchParams] = useSearchParams()
+    let gameAddress = gameCategories[category as keyof typeof gameCategories]
 
     useEffect(() => {
         window.addEventListener('message', (event) => {
             if (event.origin !== window.location.origin) {
-                const data = event.data;
+                const data = event.data
                 if (data.loaded) {
-                    let game_address = 'https://fabricadejogos.portaleducacional.tec.br';
-                    let iframe: HTMLIFrameElement = document.getElementById('frame') as HTMLIFrameElement;
+                    let game_address = 'https://fabricadejogos.portaleducacional.tec.br'
+                    let iframe: HTMLIFrameElement = document.getElementById('frame') as HTMLIFrameElement
                     const message = JSON.stringify({
                         user_token: token,
                         origin: origin,
@@ -25,13 +25,13 @@ const GamePage: FunctionComponent = () => {
                         slug: slug,
                         aula_id: searchParams.get('aula_id') ?? 0,
                         conteudo_id: searchParams.get('conteudo_id') ?? 0,
-                    });
+                    })
                     // @ts-ignore
-                    iframe.contentWindow.postMessage(message, '*');
+                    iframe.contentWindow.postMessage(message, '*')
                 }
             }
-        });
-    }, []);
+        })
+    }, [])
     return (
         <div>
             <iframe
@@ -53,7 +53,7 @@ const GamePage: FunctionComponent = () => {
                 }}
             />
         </div>
-    );
-};
+    )
+}
 
-export default GamePage;
+export default GamePage

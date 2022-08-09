@@ -1,48 +1,48 @@
-import React, { FormEventHandler, useEffect, useState } from 'react';
-import { Button, Grid, Alert, Box, CircularProgress, Typography, TextField } from '@mui/material';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { useParams } from 'react-router-dom';
-import { useUpdateWordleMutation, useGetWordleBySlugQuery } from '../../../services/games';
-import { getError } from '../../../utils/errors';
+import React, { FormEventHandler, useEffect, useState } from 'react'
+import { Button, Grid, Alert, Box, CircularProgress, Typography, TextField } from '@mui/material'
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect'
+import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import { useParams } from 'react-router-dom'
+import { useUpdateWordleMutation, useGetWordleBySlugQuery } from '../../../services/games'
+import { getError } from '../../../utils/errors'
 
 const EditWordSearch = () => {
-    const { slug } = useParams();
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [word, setWord] = useState('');
-    const [layout, setLayout] = useState(1);
-    const { data, error, isLoading } = useGetWordleBySlugQuery(slug as string);
-    const [updateWordle, response] = useUpdateWordleMutation();
+    const { slug } = useParams()
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [word, setWord] = useState('')
+    const [layout, setLayout] = useState(1)
+    const { data, error, isLoading } = useGetWordleBySlugQuery(slug as string)
+    const [updateWordle, response] = useUpdateWordleMutation()
 
     const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
         if (newLayout === null) {
-            return;
+            return
         }
-        setLayout(newLayout);
-    };
+        setLayout(newLayout)
+    }
     const handleSubmit: FormEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
+        e.preventDefault()
         let body = {
             layout: layout,
             options: [word],
-        };
-        updateWordle({ slug, ...body });
-    };
+        }
+        updateWordle({ slug, ...body })
+    }
 
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            setWord(data.options[0]);
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            setWord(data.options[0])
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -54,14 +54,14 @@ const EditWordSearch = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
             <SuccessModal
                 open={open}
                 handleClose={() => {
-                    setOpen(false);
+                    setOpen(false)
                 }}
             />
             <Box
@@ -88,7 +88,7 @@ const EditWordSearch = () => {
                                     <Alert
                                         severity="warning"
                                         onClick={() => {
-                                            setAlert('');
+                                            setAlert('')
                                         }}
                                     >
                                         {alert}
@@ -128,7 +128,7 @@ const EditWordSearch = () => {
                 </Grid>
             </Box>
         </>
-    );
-};
+    )
+}
 
-export default EditWordSearch;
+export default EditWordSearch

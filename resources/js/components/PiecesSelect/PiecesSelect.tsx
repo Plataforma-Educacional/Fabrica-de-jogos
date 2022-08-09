@@ -1,21 +1,27 @@
-import { Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
-import React from 'react';
+import React, { MouseEvent, FunctionComponent, SetStateAction, Dispatch } from 'react'
+import { Grid, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 
 type Props = {
-    pieces: number;
-    handlePieces: Function;
-};
+    value: number
+    setValue: Dispatch<SetStateAction<number>>
+}
 
-const PiecesSelect = ({ pieces, handlePieces }: Props) => {
+const PiecesSelect: FunctionComponent<Props> = ({ value, setValue }) => {
+    const handlePieces = (event: MouseEvent<HTMLElement>, newPieces: number) => {
+        if (newPieces === null) {
+            return
+        }
+        setValue(newPieces)
+    }
     return (
         <Grid item xs={12}>
             <Grid item xs={12}>
                 <Typography variant="subtitle1">Quantidade de peças:</Typography>
             </Grid>
             <ToggleButtonGroup
-                value={pieces}
+                value={value}
                 exclusive
-                onChange={handlePieces as any}
+                onChange={handlePieces}
                 aria-label="text alignment"
                 color="primary"
             >
@@ -25,7 +31,7 @@ const PiecesSelect = ({ pieces, handlePieces }: Props) => {
                 <ToggleButton value={6}>6</ToggleButton>
             </ToggleButtonGroup>
         </Grid>
-    );
-};
+    )
+}
 
-export default PiecesSelect;
+export default PiecesSelect

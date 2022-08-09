@@ -1,25 +1,25 @@
-import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
-import { Button, Grid, TextField, Alert, SelectChangeEvent, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { convertToRaw, EditorState } from 'draft-js';
-import draftToText from '../../../utils/draftToText';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { useSelector } from 'react-redux';
-import WordTipCell from 'components/WordTipCell/WordTipCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { Box } from '@mui/system';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import { RootState } from '../../../store';
-import { useCreateWordSearchMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import { gameObj, wordObj } from '../../../types';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import { getError } from '../../../utils/errors';
+import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react'
+import { Button, Grid, TextField, Alert, SelectChangeEvent, Typography } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import { convertToRaw, EditorState } from 'draft-js'
+import draftToText from '../../../utils/draftToText'
+import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import { useSelector } from 'react-redux'
+import WordTipCell from 'components/WordTipCell/WordTipCell'
+import Copyright from '../../../components/Copyright/Copyright'
+import { Box } from '@mui/system'
+import BackFAButton from '../../../components/BackFAButton/BackFAButton'
+import { RootState } from '../../../store'
+import { useCreateWordSearchMutation } from '../../../services/games'
+import { useCreateGameObjectMutation } from '../../../services/portal'
+import { gameObj, wordObj } from '../../../types'
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect'
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect'
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect'
+import { getError } from '../../../utils/errors'
 
 const NewWordSearchPage = () => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
+    const { token, origin } = useSelector((state: RootState) => state.user)
     const initialState: wordObj[] = [
         {
             word: '',
@@ -33,58 +33,58 @@ const NewWordSearchPage = () => {
             word: '',
             tip: EditorState.createEmpty(),
         },
-    ];
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [words, setWords] = useState(initialState);
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [createWordSearch, response] = useCreateWordSearchMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
+    ]
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [words, setWords] = useState(initialState)
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [createWordSearch, response] = useCreateWordSearchMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
     const handleAddWord = () => {
         if (words.length >= 8) {
-            setAlert('O numero máximo de palavras nesse jogo é 8!');
-            return;
+            setAlert('O numero máximo de palavras nesse jogo é 8!')
+            return
         }
-        let p = [...words];
+        let p = [...words]
         p.push({
             word: '',
             tip: EditorState.createEmpty(),
-        });
-        setWords(p);
-    };
+        })
+        setWords(p)
+    }
     const handleRemoveWord = (index: number) => {
         if (words.length === 1) {
-            return;
+            return
         }
-        let p = [...words];
-        p.splice(index, 1);
-        setWords(p);
-    };
+        let p = [...words]
+        p.splice(index, 1)
+        setWords(p)
+    }
     const handleWordChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.word = event.target.value;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
+        let p = [...words]
+        let word = p[index]
+        word.word = event.target.value
+        p.splice(index, 1, word)
+        setWords(p)
+    }
     const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.tip = editorState;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
+        let p = [...words]
+        let word = p[index]
+        word.tip = editorState
+        p.splice(index, 1, word)
+        setWords(p)
+    }
     const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
         if (newLayout === null) {
-            return;
+            return
         }
-        setLayout(newLayout);
-    };
+        setLayout(newLayout)
+    }
     const handleClose = () => {
-        setName('');
+        setName('')
         setWords([
             {
                 word: '',
@@ -98,63 +98,63 @@ const NewWordSearchPage = () => {
                 word: '',
                 tip: EditorState.createEmpty(),
             },
-        ]);
-        setLayout(1);
-        setOpen(false);
-    };
+        ])
+        setLayout(1)
+        setOpen(false)
+    }
     const seriesChange = (event: SelectChangeEvent<typeof serie>) => {
-        const value = event.target.value;
+        const value = event.target.value
         if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
+            setSerie(typeof value === 'string' ? value.split(',') : value)
         }
-    };
+    }
     const disciplineChange = (event: SelectChangeEvent) => {
-        const value = event.target.value;
+        const value = event.target.value
         if (value !== null && value !== discipline) {
-            setDiscipline(value);
+            setDiscipline(value)
         }
-    };
+    }
     const handleSubmit: FormEventHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
+        event.preventDefault()
         if (words.length < 3) {
-            setAlert('O jogo deve ter no mínimo 3 palavras!');
-            return;
+            setAlert('O jogo deve ter no mínimo 3 palavras!')
+            return
         }
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
-        let wordsJSON: wordObj[] = [];
-        let error = false;
+        let wordsJSON: wordObj[] = []
+        let error = false
         words.map((word: wordObj) => {
-            const tip = word.tip as EditorState;
-            let content = tip.getCurrentContent();
+            const tip = word.tip as EditorState
+            let content = tip.getCurrentContent()
             if (content.getPlainText('').length === 0) {
-                setAlert('Preencha todos os campos!');
-                error = true;
-                return;
+                setAlert('Preencha todos os campos!')
+                error = true
+                return
             }
-            let textJson = convertToRaw(content);
-            let markup = draftToText(textJson);
+            let textJson = convertToRaw(content)
+            let markup = draftToText(textJson)
             wordsJSON.push({
                 tip: markup,
                 word: word.word,
-            });
-        });
+            })
+        })
         if (error) {
-            return;
+            return
         }
         let body = {
             name: name,
             layout: layout,
             options: wordsJSON,
-        };
-        createWordSearch(body);
-    };
+        }
+        createWordSearch(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -164,16 +164,16 @@ const NewWordSearchPage = () => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/word-search/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ token, origin, ...obj });
+            }
+            createGameObject({ token, origin, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
 
     return (
         <>
@@ -256,7 +256,7 @@ const NewWordSearchPage = () => {
                                     <Alert
                                         severity="warning"
                                         onClick={() => {
-                                            setAlert('');
+                                            setAlert('')
                                         }}
                                     >
                                         {alert}
@@ -273,7 +273,7 @@ const NewWordSearchPage = () => {
                                         handleRemoveWord={handleRemoveWord}
                                         handleTipChange={handleTipChange}
                                     />
-                                );
+                                )
                             })}
                         </Grid>
                     </Grid>
@@ -286,7 +286,7 @@ const NewWordSearchPage = () => {
                 </Grid>
             </Box>
         </>
-    );
-};
+    )
+}
 
-export default NewWordSearchPage;
+export default NewWordSearchPage

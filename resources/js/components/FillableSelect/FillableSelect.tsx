@@ -1,12 +1,12 @@
-import React, { FunctionComponent } from 'react';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import React, { FunctionComponent } from 'react'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 
 type Props = {
-    name: String;
-    items: object;
-    value: String;
-    callBack: any;
-};
+    name: String
+    items: object
+    value: String
+    callBack: any
+}
 
 const FillableSelect: FunctionComponent<Props> = ({ name, items, value, callBack }) => {
     return (
@@ -27,10 +27,10 @@ const FillableSelect: FunctionComponent<Props> = ({ name, items, value, callBack
                         <MenuItem key={index} value={items[key as keyof typeof items]}>
                             {key}
                         </MenuItem>
-                    );
+                    )
                 })}
             </Select>
         </FormControl>
-    );
-};
-export default React.memo(FillableSelect);
+    )
+}
+export default React.memo(FillableSelect)

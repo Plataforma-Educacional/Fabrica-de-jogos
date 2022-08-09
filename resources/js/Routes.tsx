@@ -1,35 +1,35 @@
-import React, { FunctionComponent } from 'react';
-import { Routes as Router, Route } from 'react-router-dom';
+import React, { FunctionComponent } from 'react'
+import { Routes as Router, Route } from 'react-router-dom'
 
-import HomePage from 'pages/HomePage/HomePage';
-import GamePage from 'pages/GamePage/GamePage';
-import NewQuizPage from 'pages/Quiz/NewQuizPage/NewQuizPage';
-import EditQuiz from 'pages/Quiz/EditQuizPage/EditQuizPage';
-import NewAnagramPage from 'pages/Anagram/NewAnagramPage/NewAnagramPage';
-import EditAnagramPage from 'pages/Anagram/EditAnagramPage/EditAnagramPage';
-import NewWordSearchPage from 'pages/WordSearch/NewWordSearchPage/NewWordSearchPage';
-import EditWordSearch from 'pages/WordSearch/EditWordSearchPage/EditWordSearch';
-import NewTrueOrFalsePage from 'pages/TrueOrFalse/NewTrueOrFalsePage/NewTrueOrFalsePage';
-import EditTrueOrFalse from 'pages/TrueOrFalse/EditTrueOrFalsePage/EditTrueOrFalsePage';
-import NewMatchUpPage from 'pages/MatchUp/NewMatchUpPage/NewMatchUpPage';
-import EditMatchUp from 'pages/MatchUp/EditMatchUpPage/EditMatchUpPage';
-import CreateMemorygame from 'pages/Memory/NewMemoryPage/CreateMemory';
-import EditMemorygame from 'pages/Memory/EditMemoryPage/UpdateMemory';
-import CreateWordle from 'pages/Wordle/NewWordlePage/NewWordlePage';
-import EditWordle from 'pages/Wordle/EditWordlePage/EditWordlePage';
-import NewGroupSortPage from 'pages/GroupSort/NewGroupSortPage/NewGroupSortPage';
-import EditGroupSort from 'pages/GroupSort/EditGroupSortPage/EditGroupSortPage';
-import NewBalloonsPage from 'pages/Balloons/NewBalloonPage/NewBalloonsPage';
-import EditBalloons from 'pages/Balloons/EditBalloonPage/EditBalloonsPage';
-import NewCryptogramPage from 'pages/Cryptogram/NewCryptogramPage/NewCryptogramPage';
-import EditCryptogram from 'pages/Cryptogram/EditCryptogramPage/EditCryptogramPage';
-import NewDragNDropPage from 'pages/DragNDrop/NewDragNDropPage/NewDragNDropPage';
-import EditDragNDrop from 'pages/DragNDrop/EditDragNDropPage/EditDragNDropPage';
-import NewPuzzlePage from 'pages/Puzzle/NewPuzzlePage/NewPuzzlePage';
-import EditPuzzle from 'pages/Puzzle/EditPuzzlePage/EditPuzzlePage';
-import NewPaintPage from 'pages/Paint/NewPaintPage/NewPaintPage';
-import EditPaint from 'pages/Paint/EditPaintPage/EditPaintPage';
-import UserLayout from 'layouts/UserLayout/UserLayout';
+import HomePage from 'pages/HomePage/HomePage'
+import GamePage from 'pages/GamePage/GamePage'
+import NewQuizPage from 'pages/Quiz/NewQuizPage/NewQuizPage'
+import EditQuiz from 'pages/Quiz/EditQuizPage/EditQuizPage'
+import NewAnagramPage from 'pages/Anagram/NewAnagramPage/NewAnagramPage'
+import EditAnagramPage from 'pages/Anagram/EditAnagramPage/EditAnagramPage'
+import NewWordSearchPage from 'pages/WordSearch/NewWordSearchPage/NewWordSearchPage'
+import EditWordSearch from 'pages/WordSearch/EditWordSearchPage/EditWordSearch'
+import NewTrueOrFalsePage from 'pages/TrueOrFalse/NewTrueOrFalsePage/NewTrueOrFalsePage'
+import EditTrueOrFalse from 'pages/TrueOrFalse/EditTrueOrFalsePage/EditTrueOrFalsePage'
+import NewMatchUpPage from 'pages/MatchUp/NewMatchUpPage/NewMatchUpPage'
+import EditMatchUp from 'pages/MatchUp/EditMatchUpPage/EditMatchUpPage'
+import CreateMemorygame from 'pages/Memory/NewMemoryPage/NewMemoryPage'
+import EditMemorygame from 'pages/Memory/EditMemoryPage/EditMemoryPage'
+import CreateWordle from 'pages/Wordle/NewWordlePage/NewWordlePage'
+import EditWordle from 'pages/Wordle/EditWordlePage/EditWordlePage'
+import NewGroupSortPage from 'pages/GroupSort/NewGroupSortPage/NewGroupSortPage'
+import EditGroupSort from 'pages/GroupSort/EditGroupSortPage/EditGroupSortPage'
+import NewBalloonsPage from 'pages/Balloons/NewBalloonPage/NewBalloonsPage'
+import EditBalloons from 'pages/Balloons/EditBalloonPage/EditBalloonsPage'
+import NewCryptogramPage from 'pages/Cryptogram/NewCryptogramPage/NewCryptogramPage'
+import EditCryptogram from 'pages/Cryptogram/EditCryptogramPage/EditCryptogramPage'
+import NewDragNDropPage from 'pages/DragNDrop/NewDragNDropPage/NewDragNDropPage'
+import EditDragNDrop from 'pages/DragNDrop/EditDragNDropPage/EditDragNDropPage'
+import NewPuzzlePage from 'pages/Puzzle/NewPuzzlePage/NewPuzzlePage'
+import EditPuzzle from 'pages/Puzzle/EditPuzzlePage/EditPuzzlePage'
+import NewPaintPage from 'pages/Paint/NewPaintPage/NewPaintPage'
+import EditPaint from 'pages/Paint/EditPaintPage/EditPaintPage'
+import UserLayout from 'layouts/UserLayout/UserLayout'
 
 const Routes: FunctionComponent = () => {
     return (
@@ -69,6 +69,6 @@ const Routes: FunctionComponent = () => {
                 <Route path="edit/wordle/:slug" element={<EditWordle />} />
             </Route>
         </Router>
-    );
-};
-export default Routes;
+    )
+}
+export default Routes

@@ -1,48 +1,48 @@
-import React, { Dispatch, FunctionComponent, SetStateAction } from 'react';
-import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
-import { KeyboardDoubleArrowRight } from '@mui/icons-material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { EditorState } from 'draft-js';
+import React, { Dispatch, FunctionComponent, SetStateAction } from 'react'
+import { Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
+import { KeyboardDoubleArrowRight } from '@mui/icons-material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { EditorState } from 'draft-js'
 
-import RichTextField from 'components/RichTextField/RichTextField';
-import { matchUpObj, matchUpPage } from 'types';
-import textToDraft from 'utils/textToDraft';
+import RichTextField from 'components/RichTextField/RichTextField'
+import { matchUpObj, matchUpPage } from 'types'
+import textToDraft from 'utils/textToDraft'
 
 interface Props {
-    index: number;
-    value: matchUpPage;
-    state: matchUpPage[];
-    setState: Dispatch<SetStateAction<matchUpPage[]>>;
+    index: number
+    value: matchUpPage
+    state: matchUpPage[]
+    setState: Dispatch<SetStateAction<matchUpPage[]>>
 }
 
 const MatchUpCell: FunctionComponent<Props> = ({ index, value, state, setState }) => {
     const handleRemovePage = (index: number) => {
-        let p = [...state];
-        p.splice(index, 1);
-        setState(p);
-    };
+        let p = [...state]
+        p.splice(index, 1)
+        setState(p)
+    }
     const handleWordChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         index: number,
         i: number
     ) => {
-        let p = [...state];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.word = event.target.value;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setState(p);
-    };
+        let p = [...state]
+        let page = p[index]
+        let matchUp = page[i]
+        matchUp.word = event.target.value
+        page.splice(i, 1, matchUp)
+        p.splice(index, 1, page)
+        setState(p)
+    }
     const handleMeaningChange = (editorState: EditorState, index: number, i: number) => {
-        let p = [...state];
-        let page = p[index];
-        let matchUp = page[i];
-        matchUp.meaning = editorState;
-        page.splice(i, 1, matchUp);
-        p.splice(index, 1, page);
-        setState(p);
-    };
+        let p = [...state]
+        let page = p[index]
+        let matchUp = page[i]
+        matchUp.meaning = editorState
+        page.splice(i, 1, matchUp)
+        p.splice(index, 1, page)
+        setState(p)
+    }
     return (
         <Paper
             elevation={5}
@@ -57,7 +57,7 @@ const MatchUpCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 <Grid item xs={2}>
                     <IconButton
                         onClick={() => {
-                            handleRemovePage(index);
+                            handleRemovePage(index)
                         }}
                     >
                         <DeleteIcon fontSize="small" />
@@ -99,11 +99,11 @@ const MatchUpCell: FunctionComponent<Props> = ({ index, value, state, setState }
                                 </Grid>
                             </Grid>
                         </Grid>
-                    );
+                    )
                 })}
             </Grid>
         </Paper>
-    );
-};
+    )
+}
 
-export default MatchUpCell;
+export default MatchUpCell

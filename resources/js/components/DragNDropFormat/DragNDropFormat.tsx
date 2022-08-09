@@ -1,28 +1,27 @@
-import { Card, Grid, ToggleButton, Typography } from '@mui/material';
-import 'react-multi-carousel/lib/styles.css';
-import React, { MouseEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { styled } from '@mui/system';
+import { Card, Grid, ToggleButton, Typography } from '@mui/material'
+import React, { MouseEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { styled } from '@mui/system'
 
 const ImageToggleButton = styled(ToggleButton)({
     '&.Mui-selected': {
         border: '5px solid rgba(0, 134, 248, 0.7)',
     },
-});
+})
 
-const formats = [0, 1, 2];
+const formats = [0, 1, 2]
 
 interface Props {
-    value: number;
-    setValue: Dispatch<SetStateAction<number>>;
+    value: number
+    setValue: Dispatch<SetStateAction<number>>
 }
 
 const DragNDropFormat: FunctionComponent<Props> = ({ value, setValue }) => {
     const handleFormat = (event: MouseEvent<HTMLElement>, newFormat: number) => {
         if (newFormat === null) {
-            return;
+            return
         }
-        setValue(newFormat);
-    };
+        setValue(newFormat)
+    }
 
     return (
         <Grid container alignItems="center" justifyContent="center" spacing={1}>
@@ -42,7 +41,7 @@ const DragNDropFormat: FunctionComponent<Props> = ({ value, setValue }) => {
                                 borderRadius: 8,
                             }}
                             onChange={(event, value) => {
-                                handleFormat(event, value);
+                                handleFormat(event, value)
                             }}
                         >
                             <Card
@@ -61,10 +60,10 @@ const DragNDropFormat: FunctionComponent<Props> = ({ value, setValue }) => {
                             </Card>
                         </ImageToggleButton>
                     </Grid>
-                );
+                )
             })}
         </Grid>
-    );
-};
+    )
+}
 
-export default React.memo(DragNDropFormat);
+export default React.memo(DragNDropFormat)

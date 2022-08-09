@@ -1,70 +1,70 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent, FormEventHandler } from 'react';
-import { Alert, Button, Grid, TextField, Box, SelectChangeEvent, Typography, CircularProgress } from '@mui/material';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { useSelector } from 'react-redux';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import { RootState } from '../../../store';
-import { useCreateWordleMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import { gameObj } from '../../../types';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import { getError } from '../../../utils/errors';
+import React, { useState, useEffect, ChangeEvent, FormEvent, FormEventHandler } from 'react'
+import { Alert, Button, Grid, TextField, Box, SelectChangeEvent, Typography, CircularProgress } from '@mui/material'
+import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import { useSelector } from 'react-redux'
+import BackFAButton from '../../../components/BackFAButton/BackFAButton'
+import { RootState } from '../../../store'
+import { useCreateWordleMutation } from '../../../services/games'
+import { useCreateGameObjectMutation } from '../../../services/portal'
+import { gameObj } from '../../../types'
+import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect'
+import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect'
+import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect'
+import { getError } from '../../../utils/errors'
 
 const NewWordlePage = () => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [createWordle, response] = useCreateWordleMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [word, setWord] = useState<string>('');
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [createWordle, response] = useCreateWordleMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [word, setWord] = useState<string>('')
 
     const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
         if (newLayout === null) {
-            return;
+            return
         }
-        setLayout(newLayout);
-    };
+        setLayout(newLayout)
+    }
     const handleClose = () => {
-        setWord('');
-        setLayout(1);
-        setName('');
-        setOpen(false);
-    };
+        setWord('')
+        setLayout(1)
+        setName('')
+        setOpen(false)
+    }
     const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value;
+        const value = event.target.value
         if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
+            setSerie(typeof value === 'string' ? value.split(',') : value)
         }
-    };
+    }
     const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value;
+        const value = event.target.value
         if (value !== null && value !== discipline) {
-            setDiscipline(value);
+            setDiscipline(value)
         }
-    };
+    }
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
-        event.preventDefault();
+        event.preventDefault()
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
         const body = {
             name: name,
             layout: layout,
             options: [word],
-        };
-        createWordle(body);
-    };
+        }
+        createWordle(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -74,16 +74,16 @@ const NewWordlePage = () => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/wordle/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ origin, token, ...obj });
+            }
+            createGameObject({ origin, token, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
 
     return (
         <>
@@ -162,7 +162,7 @@ const NewWordlePage = () => {
                                     <Alert
                                         severity="warning"
                                         onClick={() => {
-                                            setAlert('');
+                                            setAlert('')
                                         }}
                                     >
                                         {alert}
@@ -195,7 +195,7 @@ const NewWordlePage = () => {
                 </Grid>
             </Box>
         </>
-    );
-};
+    )
+}
 
-export default NewWordlePage;
+export default NewWordlePage

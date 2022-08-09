@@ -1,10 +1,10 @@
-import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
-import React, { FunctionComponent } from 'react';
+import { Grid, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import React, { FunctionComponent } from 'react'
 
 type Props = {
-    size: number;
-    handleSize: Function;
-};
+    size: number
+    handleSize: Function
+}
 
 const GridSelect: FunctionComponent<Props> = ({ size, handleSize }) => {
     return (
@@ -23,7 +23,7 @@ const GridSelect: FunctionComponent<Props> = ({ size, handleSize }) => {
                 <ToggleButton value={6}>3x4</ToggleButton>
             </ToggleButtonGroup>
         </Grid>
-    );
-};
+    )
+}
 
-export default GridSelect;
+export default GridSelect

@@ -3,7 +3,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "prettier": "prettier --write '**/*.{ts,tsx,vue}'"
+        "prettier": "prettier --write resources/js/**/*.{js,jsx,ts,tsx}"
     },
     "devDependencies": {
         "@babel/preset-react": "^7.18.6",
@@ -50,9 +50,9 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-image-crop": "^10.0.4",
-        "react-multi-carousel": "^2.8.2",
         "react-redux": "^8.0.2",
         "react-router-dom": "^6.3.0",
+        "swiper": "^8.3.2",
         "typescript": "^4.7.4",
         "webpack": "^5.74.0",
         "workbox-webpack-plugin": "^6.5.3"
@@ -61,6 +61,7 @@
         "trailingComma": "es5",
         "tabWidth": 4,
         "singleQuote": true,
-        "printWidth": 120
+        "printWidth": 120,
+        "semi": false
     }
 }

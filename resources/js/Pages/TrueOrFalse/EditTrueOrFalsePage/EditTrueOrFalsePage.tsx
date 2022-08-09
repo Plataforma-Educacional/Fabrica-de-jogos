@@ -1,115 +1,89 @@
-import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react';
-import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import { EditorState, convertToRaw } from 'draft-js';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
-import draftToText from '../../../utils/draftToText';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { useParams } from 'react-router-dom';
-import TrueOrFalseCell from '../../../components/TrueOrFalseCell/TrueOrFalseCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { useUpdateTrueOrFalseMutation, useGetTrueOrFalseBySlugQuery } from '../../../services/games';
-import { trueOrFalseQuestion } from '../../../types';
-import textToDraft from '../../../utils/textToDraft';
-import { getError } from '../../../utils/errors';
+import React, { ChangeEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material'
+import { EditorState, convertToRaw } from 'draft-js'
+import AddIcon from '@mui/icons-material/Add'
+import { useParams } from 'react-router-dom'
 
-const EditTrueOrFalse = () => {
-    const { slug } = useParams();
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [layout, setLayout] = useState(1);
-    const { data, error, isLoading } = useGetTrueOrFalseBySlugQuery(slug as string);
-    const [updateTrueOrFalse, response] = useUpdateTrueOrFalseMutation();
-    const initialState: trueOrFalseQuestion[] = [{ title: EditorState.createEmpty(), answer: false }];
-    const [questions, setQuestions] = useState(initialState);
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
+import { useUpdateTrueOrFalseMutation, useGetTrueOrFalseBySlugQuery } from 'services/games'
+import TrueOrFalseCell from 'components/TrueOrFalseCell/TrueOrFalseCell'
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import { trueOrFalseQuestion } from 'types'
+import draftToText from 'utils/draftToText'
+import textToDraft from 'utils/textToDraft'
+import { getError } from 'utils/errors'
+
+const EditTrueOrFalsePage: FunctionComponent = () => {
+    const { slug } = useParams()
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [layout, setLayout] = useState(1)
+    const { data, error, isLoading } = useGetTrueOrFalseBySlugQuery(slug as string)
+    const [updateTrueOrFalse, response] = useUpdateTrueOrFalseMutation()
+    const initialState: trueOrFalseQuestion[] = [{ title: EditorState.createEmpty(), answer: false }]
+    const [questions, setQuestions] = useState(initialState)
+
     const handleCreateQuestion = () => {
         if (questions.length >= 9) {
-            setAlert('O número máximo de questões para esse jogo é 9!');
-            return;
+            setAlert('O número máximo de questões para esse jogo é 9!')
+            return
         }
-        setQuestions([...questions, { title: EditorState.createEmpty(), answer: false }]);
-    };
-    const handleRemoveQuestion = (index: number) => {
-        if (questions.length === 1) {
-            return;
-        }
-        let q = [...questions];
-        q.splice(index, 1);
-        setQuestions(q);
-    };
-    const handleQuestionTitleChange = (value: EditorState, index: number) => {
-        let q = [...questions];
-        let question = q[index];
-        question.title = value;
-        q.splice(index, 1, question);
-        setQuestions(q);
-    };
-    const handleAnswerChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let q = [...questions];
-        let question = q[index];
-        question.answer = event.target.checked;
-        q.splice(index, 1, question);
-        setQuestions(q);
-    };
+        setQuestions([...questions, { title: EditorState.createEmpty(), answer: false }])
+    }
+
     const handleSubmit: FormEventHandler = (event: ChangeEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        let questionsJSON: trueOrFalseQuestion[] = [];
-        let error = false;
+        event.preventDefault()
+        let questionsJSON: trueOrFalseQuestion[] = []
+        let error = false
         questions.map((item: trueOrFalseQuestion) => {
-            const title = item.title as EditorState;
-            let content = title.getCurrentContent();
+            const title = item.title as EditorState
+            let content = title.getCurrentContent()
             if (content.getPlainText('').length === 0) {
-                setAlert('Preencha todos os campos!');
-                error = true;
-                return;
+                setAlert('Preencha todos os campos!')
+                error = true
+                return
             }
-            let textJson = convertToRaw(content);
-            let markup = draftToText(textJson);
+            let textJson = convertToRaw(content)
+            let markup = draftToText(textJson)
             questionsJSON.push({
                 answer: item.answer,
                 title: markup,
-            });
-        });
+            })
+        })
         if (error) {
-            return;
+            return
         }
         let body = {
             layout: layout,
             options: questionsJSON,
-        };
-        updateTrueOrFalse({ slug, ...body });
-    };
+        }
+        updateTrueOrFalse({ slug, ...body })
+    }
 
     const formatQuestions = (raw: trueOrFalseQuestion[]) => {
         raw.map((question) => {
             if (typeof question.title !== 'string') {
-                return;
+                return
             }
-            question.title = textToDraft(question.title);
-        });
-        return raw;
-    };
+            question.title = textToDraft(question.title)
+        })
+        return raw
+    }
 
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            let deep_copy = JSON.parse(JSON.stringify(data.options));
-            setQuestions(formatQuestions(deep_copy));
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            let deep_copy = JSON.parse(JSON.stringify(data.options))
+            setQuestions(formatQuestions(deep_copy))
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -121,92 +95,77 @@ const EditTrueOrFalse = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
             <SuccessModal
                 open={open}
                 handleClose={() => {
-                    setOpen(false);
+                    setOpen(false)
                 }}
             />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Verdadeiro ou Falso</b>
-                        </Typography>
-                    </Grid>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Button
-                            onClick={handleCreateQuestion}
-                            endIcon={<AddIcon fontSize="small" />}
-                            variant="contained"
-                        >
-                            Adicionar Questão
-                        </Button>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                /* @ts-ignore*/
-                                <Grid item align="center" xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('');
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {questions.map((question: trueOrFalseQuestion, index: number) => {
-                                return (
-                                    <TrueOrFalseCell
-                                        key={index}
-                                        question={question}
-                                        index={index}
-                                        handleRemoveQuestion={handleRemoveQuestion}
-                                        handleQuestionTitleChange={handleQuestionTitleChange}
-                                        handleAnswerChange={handleAnswerChange}
-                                    />
-                                );
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Verdadeiro ou Falso</b>
+                    </Typography>
+                </Grid>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item xs={12}>
+                    <Button onClick={handleCreateQuestion} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                        Adicionar Questão
+                    </Button>
+                </Grid>
+                <Grid item lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('')
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        {questions.map((question: trueOrFalseQuestion, index: number) => {
+                            return (
+                                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                                    <TrueOrFalseCell
+                                        index={index}
+                                        value={question}
+                                        state={questions}
+                                        setState={setQuestions}
+                                    />
+                                </Grid>
+                            )
+                        })}
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
-    );
-};
+    )
+}
 
-export default EditTrueOrFalse;
+export default EditTrueOrFalsePage

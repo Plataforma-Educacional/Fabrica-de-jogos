@@ -1,20 +1,20 @@
-import React, { FormEventHandler, useEffect, useState } from 'react';
-import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect';
-import { convertToRaw, EditorState } from 'draft-js';
-import draftToText from '../../../utils/draftToText';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { useParams } from 'react-router-dom';
-import WordTipCell from 'components/WordTipCell/WordTipCell';
-import Copyright from '../../../components/Copyright/Copyright';
-import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from '../../../services/games';
-import { wordObj } from '../../../types';
-import textToDraft from '../../../utils/textToDraft';
-import { getError } from '../../../utils/errors';
+import React, { FormEventHandler, useEffect, useState } from 'react'
+import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
+import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect'
+import { convertToRaw, EditorState } from 'draft-js'
+import draftToText from '../../../utils/draftToText'
+import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import { useParams } from 'react-router-dom'
+import WordTipCell from 'components/WordTipCell/WordTipCell'
+import Copyright from '../../../components/Copyright/Copyright'
+import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from '../../../services/games'
+import { wordObj } from '../../../types'
+import textToDraft from '../../../utils/textToDraft'
+import { getError } from '../../../utils/errors'
 
 const EditWordSearch = () => {
-    const { slug } = useParams();
+    const { slug } = useParams()
     const initialState: wordObj[] = [
         {
             word: '',
@@ -28,110 +28,110 @@ const EditWordSearch = () => {
             word: '',
             tip: EditorState.createEmpty(),
         },
-    ];
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [words, setWords] = useState(initialState);
-    const [layout, setLayout] = useState(1);
-    const { data, error, isLoading } = useGetWordSearchBySlugQuery(slug as string);
-    const [updateWordSearch, response] = useUpdateWordSearchMutation();
+    ]
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [words, setWords] = useState(initialState)
+    const [layout, setLayout] = useState(1)
+    const { data, error, isLoading } = useGetWordSearchBySlugQuery(slug as string)
+    const [updateWordSearch, response] = useUpdateWordSearchMutation()
     const handleAddWord = () => {
         if (words.length >= 8) {
-            setAlert('O numero máximo de palavras nesse jogo é 8!');
-            return;
+            setAlert('O numero máximo de palavras nesse jogo é 8!')
+            return
         }
-        let p = [...words];
+        let p = [...words]
         p.push({
             word: '',
             tip: EditorState.createEmpty(),
-        });
-        setWords(p);
-    };
+        })
+        setWords(p)
+    }
     const handleRemoveWord = (index: number) => {
         if (words.length === 1) {
-            return;
+            return
         }
-        let p = [...words];
-        p.splice(index, 1);
-        setWords(p);
-    };
+        let p = [...words]
+        p.splice(index, 1)
+        setWords(p)
+    }
     const handleWordChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.word = event.target.value;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
+        let p = [...words]
+        let word = p[index]
+        word.word = event.target.value
+        p.splice(index, 1, word)
+        setWords(p)
+    }
     const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...words];
-        let word = p[index];
-        word.tip = editorState;
-        p.splice(index, 1, word);
-        setWords(p);
-    };
+        let p = [...words]
+        let word = p[index]
+        word.tip = editorState
+        p.splice(index, 1, word)
+        setWords(p)
+    }
     const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
         if (newLayout === null) {
-            return;
+            return
         }
-        setLayout(newLayout);
-    };
+        setLayout(newLayout)
+    }
     const handleSubmit: FormEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
+        e.preventDefault()
         if (words.length < 3) {
-            setAlert('O jogo deve ter no mínimo 3 palavras!');
-            return;
+            setAlert('O jogo deve ter no mínimo 3 palavras!')
+            return
         }
-        let wordsJSON: wordObj[] = [];
-        let error = false;
+        let wordsJSON: wordObj[] = []
+        let error = false
         words.map((word: wordObj) => {
-            const tip = word.tip as EditorState;
-            let content = tip.getCurrentContent();
+            const tip = word.tip as EditorState
+            let content = tip.getCurrentContent()
             if (content.getPlainText('').length === 0) {
-                setAlert('Preencha todos os campos!');
-                error = true;
-                return;
+                setAlert('Preencha todos os campos!')
+                error = true
+                return
             }
-            let textJson = convertToRaw(content);
-            let markup = draftToText(textJson);
+            let textJson = convertToRaw(content)
+            let markup = draftToText(textJson)
             wordsJSON.push({
                 tip: markup,
                 word: word.word,
-            });
-        });
+            })
+        })
         if (error) {
-            return;
+            return
         }
         let body = {
             layout: layout,
             options: wordsJSON,
-        };
-        updateWordSearch({ slug, ...body });
-    };
+        }
+        updateWordSearch({ slug, ...body })
+    }
 
     const formatTips = (raw: wordObj[]): wordObj[] => {
         raw.map((word: wordObj) => {
             if (typeof word.tip !== 'string') {
-                return;
+                return
             }
-            word.tip = textToDraft(word.tip);
-        });
-        return raw;
-    };
+            word.tip = textToDraft(word.tip)
+        })
+        return raw
+    }
 
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            let deep_copy = JSON.parse(JSON.stringify(data.options));
-            setWords(formatTips(deep_copy));
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            let deep_copy = JSON.parse(JSON.stringify(data.options))
+            setWords(formatTips(deep_copy))
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -143,14 +143,14 @@ const EditWordSearch = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
             <SuccessModal
                 open={open}
                 handleClose={() => {
-                    setOpen(false);
+                    setOpen(false)
                 }}
             />
             <Box
@@ -183,7 +183,7 @@ const EditWordSearch = () => {
                                     <Alert
                                         severity="warning"
                                         onClick={() => {
-                                            setAlert('');
+                                            setAlert('')
                                         }}
                                     >
                                         {alert}
@@ -200,7 +200,7 @@ const EditWordSearch = () => {
                                         handleRemoveWord={handleRemoveWord}
                                         handleTipChange={handleTipChange}
                                     />
-                                );
+                                )
                             })}
                         </Grid>
                     </Grid>
@@ -224,7 +224,7 @@ const EditWordSearch = () => {
                 </Grid>
             </Box>
         </>
-    );
-};
+    )
+}
 
-export default EditWordSearch;
+export default EditWordSearch

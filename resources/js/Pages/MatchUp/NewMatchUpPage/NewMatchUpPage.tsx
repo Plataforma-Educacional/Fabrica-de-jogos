@@ -1,21 +1,21 @@
-import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import { Button, TextField, Grid, Alert, CircularProgress, Typography } from '@mui/material';
-import { EditorState, convertToRaw } from 'draft-js';
-import AddIcon from '@mui/icons-material/Add';
-import { useSelector } from 'react-redux';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Button, TextField, Grid, Alert, CircularProgress, Typography } from '@mui/material'
+import { EditorState, convertToRaw } from 'draft-js'
+import AddIcon from '@mui/icons-material/Add'
+import { useSelector } from 'react-redux'
 
-import { gameObj, matchUpObj, matchUpPage, matchUpOptions, gameState } from 'types';
-import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import BackFAButton from 'components/BackFAButton/BackFAButton';
-import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
-import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
-import { useCreateGameObjectMutation } from 'services/portal';
-import MatchUpCell from 'components/MatchUpCell/MatchUpCell';
-import { useCreateMatchUpMutation } from 'services/games';
-import draftToText from 'utils/draftToText';
-import { getError } from 'utils/errors';
-import { RootState } from 'store';
+import { gameObj, matchUpObj, matchUpPage, matchUpOptions, gameState } from 'types'
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import { useCreateGameObjectMutation } from 'services/portal'
+import MatchUpCell from 'components/MatchUpCell/MatchUpCell'
+import { useCreateMatchUpMutation } from 'services/games'
+import draftToText from 'utils/draftToText'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
 
 const initialState: matchUpPage[] = [
     [
@@ -36,73 +36,73 @@ const initialState: matchUpPage[] = [
             meaning: EditorState.createEmpty(),
         },
     ],
-];
+]
 
 const NewMatchUpPage: FunctionComponent = () => {
-    const [createMatchUp, response] = useCreateMatchUpMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [pages, setPages] = useState(initialState);
+    const [createMatchUp, response] = useCreateMatchUpMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [pages, setPages] = useState(initialState)
     const handleCreatePage = () => {
         if (pages.length >= 10) {
-            setAlert('O número máximo de páginas para esse jogo é 10!');
-            return;
+            setAlert('O número máximo de páginas para esse jogo é 10!')
+            return
         }
-        setPages([...pages, ...initialState]);
-    };
+        setPages([...pages, ...initialState])
+    }
     const handleClose = () => {
-        setLayout(1);
-        setName('');
-        setPages([...initialState]);
-        setOpen(false);
-    };
+        setLayout(1)
+        setName('')
+        setPages([...initialState])
+        setOpen(false)
+    }
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
-        event.preventDefault();
+        event.preventDefault()
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
-        let matchUpsJSON: matchUpPage[] = [];
-        let error = false;
+        let matchUpsJSON: matchUpPage[] = []
+        let error = false
         pages.map((page: matchUpPage) => {
-            let matchUps: matchUpObj[] = [];
+            let matchUps: matchUpObj[] = []
             page.map((matchUp: matchUpObj) => {
-                const meanings: EditorState = matchUp.meaning as EditorState;
-                let content = meanings.getCurrentContent();
+                const meanings: EditorState = matchUp.meaning as EditorState
+                let content = meanings.getCurrentContent()
                 if (content.getPlainText('').length === 0) {
-                    setAlert('Preencha todos os campos!');
-                    error = true;
-                    return;
+                    setAlert('Preencha todos os campos!')
+                    error = true
+                    return
                 }
-                let textJson = convertToRaw(content);
-                let markup = draftToText(textJson);
+                let textJson = convertToRaw(content)
+                let markup = draftToText(textJson)
                 matchUps.push({
                     meaning: markup,
                     word: matchUp.word,
-                });
-            });
-            matchUpsJSON.push(matchUps);
-        });
+                })
+            })
+            matchUpsJSON.push(matchUps)
+        })
         if (error) {
-            return;
+            return
         }
         let body: Partial<gameState<matchUpOptions>> = {
             name: name,
             layout: layout,
             options: matchUpsJSON,
-        };
-        createMatchUp(body);
-    };
+        }
+        createMatchUp(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -112,16 +112,16 @@ const NewMatchUpPage: FunctionComponent = () => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/match-up/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ token, origin, ...obj });
+            }
+            createGameObject({ token, origin, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
 
     return (
         <>
@@ -197,7 +197,7 @@ const NewMatchUpPage: FunctionComponent = () => {
                                 <Alert
                                     severity="warning"
                                     onClick={() => {
-                                        setAlert('');
+                                        setAlert('')
                                     }}
                                 >
                                     {alert}
@@ -209,7 +209,7 @@ const NewMatchUpPage: FunctionComponent = () => {
                                 <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
                                     <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
                                 </Grid>
-                            );
+                            )
                         })}
                     </Grid>
                 </Grid>
@@ -224,6 +224,6 @@ const NewMatchUpPage: FunctionComponent = () => {
                 </Grid>
             </Grid>
         </>
-    );
-};
-export default NewMatchUpPage;
+    )
+}
+export default NewMatchUpPage

@@ -1,30 +1,30 @@
-import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react';
-import { Button, Grid, IconButton, Paper, TextField, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import React, { ChangeEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
+import { Button, Grid, IconButton, Paper, TextField, Typography } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 interface Props {
-    value: string[];
-    setValue: Dispatch<SetStateAction<string[]>>;
-    correct: boolean;
+    value: string[]
+    setValue: Dispatch<SetStateAction<string[]>>
+    correct: boolean
 }
 
 const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-        let ans = [...value];
-        ans[index] = event.target.value;
-        setValue(ans);
-    };
+        let ans = [...value]
+        ans[index] = event.target.value
+        setValue(ans)
+    }
     const handleAdd = () => {
         if (value.length > 15) {
-            return;
+            return
         }
-        setValue([...value, '']);
-    };
+        setValue([...value, ''])
+    }
     const handleRemove = (index: number) => {
-        let ans = [...value];
-        ans.splice(index, 1);
-        setValue(ans);
-    };
+        let ans = [...value]
+        ans.splice(index, 1)
+        setValue(ans)
+    }
 
     return (
         <Paper elevation={3} sx={{ p: 2 }}>
@@ -67,7 +67,7 @@ const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => 
                                 <Grid item xs={2}>
                                     <IconButton
                                         onClick={() => {
-                                            handleRemove(i);
+                                            handleRemove(i)
                                         }}
                                     >
                                         <DeleteIcon fontSize="small" />
@@ -75,11 +75,11 @@ const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => 
                                 </Grid>
                             </Grid>
                         </Grid>
-                    );
+                    )
                 })}
             </Grid>
         </Paper>
-    );
-};
+    )
+}
 
-export default BalloonCell;
+export default BalloonCell

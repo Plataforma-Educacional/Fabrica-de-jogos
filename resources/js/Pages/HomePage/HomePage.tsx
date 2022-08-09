@@ -1,32 +1,32 @@
-import React, { FunctionComponent } from 'react';
-import { Grid, Button, Card, IconButton } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, { FunctionComponent } from 'react'
+import { Grid, Button, Card, IconButton } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+
+const game_types = [
+    { slug: 'anagram', name: 'Anagrama' },
+    { slug: 'bloons', name: 'Estoura Balões' },
+    { slug: 'cryptogram', name: 'Criptograma' },
+    { slug: 'drag-drop', name: 'Arraste e Solte' },
+    { slug: 'group-sort', name: 'Agrupamentos' },
+    { slug: 'match-up', name: 'Combinação' },
+    // { slug: 'memory-game', name: 'Jogo da Memória' },
+    { slug: 'paint', name: 'Ateliê Criativo' },
+    { slug: 'puzzle', name: 'Quebra-Cabeça' },
+    { slug: 'quiz', name: 'Quiz' },
+    { slug: 'true-or-false', name: 'Verdadeiro ou Falso' },
+    { slug: 'word-search', name: 'Caça-Palavras' },
+    { slug: 'wordle', name: 'Organize as Letras' },
+]
 
 const HomePage: FunctionComponent = ({}) => {
-    const navigate = useNavigate();
-    const game_types = [
-        { slug: 'anagram', name: 'Anagrama' },
-        { slug: 'bloons', name: 'Estoura Balões' },
-        { slug: 'cryptogram', name: 'Criptograma' },
-        { slug: 'drag-drop', name: 'Arraste e Solte' },
-        { slug: 'group-sort', name: 'Agrupamentos' },
-        { slug: 'match-up', name: 'Combinação' },
-        // { slug: 'memory-game', name: 'Jogo da Memória' },
-        { slug: 'paint', name: 'Ateliê Criativo' },
-        { slug: 'puzzle', name: 'Quebra-Cabeça' },
-        { slug: 'quiz', name: 'Quiz' },
-        { slug: 'true-or-false', name: 'Verdadeiro ou Falso' },
-        { slug: 'word-search', name: 'Caça-Palavras' },
-        { slug: 'wordle', name: 'Organize as Letras' },
-    ];
-
+    const navigate = useNavigate()
     return (
-        <Grid container alignItems="flex-start" justifyContent="center" spacing={1} sx={{ marginTop: 3 }}>
+        <Grid container alignItems="center" justifyContent="center" spacing={1} sx={{ marginTop: 3 }}>
             {game_types.map((type, index) => {
                 return (
                     <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                        <Grid container alignItems="center" spacing={1}>
-                            <Grid item alignSelf="center" xs={12}>
+                        <Grid container direction="column" alignItems="center" justifyContent="center" spacing={1}>
+                            <Grid item xs={12}>
                                 <IconButton disableRipple={true} onClick={() => navigate(`/create/${type.slug}`)}>
                                     <Card
                                         elevation={5}
@@ -45,25 +45,17 @@ const HomePage: FunctionComponent = ({}) => {
                                     </Card>
                                 </IconButton>
                             </Grid>
-                            <Grid
-                                item
-                                alignSelf="center"
-                                xs={12}
-                                alignItems="center"
-                                sx={{
-                                    marginTop: 2,
-                                }}
-                            >
+                            <Grid item xs>
                                 <Button onClick={() => navigate(`/create/${type.slug}`)} variant="outlined">
                                     {type.name}
                                 </Button>
                             </Grid>
                         </Grid>
                     </Grid>
-                );
+                )
             })}
         </Grid>
-    );
-};
+    )
+}
 
-export default HomePage;
+export default HomePage

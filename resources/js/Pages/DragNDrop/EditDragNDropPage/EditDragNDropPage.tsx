@@ -1,45 +1,45 @@
-import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Alert, Button, CircularProgress, Grid, Typography } from '@mui/material'
+import { useParams } from 'react-router-dom'
 
-import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from 'services/games';
-import FormatSelect from 'components/DragNDropFormat/DragNDropFormat';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
-import { getError } from 'utils/errors';
+import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from 'services/games'
+import FormatSelect from 'components/DragNDropFormat/DragNDropFormat'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
+import { getError } from 'utils/errors'
 
 const EditDragNDrop: FunctionComponent = ({}) => {
-    const { slug } = useParams();
-    const { data, error, isLoading } = useGetDragNDropBySlugQuery(slug as string);
-    const [updateDragNDrop, response] = useUpdateDragNDropMutation();
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [layout, setLayout] = useState<number>(1);
-    const [format, setFormat] = useState<number>(0);
+    const { slug } = useParams()
+    const { data, error, isLoading } = useGetDragNDropBySlugQuery(slug as string)
+    const [updateDragNDrop, response] = useUpdateDragNDropMutation()
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [layout, setLayout] = useState<number>(1)
+    const [format, setFormat] = useState<number>(0)
 
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
-        event.preventDefault();
+        event.preventDefault()
 
         const body = {
             layout: layout,
             options: [format],
-        };
+        }
 
-        updateDragNDrop({ slug, ...body });
-    };
+        updateDragNDrop({ slug, ...body })
+    }
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            setFormat(Number(data.options));
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            setFormat(Number(data.options))
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -51,7 +51,7 @@ const EditDragNDrop: FunctionComponent = ({}) => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
@@ -77,7 +77,7 @@ const EditDragNDrop: FunctionComponent = ({}) => {
                                 <Alert
                                     severity="warning"
                                     onClick={() => {
-                                        setAlert('');
+                                        setAlert('')
                                     }}
                                 >
                                     {alert}
@@ -100,7 +100,7 @@ const EditDragNDrop: FunctionComponent = ({}) => {
                 </Grid>
             </Grid>
         </>
-    );
-};
+    )
+}
 
-export default EditDragNDrop;
+export default EditDragNDrop

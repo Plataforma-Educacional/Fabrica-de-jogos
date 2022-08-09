@@ -1,73 +1,73 @@
-import React, { FormEvent, FormEventHandler, useEffect, useState, FunctionComponent } from 'react';
-import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
-import { convertToRaw, EditorState } from 'draft-js';
-import { useSelector } from 'react-redux';
+import React, { FormEvent, FormEventHandler, useEffect, useState, FunctionComponent } from 'react'
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material'
+import { convertToRaw, EditorState } from 'draft-js'
+import { useSelector } from 'react-redux'
 
-import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect';
-import RichTextField from 'components/RichTextField/RichTextField';
-import BalloonCell from 'components/BalloonCell/BalloonCell';
-import SeriesSelect from 'components/SeriesSelect/SeriesSelect';
-import LayoutSelect from 'components/LayoutSelect/LayoutSelect';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import BackFAButton from 'components/BackFAButton/BackFAButton';
-import { useCreateGameObjectMutation } from 'services/portal';
-import { balloonOptions, gameObj, gameState } from 'types';
-import { useCreateBalloonsMutation } from 'services/games';
-import draftToText from 'utils/draftToText';
-import { getError } from 'utils/errors';
-import { RootState } from 'store';
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import RichTextField from 'components/RichTextField/RichTextField'
+import BalloonCell from 'components/BalloonCell/BalloonCell'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import { useCreateGameObjectMutation } from 'services/portal'
+import { balloonOptions, gameObj, gameState } from 'types'
+import { useCreateBalloonsMutation } from 'services/games'
+import draftToText from 'utils/draftToText'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
 
 const NewBalloonsPage: FunctionComponent = ({}) => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [question, setQuestion] = useState<EditorState>(EditorState.createEmpty());
-    const [answers, setAnswers] = useState<string[]>(['', '', '', '', '']);
-    const [alternatives, setAlternatives] = useState<string[]>(['', '', '', '', '']);
-    const [createBalloons, response] = useCreateBalloonsMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [question, setQuestion] = useState<EditorState>(EditorState.createEmpty())
+    const [answers, setAnswers] = useState<string[]>(['', '', '', '', ''])
+    const [alternatives, setAlternatives] = useState<string[]>(['', '', '', '', ''])
+    const [createBalloons, response] = useCreateBalloonsMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
 
     const handleClose = () => {
-        setName('');
-        setQuestion(EditorState.createEmpty());
-        setAnswers(['', '', '', '']);
-        setAlternatives(['', '', '', '']);
-        setSerie(['']);
-        setDiscipline('');
-        setLayout(1);
-        setOpen(false);
-    };
+        setName('')
+        setQuestion(EditorState.createEmpty())
+        setAnswers(['', '', '', ''])
+        setAlternatives(['', '', '', ''])
+        setSerie([''])
+        setDiscipline('')
+        setLayout(1)
+        setOpen(false)
+    }
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
-        event.preventDefault();
+        event.preventDefault()
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
         if (answers.length > alternatives.length) {
-            setAlert('É necessário ter mais alternativas erradas do que respostas certas!');
+            setAlert('É necessário ter mais alternativas erradas do que respostas certas!')
         }
-        let textJson = convertToRaw(question.getCurrentContent());
-        let markup = draftToText(textJson);
+        let textJson = convertToRaw(question.getCurrentContent())
+        let markup = draftToText(textJson)
         const questionsJSON: balloonOptions = {
             question: markup,
             answers: answers,
             alternatives: alternatives,
-        };
+        }
         let body: gameState<balloonOptions> = {
             name: name,
             layout: layout,
             options: questionsJSON,
-        };
-        createBalloons(body);
-    };
+        }
+        createBalloons(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -77,16 +77,16 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/bloons/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ token, origin, ...obj });
+            }
+            createGameObject({ token, origin, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
     return (
         <>
             <SuccessModal open={open} handleClose={handleClose} />
@@ -159,7 +159,7 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
                                 <Alert
                                     severity="warning"
                                     onClick={() => {
-                                        setAlert('');
+                                        setAlert('')
                                     }}
                                 >
                                     {alert}
@@ -185,7 +185,7 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
                 </Grid>
             </Grid>
         </>
-    );
-};
+    )
+}
 
-export default NewBalloonsPage;
+export default NewBalloonsPage

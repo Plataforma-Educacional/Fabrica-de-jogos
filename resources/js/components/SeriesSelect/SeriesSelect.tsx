@@ -1,26 +1,26 @@
-import React, { Dispatch, SetStateAction } from 'react';
-import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-import { useGetUserInfoQuery } from 'services/portal';
-import { useSelector } from 'react-redux';
-import { RootState } from 'store';
+import React, { Dispatch, SetStateAction } from 'react'
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material'
+import { useGetUserInfoQuery } from 'services/portal'
+import { useSelector } from 'react-redux'
+import { RootState } from 'store'
 
 type Props = {
-    value: string[];
-    setValue: Dispatch<SetStateAction<string[]>>;
-};
+    value: string[]
+    setValue: Dispatch<SetStateAction<string[]>>
+}
 
 export default function SeriesSelect({ value, setValue }: Props) {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const { data } = useGetUserInfoQuery({ token, origin });
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const { data } = useGetUserInfoQuery({ token, origin })
 
     const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const newValue = event.target.value;
+        const newValue = event.target.value
         if (newValue !== null) {
-            setValue(typeof newValue === 'string' ? newValue.split(',') : newValue);
+            setValue(typeof newValue === 'string' ? newValue.split(',') : newValue)
         }
-    };
+    }
 
-    if (!data) return <></>;
+    if (!data) return <></>
 
     return (
         <>
@@ -41,10 +41,10 @@ export default function SeriesSelect({ value, setValue }: Props) {
                             <MenuItem key={key} value={key}>
                                 <>{data.data.series[key]}</>
                             </MenuItem>
-                        );
+                        )
                     })}
                 </Select>
             </FormControl>
         </>
-    );
+    )
 }

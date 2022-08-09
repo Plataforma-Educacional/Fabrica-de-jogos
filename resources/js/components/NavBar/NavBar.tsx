@@ -1,10 +1,10 @@
-import React, { FunctionComponent } from 'react';
-import { AppBar, Avatar, Box, Container, Grid, Toolbar, Typography } from '@mui/material';
-import { userInfoData } from '../../types';
+import React, { FunctionComponent } from 'react'
+import { AppBar, Avatar, Box, Container, Grid, Toolbar, Typography } from '@mui/material'
+import { userInfoData } from '../../types'
 
 type Props = {
-    data?: userInfoData;
-};
+    data?: userInfoData
+}
 
 const NavBar: FunctionComponent<Props> = ({ data }) => {
     return (
@@ -74,7 +74,7 @@ const NavBar: FunctionComponent<Props> = ({ data }) => {
                 </Toolbar>
             </Container>
         </AppBar>
-    );
-};
+    )
+}
 
-export default React.memo(NavBar);
+export default React.memo(NavBar)

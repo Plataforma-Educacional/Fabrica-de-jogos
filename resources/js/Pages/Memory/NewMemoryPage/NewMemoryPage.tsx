@@ -1,40 +1,67 @@
-import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
-import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material'
+import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Grid, Button, CircularProgress, Alert, TextField, Typography } from '@mui/material'
+import 'react-image-crop/dist/ReactCrop.css'
 import { useSelector } from 'react-redux'
 
 import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
-import BackFAButton from 'components/BackFAButton/BackFAButton'
-import SuccessModal from 'components/SuccessModal/SuccessModal'
 import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
 import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
-import PiecesSelect from 'components/PiecesSelect/PiecesSelect'
-import ImageSelect from 'components/PuzzleSelect/PuzzleSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
 import { useCreateGameObjectMutation } from 'services/portal'
-import { useCreatePuzzleMutation } from 'services/games'
+import ImageEditor from 'components/ImageEditor/ImageEditor'
+import { useCreateMemoryGameMutation } from 'services/games'
+import GridSelect from 'components/GridSelect/GridSelect'
 import { getError } from 'utils/errors'
 import { RootState } from 'store'
 import { gameObj } from 'types'
 
-const NewPuzzlePage: FunctionComponent = ({}) => {
+const NewMemoryPage: FunctionComponent = () => {
     const { token, origin } = useSelector((state: RootState) => state.user)
+    const [createMemoryGame, response] = useCreateMemoryGameMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
     const [open, setOpen] = useState(false)
     const [alert, setAlert] = useState('')
-    const [createPuzzle, response] = useCreatePuzzleMutation()
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
-    const [name, setName] = useState<string>('')
-    const [layout, setLayout] = useState<number>(1)
+    const [images, setImages] = useState<Blob[]>([new Blob(), new Blob()])
+    const [size, setSize] = useState(2)
+    const [name, setName] = useState('')
+    const [layout, setLayout] = useState(1)
     const [serie, setSerie] = useState<string[]>([])
-    const [discipline, setDiscipline] = useState<string>('')
-    const [image, setImage] = useState(0)
-    const [pieces, setPieces] = useState<number>(2)
+    const [discipline, setDiscipline] = useState('')
+
+    const handleSize = (event: ChangeEvent<HTMLInputElement>, newSize: number) => {
+        if (newSize === null) {
+            return
+        }
+        setSize(newSize)
+        if (newSize < images.length) {
+            images.splice(newSize - 1, images.length - newSize)
+        } else if (newSize > images.length) {
+            let img = [...images]
+            for (let i = 0; i < newSize - images.length; i++) {
+                img.push(new Blob())
+            }
+            setImages(img)
+        }
+    }
+
+    const updateImage = (newImage: Blob, index: number) => {
+        let i = [...images]
+        i.splice(index, 1, newImage)
+        setImages(i)
+    }
 
     const handleClose = () => {
-        setLayout(1)
         setName('')
+        setLayout(1)
+        setSerie([])
+        setDiscipline('')
+        setSize(2)
+        setImages([new Blob(), new Blob()])
         setOpen(false)
     }
 
-    const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
+    const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault()
         if (serie === ['']) {
             setAlert('Selecione uma série!')
@@ -44,22 +71,22 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
             setAlert('Selecione uma disciplina!')
             return
         }
+        const data = new FormData()
+        images.map((image: Blob) => {
+            data.append('options[]', image)
+        })
+        data.append('name', name)
+        data.append('layout', layout.toString())
 
-        const body = {
-            name: name,
-            layout: layout,
-            options: [pieces, image],
-        }
-
-        createPuzzle(body)
+        createMemoryGame(data)
     }
 
     useEffect(() => {
         if (response.isSuccess) {
             const obj: gameObj = {
                 name: response?.data?.name as string,
-                slug: `/puzzle/${response?.data?.slug}`,
-                material: `https://fabricadejogos.portaleducacional.tec.br/game/puzzle/${response?.data?.slug}`,
+                slug: `/memory-game/${response?.data?.slug}`,
+                material: `https://fabricadejogos.portaleducacional.tec.br/game/memory-game/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
             }
@@ -72,10 +99,11 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
         responsePortal.isSuccess && setOpen(true)
         responsePortal.isError && setAlert(getError(responsePortal.error))
     }, [responsePortal.isLoading])
+
     return (
         <>
-            <BackFAButton />
             <SuccessModal open={open} handleClose={handleClose} />
+            <BackFAButton />
             <Grid
                 container
                 component="form"
@@ -86,12 +114,13 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
             >
                 <Grid item alignSelf="center" textAlign="center" xs={12}>
                     <Typography color="primary" variant="h2" component="h2">
-                        <b>Quebra-Cabeça</b>
+                        <b>Jogo da Memória</b>
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <Grid container justifyContent="center" spacing={1} display="flex">
                         <Grid
+                            alignSelf="center"
                             item
                             xl={4}
                             lg={3}
@@ -103,7 +132,7 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
                         >
                             <SeriesSelect value={serie} setValue={setSerie} />
                         </Grid>
-                        <Grid item xl={4} lg={3}>
+                        <Grid item alignSelf="center" xl={4} lg={3}>
                             <TextField
                                 label="Nome"
                                 name="name"
@@ -116,6 +145,7 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
                             />
                         </Grid>
                         <Grid
+                            alignSelf="center"
                             item
                             justifyContent={{
                                 lg: 'flex-start',
@@ -130,35 +160,39 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
                         >
                             <DisciplineSelect value={discipline} setValue={setDiscipline} />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item alignSelf="center" xs={12}>
                             <LayoutSelect value={layout} setValue={setLayout} />
                         </Grid>
                     </Grid>
                 </Grid>
-                {alert && (
-                    <Grid item xs={12}>
-                        <Alert
-                            severity="warning"
-                            onClick={() => {
-                                setAlert('')
-                            }}
-                        >
-                            {alert}
-                        </Alert>
+                <Grid item alignSelf="center" xs={12}>
+                    <GridSelect size={size} handleSize={handleSize} />
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={2}>
+                        {alert && (
+                            <Grid item xs={12}>
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('')
+                                    }}
+                                >
+                                    {alert}
+                                </Alert>
+                            </Grid>
+                        )}
+                        {images.map((image: Blob, index: number) => {
+                            return <ImageEditor key={index} image={image} index={index} callback={updateImage} />
+                        })}
                     </Grid>
-                )}
-                <Grid item xs={12}>
-                    <PiecesSelect value={pieces} setValue={setPieces} />
                 </Grid>
-                <Grid item xs={12}>
-                    <ImageSelect value={image} setValue={setImage} />
-                </Grid>
-                <Grid item xs={12}>
+                <Grid item alignSelf="center" xs={12}>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (
                         <Button size="large" type="submit" variant="outlined">
-                            Salvar
+                            Criar
                         </Button>
                     )}
                 </Grid>
@@ -167,4 +201,4 @@ const NewPuzzlePage: FunctionComponent = ({}) => {
     )
 }
 
-export default NewPuzzlePage
+export default NewMemoryPage

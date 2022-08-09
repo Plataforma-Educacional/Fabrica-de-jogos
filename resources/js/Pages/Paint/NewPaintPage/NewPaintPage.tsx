@@ -1,77 +1,56 @@
-import React, { ChangeEvent, FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import BackFAButton from '../../../components/BackFAButton/BackFAButton';
-import SuccessModal from '../../../components/SuccessModal/SuccessModal';
-import { Alert, Box, Button, CircularProgress, Grid, SelectChangeEvent, TextField, Typography } from '@mui/material';
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect';
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect';
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../store';
-import { useCreatePaintMutation } from '../../../services/games';
-import { useCreateGameObjectMutation } from '../../../services/portal';
-import { gameObj } from '../../../types';
-import { getError } from '../../../utils/errors';
-import ImageSelect from '../../../components/PaintSelect/PaintSelect';
+import React, { FormEvent, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Alert, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material'
+import { useSelector } from 'react-redux'
+
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import { useCreateGameObjectMutation } from 'services/portal'
+import ImageSelect from 'components/PaintSelect/PaintSelect'
+import { useCreatePaintMutation } from 'services/games'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
+import { gameObj } from 'types'
 
 const NewPaintPage: FunctionComponent = ({}) => {
-    const { token, origin } = useSelector((state: RootState) => state.user);
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [createPaint, response] = useCreatePaintMutation();
-    const [createGameObject, responsePortal] = useCreateGameObjectMutation();
-    const [name, setName] = useState<string>('');
-    const [layout, setLayout] = useState<number>(1);
-    const [serie, setSerie] = useState<string[]>([]);
-    const [discipline, setDiscipline] = useState<string>('');
-    const [image, setImage] = useState(0);
-    const handleImage = (event: ChangeEvent<HTMLInputElement>, newImage: number) => {
-        if (newImage === null) {
-            return;
-        }
-        setImage(newImage);
-    };
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return;
-        }
-        setLayout(newLayout);
-    };
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [createPaint, response] = useCreatePaintMutation()
+    const [createGameObject, responsePortal] = useCreateGameObjectMutation()
+    const [name, setName] = useState<string>('')
+    const [layout, setLayout] = useState<number>(1)
+    const [serie, setSerie] = useState<string[]>([])
+    const [discipline, setDiscipline] = useState<string>('')
+    const [image, setImage] = useState(0)
+
     const handleClose = () => {
-        setLayout(1);
-        setName('');
-        setOpen(false);
-    };
-    const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value;
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value);
-        }
-    };
-    const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value;
-        if (value !== null && value !== discipline) {
-            setDiscipline(value);
-        }
-    };
+        setLayout(1)
+        setName('')
+        setOpen(false)
+    }
+
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
-        event.preventDefault();
+        event.preventDefault()
         if (serie === ['']) {
-            setAlert('Selecione uma série!');
-            return;
+            setAlert('Selecione uma série!')
+            return
         }
         if (discipline === '') {
-            setAlert('Selecione uma disciplina!');
-            return;
+            setAlert('Selecione uma disciplina!')
+            return
         }
 
         const body = {
             name: name,
             layout: layout,
             options: [image],
-        };
+        }
 
-        createPaint(body);
-    };
+        createPaint(body)
+    }
 
     useEffect(() => {
         if (response.isSuccess) {
@@ -81,124 +60,108 @@ const NewPaintPage: FunctionComponent = ({}) => {
                 material: `https://fabricadejogos.portaleducacional.tec.br/game/paint/${response?.data?.slug}`,
                 disciplina_id: Number(discipline),
                 series: serie,
-            };
-            createGameObject({ origin, token, ...obj });
+            }
+            createGameObject({ origin, token, ...obj })
         }
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     useEffect(() => {
-        responsePortal.isSuccess && setOpen(true);
-        responsePortal.isError && setAlert(getError(responsePortal.error));
-    }, [responsePortal.isLoading]);
+        responsePortal.isSuccess && setOpen(true)
+        responsePortal.isError && setAlert(getError(responsePortal.error))
+    }, [responsePortal.isLoading])
     return (
         <>
             <BackFAButton />
             <SuccessModal open={open} handleClose={handleClose} />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid
-                    container
-                    alignSelf="center"
-                    alignItems="center"
-                    justifyContent="center"
-                    component="form"
-                    onSubmit={handleSubmit}
-                    spacing={3}
-                >
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Ateliê Criativo</b>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                sm={12}
-                                xs={12}
-                                justifyContent={{ lg: 'flex-end', xs: 'none' }}
-                                display={{ lg: 'flex', xs: '' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    xs: 'none',
-                                }}
-                                display={{ lg: 'flex', xs: '' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                sm={12}
-                                xs={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Ateliê Criativo</b>
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container justifyContent="center" spacing={1} display="flex">
+                        <Grid
+                            alignSelf="center"
+                            item
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                            justifyContent={{ lg: 'flex-end', xs: 'none' }}
+                            display={{ lg: 'flex', xs: '' }}
+                        >
+                            <SeriesSelect value={serie} setValue={setSerie} />
                         </Grid>
-                    </Grid>
-                    {alert && (
-                        <Grid item xs={12}>
-                            <Alert
-                                severity="warning"
-                                onClick={() => {
-                                    setAlert('');
-                                }}
-                            >
-                                {alert}
-                            </Alert>
+                        <Grid item alignSelf="center" xl={4} lg={3}>
+                            <TextField
+                                label="Nome"
+                                name="name"
+                                variant="outlined"
+                                value={name}
+                                onChange={(event) => setName(event.target.value)}
+                                required
+                                sx={{ minWidth: { sm: 290, xs: 260 } }}
+                                fullWidth
+                            />
                         </Grid>
-                    )}
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        <ImageSelect selectedImage={image} callback={handleImage} />
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
-                        )}
+                        <Grid
+                            alignSelf="center"
+                            item
+                            justifyContent={{
+                                lg: 'flex-start',
+                                xs: 'none',
+                            }}
+                            display={{ lg: 'flex', xs: '' }}
+                            xl={4}
+                            lg={3}
+                            md={12}
+                            sm={12}
+                            xs={12}
+                        >
+                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                        </Grid>
+                        <Grid item alignSelf="center" xs={12}>
+                            <LayoutSelect value={layout} setValue={setLayout} />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                {alert && (
+                    <Grid item xs={12}>
+                        <Alert
+                            severity="warning"
+                            onClick={() => {
+                                setAlert('')
+                            }}
+                        >
+                            {alert}
+                        </Alert>
+                    </Grid>
+                )}
+                <Grid item alignSelf="center" xs={12}>
+                    <ImageSelect value={image} setValue={setImage} />
+                </Grid>
+                <Grid item alignSelf="center" xs={12}>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
-    );
-};
+    )
+}
 
-export default NewPaintPage;
+export default NewPaintPage

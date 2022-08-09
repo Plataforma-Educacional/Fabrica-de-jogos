@@ -1,17 +1,17 @@
-import React, { FormEventHandler, FunctionComponent, useEffect, useState } from 'react';
-import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material';
-import { EditorState, convertToRaw } from 'draft-js';
-import AddIcon from '@mui/icons-material/Add';
-import { useParams } from 'react-router-dom';
+import React, { FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
+import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material'
+import { EditorState, convertToRaw } from 'draft-js'
+import AddIcon from '@mui/icons-material/Add'
+import { useParams } from 'react-router-dom'
 
-import { useUpdateMatchUpMutation, useGetMatchUpBySlugQuery } from 'services/games';
-import LayoutPicker from 'components/LayoutSelect/LayoutSelect';
-import SuccessModal from 'components/SuccessModal/SuccessModal';
-import MatchUpCell from 'components/MatchUpCell/MatchUpCell';
-import textToDraft from 'utils/textToDraft';
-import draftToText from 'utils/draftToText';
-import { getError } from 'utils/errors';
-import { matchUpPage } from 'types';
+import { useUpdateMatchUpMutation, useGetMatchUpBySlugQuery } from 'services/games'
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import MatchUpCell from 'components/MatchUpCell/MatchUpCell'
+import textToDraft from 'utils/textToDraft'
+import draftToText from 'utils/draftToText'
+import { getError } from 'utils/errors'
+import { matchUpPage } from 'types'
 
 const initialState: matchUpPage[] = [
     [
@@ -32,82 +32,82 @@ const initialState: matchUpPage[] = [
             meaning: EditorState.createEmpty(),
         },
     ],
-];
+]
 
 const EditMatchUpPage: FunctionComponent = () => {
-    const { slug } = useParams();
-    const [open, setOpen] = useState(false);
-    const [alert, setAlert] = useState('');
-    const [layout, setLayout] = useState(1);
-    const [pages, setPages] = useState(initialState);
-    const { data, error, isLoading } = useGetMatchUpBySlugQuery(slug as string);
-    const [updateMatchUp, response] = useUpdateMatchUpMutation();
+    const { slug } = useParams()
+    const [open, setOpen] = useState(false)
+    const [alert, setAlert] = useState('')
+    const [layout, setLayout] = useState(1)
+    const [pages, setPages] = useState(initialState)
+    const { data, error, isLoading } = useGetMatchUpBySlugQuery(slug as string)
+    const [updateMatchUp, response] = useUpdateMatchUpMutation()
     const formatPages = (raw: matchUpPage[]) => {
         raw.map((page) => {
             page.map((matchup) => {
                 if (typeof matchup.meaning !== 'string') {
-                    return;
+                    return
                 }
-                matchup.meaning = textToDraft(matchup.meaning);
-            });
-        });
-        return raw;
-    };
+                matchup.meaning = textToDraft(matchup.meaning)
+            })
+        })
+        return raw
+    }
     const handleCreatePage = () => {
         if (pages.length >= 10) {
-            setAlert('O número máximo de páginas para esse jogo é 10!');
-            return;
+            setAlert('O número máximo de páginas para esse jogo é 10!')
+            return
         }
-        setPages([...pages, ...initialState]);
-    };
+        setPages([...pages, ...initialState])
+    }
 
     const handleSubmit: FormEventHandler = (event: React.FormEvent<HTMLInputElement>) => {
-        event.preventDefault();
-        let matchUpsJSON: matchUpPage[] = [];
-        let error = false;
+        event.preventDefault()
+        let matchUpsJSON: matchUpPage[] = []
+        let error = false
         pages.map((page: matchUpPage) => {
-            let matchUps: matchUpPage = [];
+            let matchUps: matchUpPage = []
             page.map((matchUp) => {
-                const meaning = matchUp.meaning as EditorState;
-                let content = meaning.getCurrentContent();
+                const meaning = matchUp.meaning as EditorState
+                let content = meaning.getCurrentContent()
                 if (content.getPlainText('').length === 0) {
-                    setAlert('Preencha todos os campos!');
-                    error = true;
-                    return;
+                    setAlert('Preencha todos os campos!')
+                    error = true
+                    return
                 }
-                let textJson = convertToRaw(content);
-                let markup = draftToText(textJson);
+                let textJson = convertToRaw(content)
+                let markup = draftToText(textJson)
                 matchUps.push({
                     meaning: markup,
                     word: matchUp.word,
-                });
-            });
-            matchUpsJSON.push(matchUps);
-        });
+                })
+            })
+            matchUpsJSON.push(matchUps)
+        })
         if (error) {
-            return;
+            return
         }
         let body = {
             layout: layout,
             options: matchUpsJSON,
-        };
-        updateMatchUp({ ...body, slug });
-    };
+        }
+        updateMatchUp({ ...body, slug })
+    }
 
     useEffect(() => {
         if (data) {
-            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!');
-            let deep_copy = JSON.parse(JSON.stringify(data.options));
-            setPages(formatPages(deep_copy));
-            setLayout(data.layout);
+            data.approved_at && setAlert('Esse jogo já foi aprovado, logo não pode mais ser editado!')
+            let deep_copy = JSON.parse(JSON.stringify(data.options))
+            setPages(formatPages(deep_copy))
+            setLayout(data.layout)
         }
-        error && setAlert(getError(error));
-    }, [isLoading]);
+        error && setAlert(getError(error))
+    }, [isLoading])
 
     useEffect(() => {
-        response.isSuccess && setOpen(true);
-        response.isError && setAlert(getError(response.error));
-    }, [response.isLoading]);
+        response.isSuccess && setOpen(true)
+        response.isError && setAlert(getError(response.error))
+    }, [response.isLoading])
 
     if (isLoading)
         return (
@@ -119,7 +119,7 @@ const EditMatchUpPage: FunctionComponent = () => {
                     transform: 'translate(-50%, -50%)',
                 }}
             />
-        );
+        )
 
     return (
         <>
@@ -143,7 +143,7 @@ const EditMatchUpPage: FunctionComponent = () => {
                                 <Alert
                                     severity="warning"
                                     onClick={() => {
-                                        setAlert('');
+                                        setAlert('')
                                     }}
                                 >
                                     {alert}
@@ -155,7 +155,7 @@ const EditMatchUpPage: FunctionComponent = () => {
                                 <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
                                     <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
                                 </Grid>
-                            );
+                            )
                         })}
                     </Grid>
                 </Grid>
@@ -172,7 +172,7 @@ const EditMatchUpPage: FunctionComponent = () => {
                 </Grid>
             </Grid>
         </>
-    );
-};
+    )
+}
 
-export default EditMatchUpPage;
+export default EditMatchUpPage
