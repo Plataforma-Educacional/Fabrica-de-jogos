@@ -43,8 +43,8 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 padding: '15px',
             }}
         >
-            <Grid container alignItems="center">
-                <Grid item xs={10}>
+            <Grid container alignItems="center" justifyContent="center">
+                <Grid item xs={11}>
                     <TextField
                         label="Palavra"
                         name="word"
@@ -60,8 +60,9 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                         required
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                     <IconButton
+                        disabled={state.length === 1}
                         onClick={() => {
                             handleRemoveWord(index)
                         }}
@@ -69,7 +70,7 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                         <DeleteIcon />
                     </IconButton>
                 </Grid>
-                <Grid item xs={10}>
+                <Grid item xs={12}>
                     <RichTextField
                         editorState={value.tip as EditorState}
                         onChange={handleTipChange}

@@ -87,85 +87,72 @@ const NewGroupSortPage: FunctionComponent = ({}) => {
             <BackFAButton />
             <Grid
                 container
-                component="form"
+                marginTop={2}
                 alignItems="center"
+                justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Agrupamentos</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container justifyContent="center" spacing={1} display="flex">
-                        <Grid
-                            alignSelf="center"
-                            item
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            justifyContent={{ lg: 'flex-end', md: 'none' }}
-                            display={{ lg: 'flex', md: 'block' }}
-                        >
-                            <SeriesSelect value={serie} setValue={setSerie} />
-                        </Grid>
-                        <Grid item alignSelf="center" xl={4} lg={3}>
-                            <TextField
-                                label="Nome"
-                                name="name"
-                                variant="outlined"
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                required
-                                sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid
-                            alignSelf="center"
-                            item
-                            justifyContent={{
-                                lg: 'flex-start',
-                                md: 'none',
-                            }}
-                            display={{ lg: 'flex', md: 'block' }}
-                            xl={4}
-                            lg={3}
-                            md={12}
-                        >
-                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                        </Grid>
-                        <Grid item alignSelf="center" xs={12}>
-                            <LayoutSelect value={layout} setValue={setLayout} />
-                        </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <Grid container justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    {groups.map((group, index) => {
+                        return (
+                            <Grid key={index} item xs={12} md={6} lg={4}>
+                                <GroupSortCell index={index} value={group} state={groups} setState={setGroups} />
                             </Grid>
-                        )}
-                        {groups.map((group, index) => {
-                            return (
-                                <Grid key={index} item xs={12} md={6} lg={4}>
-                                    <GroupSortCell index={index} value={group} state={groups} setState={setGroups} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

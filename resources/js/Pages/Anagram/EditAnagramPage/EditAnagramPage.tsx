@@ -8,6 +8,7 @@ import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import SuccessModal from 'components/SuccessModal/SuccessModal'
 import AnagramCell from 'components/AnagramCell/AnagramCell'
 import { getError } from 'utils/errors'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const sliceIntoChunks = (arr: string[], chunkSize: number): string[][] => {
     const res = []
@@ -86,58 +87,61 @@ const EditAnagramPage: FunctionComponent = () => {
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                justifyContent="center"
+                marginTop={2}
                 alignItems="center"
+                justifyContent="center"
+                direction="column"
                 component="form"
                 onSubmit={handleSubmit}
-                spacing={3}
-                sx={{ marginTop: 8 }}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item xs={12}>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Anagrama</b>
                     </Typography>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item>
+                    <Typography variant="subtitle2" fontSize={20} color="primary">
+                        Tema:
+                    </Typography>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item container alignItems="center" justifyContent="center">
+                    <LayoutSelect value={layout} setValue={setLayout} />
+                </Grid>
+                <Grid item>
                     <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
                         Adicionar Pagina
                     </Button>
                 </Grid>
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    {pages.map((page: string[], index: number) => {
+                        return (
+                            <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                                <AnagramCell index={index} value={page} state={pages} setState={setPages} />
                             </Grid>
-                        )}
-                        {pages.map((page, index) => {
-                            return (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                                    <AnagramCell index={index} value={page} state={pages} setState={setPages} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item justifyContent="center">
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (
-                        <Grid item xs={12}>
-                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
-                                Salvar
-                            </Button>
-                        </Grid>
+                        <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                            Salvar
+                        </Button>
                     )}
                 </Grid>
             </Grid>

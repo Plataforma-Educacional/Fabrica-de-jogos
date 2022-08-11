@@ -1,16 +1,17 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent, FormEventHandler } from 'react'
-import { Alert, Button, Grid, TextField, Box, SelectChangeEvent, Typography, CircularProgress } from '@mui/material'
-import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import React, { useState, useEffect, FormEvent, FormEventHandler } from 'react'
+import { Alert, Button, Grid, TextField, Typography, CircularProgress } from '@mui/material'
 import { useSelector } from 'react-redux'
-import BackFAButton from '../../../components/BackFAButton/BackFAButton'
-import { RootState } from '../../../store'
-import { useCreateWordleMutation } from '../../../services/games'
-import { useCreateGameObjectMutation } from '../../../services/portal'
-import { gameObj } from '../../../types'
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect'
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect'
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect'
-import { getError } from '../../../utils/errors'
+
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import { useCreateGameObjectMutation } from 'services/portal'
+import { useCreateWordleMutation } from 'services/games'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
+import { gameObj } from 'types'
 
 const NewWordlePage = () => {
     const { token, origin } = useSelector((state: RootState) => state.user)
@@ -24,30 +25,13 @@ const NewWordlePage = () => {
     const [discipline, setDiscipline] = useState<string>('')
     const [word, setWord] = useState<string>('')
 
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return
-        }
-        setLayout(newLayout)
-    }
     const handleClose = () => {
         setWord('')
         setLayout(1)
         setName('')
         setOpen(false)
     }
-    const seriesChange = (event: SelectChangeEvent<string[]>) => {
-        const value = event.target.value
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value)
-        }
-    }
-    const disciplineChange = (event: SelectChangeEvent): void => {
-        const value = event.target.value
-        if (value !== null && value !== discipline) {
-            setDiscipline(value)
-        }
-    }
+
     const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>): void => {
         event.preventDefault()
         if (serie === ['']) {
@@ -89,111 +73,86 @@ const NewWordlePage = () => {
         <>
             <BackFAButton />
             <SuccessModal open={open} handleClose={handleClose} />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                marginTop={2}
+                alignItems="center"
+                justifyContent="center"
+                direction="column"
+                component="form"
+                onSubmit={handleSubmit}
+                spacing={2}
+                textAlign="center"
             >
+                <Grid item>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Organize as Letras</b>
+                    </Typography>
+                </Grid>
                 <Grid
+                    item
                     container
-                    alignSelf="center"
-                    alignItems="center"
+                    direction={{ lg: 'row', md: 'column' }}
                     justifyContent="center"
-                    component="form"
-                    onSubmit={handleSubmit}
-                    spacing={3}
+                    alignItems="center"
+                    spacing={1}
                 >
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Organize as Letras</b>
-                        </Typography>
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            <Grid
-                                alignSelf="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                justifyContent={{ lg: 'flex-end', md: 'none' }}
-                                display={{ lg: 'flex', md: 'block' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            <Grid item alignSelf="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            <Grid
-                                alignSelf="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    md: 'none',
-                                }}
-                                display={{ lg: 'flex', md: 'block' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            <Grid item alignSelf="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
-                        </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
                     </Grid>
-                    <Grid item xs={12}>
-                        <Grid container alignSelf="center" alignItems="flex-start" justifyContent="center" spacing={5}>
-                            {alert && (
-                                <Grid item xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('')
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {/* @ts-ignore */}
-                            <Grid item align="center" xs={12}>
-                                <TextField
-                                    label="Palavra"
-                                    name="word"
-                                    variant="outlined"
-                                    value={word}
-                                    onChange={(event) => setWord(event.target.value)}
-                                    required
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading || responsePortal.isLoading ? (
-                            <CircularProgress />
-                        ) : (
-                            <Button size="large" type="submit" variant="outlined">
-                                Salvar
-                            </Button>
-                        )}
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Palavra"
+                            name="word"
+                            variant="outlined"
+                            value={word}
+                            onChange={(event) => setWord(event.target.value)}
+                            required
+                        />
+                    </Grid>
+                </Grid>
+                <Grid item>
+                    {response.isLoading || responsePortal.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Button size="large" type="submit" variant="outlined">
+                            Salvar
+                        </Button>
+                    )}
+                </Grid>
+            </Grid>
         </>
     )
 }

@@ -23,7 +23,7 @@ const NewAnagramPage: FunctionComponent = ({}) => {
     const [name, setName] = useState('')
     const [layout, setLayout] = useState(1)
     const [serie, setSerie] = useState<string[]>([])
-    const [discipline, setDiscipline] = useState<string>('')
+    const [discipline, setDiscipline] = useState('')
     const [pages, setPages] = useState([['', '', '', '']])
     const handleAddWord = () => {
         if (pages.length >= 8) {
@@ -96,31 +96,32 @@ const NewAnagramPage: FunctionComponent = ({}) => {
             <SuccessModal open={open} handleClose={handleClose} />
             <Grid
                 container
+                marginTop={2}
                 alignItems="center"
                 justifyContent="center"
                 direction="column"
                 component="form"
-                marginTop={2}
                 onSubmit={handleSubmit}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item textAlign="center">
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Anagrama</b>
                     </Typography>
                 </Grid>
-                <Grid item container justifyContent="center" alignItems="center" spacing={1}>
-                    <Grid
-                        item
-                        xl={4}
-                        lg={3}
-                        md={12}
-                        justifyContent={{ lg: 'flex-end', md: 'none' }}
-                        display={{ lg: 'flex', md: 'block' }}
-                    >
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
                         <SeriesSelect value={serie} setValue={setSerie} />
                     </Grid>
-                    <Grid item xl={4} lg={3}>
+                    <Grid item lg={4} md={12}>
                         <TextField
                             label="Nome"
                             name="name"
@@ -132,29 +133,14 @@ const NewAnagramPage: FunctionComponent = ({}) => {
                             fullWidth
                         />
                     </Grid>
-                    <Grid
-                        item
-                        xl={4}
-                        lg={3}
-                        md={12}
-                        justifyContent={{
-                            lg: 'flex-start',
-                            md: 'none',
-                        }}
-                        display={{ lg: 'flex', md: 'block' }}
-                    >
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
                         <DisciplineSelect value={discipline} setValue={setDiscipline} />
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <LayoutSelect value={layout} setValue={setLayout} />
-                </Grid>
-                <Grid item>
-                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Pagina
-                    </Button>
-                </Grid>
                 <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
                     {alert && (
                         <Grid item xs={12}>
                             <Alert
@@ -167,6 +153,11 @@ const NewAnagramPage: FunctionComponent = ({}) => {
                             </Alert>
                         </Grid>
                     )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar Pagina
+                        </Button>
+                    </Grid>
                     {pages.map((page: string[], index: number) => {
                         return (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -175,7 +166,7 @@ const NewAnagramPage: FunctionComponent = ({}) => {
                         )
                     })}
                 </Grid>
-                <Grid item justifyContent="center">
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

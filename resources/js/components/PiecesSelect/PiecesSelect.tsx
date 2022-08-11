@@ -14,21 +14,17 @@ const PiecesSelect: FunctionComponent<Props> = ({ value, setValue }) => {
         setValue(newPieces)
     }
     return (
-        <Grid item xs={12}>
+        <Grid container justifyContent="center" alignItems="center">
             <Grid item xs={12}>
-                <Typography variant="subtitle1">Quantidade de peças:</Typography>
+                <Typography fontSize={18} variant="subtitle2" color="primary">
+                    Quantidade de peças:
+                </Typography>
             </Grid>
-            <ToggleButtonGroup
-                value={value}
-                exclusive
-                onChange={handlePieces}
-                aria-label="text alignment"
-                color="primary"
-            >
-                <ToggleButton value={2}>2</ToggleButton>
-                <ToggleButton value={3}>3</ToggleButton>
-                <ToggleButton value={4}>4</ToggleButton>
-                <ToggleButton value={6}>6</ToggleButton>
+            <ToggleButtonGroup value={value} exclusive onChange={handlePieces} color="primary">
+                <ToggleButton value={2}>{'- 2 -'}</ToggleButton>
+                <ToggleButton value={3}>{'- 3 -'}</ToggleButton>
+                <ToggleButton value={4}>{'- 4 -'}</ToggleButton>
+                <ToggleButton value={6}>{'- 6 -'}</ToggleButton>
             </ToggleButtonGroup>
         </Grid>
     )

@@ -107,93 +107,81 @@ const NewQuizPage: FunctionComponent = () => {
             <BackFAButton />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Quiz</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container justifyContent="center" spacing={1} display="flex">
-                        <Grid
-                            item
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            justifyContent={{ lg: 'flex-end', md: 'none' }}
-                            display={{ lg: 'flex', md: 'block' }}
-                        >
-                            <SeriesSelect value={serie} setValue={setSerie} />
-                        </Grid>
-                        <Grid item xl={4} lg={3}>
-                            <TextField
-                                label="Nome"
-                                name="name"
-                                variant="outlined"
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                required
-                                sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid
-                            item
-                            justifyContent={{
-                                lg: 'flex-start',
-                                md: 'none',
-                            }}
-                            display={{ lg: 'flex', md: 'block' }}
-                            xl={4}
-                            lg={3}
-                            md={12}
-                        >
-                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                        </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                    </Grid>
+                </Grid>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
                         <Grid item xs={12}>
-                            <LayoutSelect value={layout} setValue={setLayout} />
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
                         </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button
+                            onClick={handleCreateQuestion}
+                            endIcon={<AddIcon fontSize="small" />}
+                            variant="contained"
+                        >
+                            Adicionar Questão
+                        </Button>
                     </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <Button onClick={handleCreateQuestion} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Questão
-                    </Button>
-                </Grid>
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
+                    {questions.map((question: quizQuestion, index: number) => {
+                        return (
+                            <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                                <QuizCell index={index} value={question} state={questions} setState={setQuestions} />
                             </Grid>
-                        )}
-                        {questions.map((question: quizQuestion, index: number) => {
-                            return (
-                                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                                    <QuizCell
-                                        index={index}
-                                        value={question}
-                                        state={questions}
-                                        setState={setQuestions}
-                                    />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

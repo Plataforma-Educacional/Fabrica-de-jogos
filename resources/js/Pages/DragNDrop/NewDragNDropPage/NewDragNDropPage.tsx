@@ -75,83 +75,68 @@ const NewDragNDropPage: FunctionComponent = ({}) => {
             <SuccessModal open={open} handleClose={handleClose} />
             <Grid
                 container
-                alignSelf="center"
+                marginTop={2}
                 alignItems="center"
                 justifyContent="center"
+                direction="column"
                 component="form"
-                sx={{ marginTop: 8 }}
                 onSubmit={handleSubmit}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Arrastar e Soltar</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container justifyContent="center" spacing={1} display="flex">
-                        <Grid
-                            alignSelf="center"
-                            item
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            sm={12}
-                            xs={12}
-                            justifyContent={{ lg: 'flex-end', xs: 'none' }}
-                            display={{ lg: 'flex', xs: '' }}
-                        >
-                            <SeriesSelect value={serie} setValue={setSerie} />
-                        </Grid>
-                        <Grid item alignSelf="center" xl={4} lg={3}>
-                            <TextField
-                                label="Nome"
-                                name="name"
-                                variant="outlined"
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                required
-                                sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid
-                            alignSelf="center"
-                            item
-                            justifyContent={{
-                                lg: 'flex-start',
-                                xs: 'none',
-                            }}
-                            display={{ lg: 'flex', xs: '' }}
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            sm={12}
-                            xs={12}
-                        >
-                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                        </Grid>
-                        <Grid item alignSelf="center" xs={12}>
-                            <LayoutSelect value={layout} setValue={setLayout} />
-                        </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
                     </Grid>
                 </Grid>
-                {alert && (
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
                     <Grid item xs={12}>
-                        <Alert
-                            severity="warning"
-                            onClick={() => {
-                                setAlert('')
-                            }}
-                        >
-                            {alert}
-                        </Alert>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
-                )}
-                <Grid item alignSelf="center" xs={12}>
-                    <FormatSelect value={format} setValue={setFormat} />
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item alignSelf="center" xs={12}>
+                        <FormatSelect value={format} setValue={setFormat} />
+                    </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

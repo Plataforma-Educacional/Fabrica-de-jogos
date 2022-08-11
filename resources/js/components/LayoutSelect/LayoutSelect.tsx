@@ -1,9 +1,9 @@
 import React, { MouseEvent, Dispatch, SetStateAction, FunctionComponent } from 'react'
 import { Card, Grid, Typography } from '@mui/material'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Pagination } from 'swiper'
-import 'swiper/css/navigation'
+import { Navigation, Pagination } from 'swiper'
 import 'swiper/css/pagination'
+import 'swiper/css/navigation'
 import 'swiper/css'
 
 import ImageToggleButton from 'components/ImageToggleButton/ImageToggleButton'
@@ -23,55 +23,67 @@ const LayoutSelect: FunctionComponent<Props> = ({ value, setValue }) => {
         setValue(newLayout)
     }
     return (
-        <Grid container direction="column" alignItems="center" justifyContent="center">
-            <Grid item textAlign="center">
-                <Typography variant="subtitle1">Tema:</Typography>
+        <Grid container alignItems="center" justifyContent="center">
+            <Grid item xs={12}>
+                <Typography fontSize={18} variant="subtitle2" color="primary">
+                    Tema:
+                </Typography>
             </Grid>
-            <Swiper
-                slidesPerView={3}
-                spaceBetween={10}
-                pagination={{
-                    clickable: true,
-                }}
-                modules={[Pagination]}
-                className="mySwiper"
-            >
-                {layouts.map((layout, i) => {
-                    return (
-                        <SwiperSlide>
-                            <ImageToggleButton
-                                key={i}
-                                selected={value === layout}
-                                value={layout}
-                                color="primary"
-                                size="small"
-                                sx={{
-                                    padding: 0,
-                                }}
-                                onChange={(event, value) => {
-                                    handleLayout(event, value)
-                                }}
-                            >
-                                <Card
+            <Grid item xs={10}>
+                <Swiper
+                    slidesPerView={1}
+                    spaceBetween={10}
+                    loop={true}
+                    navigation={true}
+                    pagination={{
+                        clickable: true,
+                    }}
+                    initialSlide={value - 1}
+                    centeredSlides={true}
+                    breakpoints={{
+                        641: { slidesPerView: 2, centeredSlides: false },
+                        769: { slidesPerView: 3 },
+                        1025: { slidesPerView: 4, centeredSlides: false },
+                    }}
+                    modules={[Navigation, Pagination]}
+                    className="mySwiper"
+                >
+                    {layouts.map((layout, i) => {
+                        return (
+                            <SwiperSlide key={i}>
+                                <ImageToggleButton
+                                    selected={value === layout}
+                                    value={layout}
+                                    color="primary"
+                                    size="small"
                                     sx={{
-                                        width: 250,
-                                        height: 125,
-                                        borderRadius: value === layout ? 0 : null,
+                                        padding: 0,
                                     }}
-                                    elevation={5}
+                                    onChange={(event, value) => {
+                                        handleLayout(event, value)
+                                    }}
                                 >
-                                    <img
-                                        src={`/storage/layout/layout${layout}.png`}
-                                        alt={`Layout ${layout}`}
-                                        width="100%"
-                                        height="100%"
-                                    />
-                                </Card>
-                            </ImageToggleButton>
-                        </SwiperSlide>
-                    )
-                })}
-            </Swiper>
+                                    <Card
+                                        sx={{
+                                            width: 250,
+                                            height: 125,
+                                            borderRadius: value === layout ? 0 : null,
+                                        }}
+                                        elevation={5}
+                                    >
+                                        <img
+                                            src={`/storage/layout/layout${layout}.png`}
+                                            alt={`Layout ${layout}`}
+                                            width="100%"
+                                            height="100%"
+                                        />
+                                    </Card>
+                                </ImageToggleButton>
+                            </SwiperSlide>
+                        )
+                    })}
+                </Swiper>
+            </Grid>
         </Grid>
     )
 }

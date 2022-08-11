@@ -3,6 +3,7 @@ import { Box, Card, Grid, Typography } from '@mui/material'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 import ImageToggleButton from 'components/ImageToggleButton/ImageToggleButton'
+import { Navigation, Pagination } from 'swiper'
 
 const images = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
 
@@ -19,12 +20,31 @@ const PuzzleSelect = ({ value, setValue }: Props) => {
         setValue(newImage)
     }
     return (
-        <Grid container alignItems="center">
+        <Grid container alignItems="center" justifyContent="center">
             <Grid item xs={12}>
-                <Typography variant="subtitle1">Imagem: </Typography>
+                <Typography fontSize={18} variant="subtitle2" color="primary">
+                    Imagem:
+                </Typography>
             </Grid>
-            <Grid item alignSelf="center" margin="auto" xs={12} md={9}>
-                <Swiper spaceBetween={50} slidesPerView={3}>
+            <Grid item xs={10}>
+                <Swiper
+                    slidesPerView={1}
+                    spaceBetween={10}
+                    loop={true}
+                    navigation={true}
+                    pagination={{
+                        clickable: true,
+                    }}
+                    initialSlide={value - 1}
+                    centeredSlides={true}
+                    breakpoints={{
+                        641: { slidesPerView: 2, centeredSlides: false },
+                        769: { slidesPerView: 3 },
+                        1025: { slidesPerView: 4, centeredSlides: false },
+                    }}
+                    modules={[Navigation, Pagination]}
+                    className="mySwiper"
+                >
                     {images.map((image, i) => {
                         return (
                             <SwiperSlide>

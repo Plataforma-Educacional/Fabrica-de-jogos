@@ -79,25 +79,25 @@ const EditBalloonsPage: FunctionComponent = ({}) => {
             <BackFAButton />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
                 spacing={3}
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item textAlign="center">
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Estoura Balões</b>
                     </Typography>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <LayoutSelect value={layout} setValue={setLayout} />
-                </Grid>
-                <Grid item alignSelf="left" xs={3}>
+                <LayoutSelect value={layout} setValue={setLayout} />
+                <Grid item>
                     <RichTextField
                         editorState={question}
                         onChange={(value: EditorState) => setQuestion(value)}
-                        label={'Enunciado'}
+                        label={'Enunciado/'}
                         maxLength={160}
                     />
                 </Grid>
@@ -123,7 +123,7 @@ const EditBalloonsPage: FunctionComponent = ({}) => {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item justifyContent="center">
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

@@ -1,40 +1,42 @@
-import React, { FormEventHandler, useEffect, useState } from 'react'
-import { Button, Grid, Alert, Box, CircularProgress, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect'
+import React, { FormEvent, FormEventHandler, useEffect, useState } from 'react'
+import { Button, Grid, Alert, CircularProgress, Typography } from '@mui/material'
 import { convertToRaw, EditorState } from 'draft-js'
-import draftToText from '../../../utils/draftToText'
-import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import AddIcon from '@mui/icons-material/Add'
 import { useParams } from 'react-router-dom'
+
+import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from 'services/games'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import WordTipCell from 'components/WordTipCell/WordTipCell'
-import Copyright from '../../../components/Copyright/Copyright'
-import { useUpdateWordSearchMutation, useGetWordSearchBySlugQuery } from '../../../services/games'
-import { wordObj } from '../../../types'
-import textToDraft from '../../../utils/textToDraft'
-import { getError } from '../../../utils/errors'
+import draftToText from 'utils/draftToText'
+import textToDraft from 'utils/textToDraft'
+import { getError } from 'utils/errors'
+import { wordObj } from 'types'
+
+const initialState: wordObj[] = [
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+]
 
 const EditWordSearch = () => {
     const { slug } = useParams()
-    const initialState: wordObj[] = [
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-    ]
     const [open, setOpen] = useState(false)
     const [alert, setAlert] = useState('')
     const [words, setWords] = useState(initialState)
     const [layout, setLayout] = useState(1)
     const { data, error, isLoading } = useGetWordSearchBySlugQuery(slug as string)
     const [updateWordSearch, response] = useUpdateWordSearchMutation()
+
     const handleAddWord = () => {
         if (words.length >= 8) {
             setAlert('O numero máximo de palavras nesse jogo é 8!')
@@ -47,35 +49,8 @@ const EditWordSearch = () => {
         })
         setWords(p)
     }
-    const handleRemoveWord = (index: number) => {
-        if (words.length === 1) {
-            return
-        }
-        let p = [...words]
-        p.splice(index, 1)
-        setWords(p)
-    }
-    const handleWordChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        let p = [...words]
-        let word = p[index]
-        word.word = event.target.value
-        p.splice(index, 1, word)
-        setWords(p)
-    }
-    const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...words]
-        let word = p[index]
-        word.tip = editorState
-        p.splice(index, 1, word)
-        setWords(p)
-    }
-    const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return
-        }
-        setLayout(newLayout)
-    }
-    const handleSubmit: FormEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const handleSubmit: FormEventHandler = (e: FormEvent<HTMLInputElement>) => {
         e.preventDefault()
         if (words.length < 3) {
             setAlert('O jogo deve ter no mínimo 3 palavras!')
@@ -153,76 +128,60 @@ const EditWordSearch = () => {
                     setOpen(false)
                 }}
             />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Caça-Palavras</b>
-                        </Typography>
-                    </Grid>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                            Adicionar Palavra
-                        </Button>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                /* @ts-ignore*/
-                                <Grid item align="center" xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('')
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {words.map((item: wordObj, index: number) => {
-                                return (
-                                    <WordTipCell
-                                        item={item}
-                                        key={index}
-                                        index={index}
-                                        handleWordChange={handleWordChange}
-                                        handleRemoveWord={handleRemoveWord}
-                                        handleTipChange={handleTipChange}
-                                    />
-                                )
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Caça-Palavras</b>
+                    </Typography>
+                </Grid>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item xs={12}>
+                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                        Adicionar Palavra
+                    </Button>
+                </Grid>
+                <Grid item lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('')
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        {words.map((item: wordObj, index: number) => {
+                            return (
+                                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                    <WordTipCell index={index} value={item} state={words} setState={setWords} />
+                                </Grid>
+                            )
+                        })}
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     )
 }

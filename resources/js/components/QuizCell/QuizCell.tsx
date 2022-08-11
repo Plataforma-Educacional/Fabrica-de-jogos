@@ -67,12 +67,13 @@ const QuizCell = ({ index, value, state, setState }: Props) => {
                 padding: '15px',
             }}
         >
-            <Grid container spacing={2}>
+            <Grid container spacing={1}>
                 <Grid item xs={10}>
                     <Typography variant="subtitle1">Questão {(index + 1).toString()}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                     <IconButton
+                        disabled={state.length === 1}
                         onClick={() => {
                             handleRemoveQuestion(index)
                         }}
@@ -83,57 +84,51 @@ const QuizCell = ({ index, value, state, setState }: Props) => {
                 <Grid item xs={12}>
                     <RichTextField
                         editorState={value.title as EditorState}
-                        onChange={handleQuestionTitleChange}
-                        index={index}
+                        onChange={(editorState: EditorState) => handleQuestionTitleChange(editorState, index)}
                         label={'Enunciado...'}
                         maxLength={160}
                     />
                 </Grid>
-                {value.answers.length <= 4 && (
-                    <Grid item xs={12}>
-                        <Button
-                            variant="outlined"
-                            size="small"
-                            endIcon={<AddIcon fontSize="small" />}
-                            onClick={() => {
-                                handleCreateAnswer(index)
-                            }}
-                        >
-                            Adicionar Alternativa
-                        </Button>
-                    </Grid>
-                )}
-                <Grid item xs={12} key={index}>
-                    <Grid container alignItems="center" spacing={2}>
-                        {value.answers.map((answer: String, i: number) => {
-                            return (
-                                <Grid item xs={12} key={i}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={10}>
-                                            <TextField
-                                                variant="outlined"
-                                                label={i === 0 ? 'Alternativa correta' : `Alternativa ${i + 1}`}
-                                                size="small"
-                                                required
-                                                inputProps={{
-                                                    maxLength: 31,
-                                                }}
-                                                fullWidth
-                                                color={i === 0 ? 'success' : 'primary'}
-                                                value={answer}
-                                                onChange={(event) => handleAnswerChange(event, index, i)}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={2}>
-                                            <IconButton disabled={i === 0} onClick={() => handleRemoveAnswer(index, i)}>
-                                                <DeleteIcon fontSize="small" />
-                                            </IconButton>
-                                        </Grid>
-                                    </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        disabled={value.answers.length === 5}
+                        variant="outlined"
+                        size="small"
+                        endIcon={<AddIcon fontSize="small" />}
+                        onClick={() => {
+                            handleCreateAnswer(index)
+                        }}
+                    >
+                        Adicionar Alternativa
+                    </Button>
+                </Grid>
+                <Grid item container xs={12} key={index} alignItems="center" spacing={2}>
+                    {value.answers.map((answer: String, i: number) => {
+                        return (
+                            <Grid item xs={12} key={i} container spacing={2}>
+                                <Grid item xs={10}>
+                                    <TextField
+                                        variant="outlined"
+                                        label={i === 0 ? 'Alternativa correta' : `Alternativa ${i + 1}`}
+                                        size="small"
+                                        required
+                                        inputProps={{
+                                            maxLength: 31,
+                                        }}
+                                        fullWidth
+                                        color={i === 0 ? 'success' : 'primary'}
+                                        value={answer}
+                                        onChange={(event) => handleAnswerChange(event, index, i)}
+                                    />
                                 </Grid>
-                            )
-                        })}
-                    </Grid>
+                                <Grid item xs={2}>
+                                    <IconButton disabled={i === 0} onClick={() => handleRemoveAnswer(index, i)}>
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                </Grid>
+                            </Grid>
+                        )
+                    })}
                 </Grid>
             </Grid>
         </Paper>

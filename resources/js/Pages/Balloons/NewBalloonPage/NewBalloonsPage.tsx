@@ -54,6 +54,10 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
         if (answers.length > alternatives.length) {
             setAlert('É necessário ter mais alternativas erradas do que respostas certas!')
         }
+        if (question.getCurrentContent().getPlainText().length < 10) {
+            setAlert('A pergunta deve ter no mínimo 10 caracteres!')
+            return
+        }
         let textJson = convertToRaw(question.getCurrentContent())
         let markup = draftToText(textJson)
         const questionsJSON: balloonOptions = {
@@ -93,58 +97,65 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
             <BackFAButton />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Estoura Balões</b>
                     </Typography>
                 </Grid>
                 <Grid
-                    alignSelf="center"
                     item
-                    xl={4}
-                    lg={3}
-                    md={12}
-                    justifyContent={{ lg: 'flex-end', md: 'none' }}
-                    display={{ lg: 'flex', md: 'block' }}
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
                 >
-                    <SeriesSelect value={serie} setValue={setSerie} />
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                    </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xl={4} lg={3}>
-                    <TextField
-                        label="Nome"
-                        name="name"
-                        variant="outlined"
-                        value={name}
-                        onChange={(event) => setName(event.target.value)}
-                        required
-                        sx={{ minWidth: { sm: 290, xs: 260 } }}
-                        fullWidth
-                    />
+                <Grid item container alignItems="center" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
                 </Grid>
-                <Grid
-                    alignSelf="center"
-                    item
-                    justifyContent={{
-                        lg: 'flex-start',
-                        md: 'none',
-                    }}
-                    display={{ lg: 'flex', md: 'block' }}
-                    xl={4}
-                    lg={3}
-                    md={12}
-                >
-                    <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <LayoutSelect value={layout} setValue={setLayout} />
-                </Grid>
-                <Grid item alignSelf="left" xs={3}>
+                <Grid item>
                     <RichTextField
                         editorState={question}
                         onChange={(value: EditorState) => setQuestion(value)}
@@ -152,29 +163,15 @@ const NewBalloonsPage: FunctionComponent = ({}) => {
                         maxLength={160}
                     />
                 </Grid>
-                <Grid item alignSelf="center" lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        <Grid item xs={12} sm={6}>
-                            <BalloonCell value={answers} setValue={setAnswers} correct={true} />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <BalloonCell value={alternatives} setValue={setAlternatives} correct={false} />
-                        </Grid>
+                <Grid item container alignItems="center" justifyContent="center" spacing={5}>
+                    <Grid item xs={12} sm={5}>
+                        <BalloonCell value={answers} setValue={setAnswers} correct={true} />
+                    </Grid>
+                    <Grid item xs={12} sm={5}>
+                        <BalloonCell value={alternatives} setValue={setAlternatives} correct={false} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item justifyContent="center">
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

@@ -43,12 +43,13 @@ const TrueOrFalseCell: FunctionComponent<Props> = ({ index, value, state, setSta
                 padding: '15px',
             }}
         >
-            <Grid container alignItems="center" spacing={3}>
+            <Grid container spacing={1}>
                 <Grid item xs={10}>
                     <Typography variant="subtitle1">Questão {(index + 1).toString()}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                     <IconButton
+                        disabled={state.length === 1}
                         onClick={() => {
                             handleRemoveQuestion(index)
                         }}
@@ -59,30 +60,27 @@ const TrueOrFalseCell: FunctionComponent<Props> = ({ index, value, state, setSta
                 <Grid item xs={12}>
                     <RichTextField
                         editorState={value.title as EditorState}
-                        onChange={handleQuestionTitleChange}
-                        index={index}
+                        onChange={(editorState: EditorState) => handleQuestionTitleChange(editorState, index)}
                         label={'Enunciado...'}
                         maxLength={160}
                     />
                 </Grid>
-                <Grid item xs={2}>
-                    <Typography variant="subtitle1">Falso</Typography>
-                </Grid>
-                <Grid item xs={10}>
-                    <FormGroup>
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    size="medium"
-                                    checked={value.answer}
-                                    onChange={(event) => {
-                                        handleAnswerChange(event, index)
-                                    }}
-                                />
-                            }
-                            label="Verdadeiro"
+                <Grid item container alignItems="center" justifyContent="center" xs={12}>
+                    <Grid item textAlign="right" xs={4}>
+                        <Typography variant="subtitle1">Falso</Typography>
+                    </Grid>
+                    <Grid item justifyContent="center" display="flex" xs={3}>
+                        <Switch
+                            size="medium"
+                            checked={value.answer}
+                            onChange={(event) => {
+                                handleAnswerChange(event, index)
+                            }}
                         />
-                    </FormGroup>
+                    </Grid>
+                    <Grid item textAlign="left" xs={4}>
+                        <Typography variant="subtitle1">Verdadeiro</Typography>
+                    </Grid>
                 </Grid>
             </Grid>
         </Paper>

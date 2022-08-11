@@ -18,9 +18,6 @@ const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }
         setState(p)
     }
     const handleRemovePage = (index: number) => {
-        if (state.length === 1) {
-            return
-        }
         let p = [...state]
         p.splice(index, 1)
         setState(p)
@@ -33,22 +30,25 @@ const AnagramCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 padding: '15px',
             }}
         >
-            <Grid container spacing={3} alignItems="center">
-                <Grid item alignSelf="center" xs={9}>
-                    <Typography variant="subtitle1">Pag {index + 1}</Typography>
-                </Grid>
-                <Grid item xs={3}>
-                    <IconButton
-                        onClick={() => {
-                            handleRemovePage(index)
-                        }}
-                    >
-                        <DeleteIcon fontSize="small" />
-                    </IconButton>
+            <Grid container direction="column" spacing={2} alignItems="center">
+                <Grid item container alignItems="center" justifyContent="center">
+                    <Grid item xs={10}>
+                        <Typography variant="subtitle1">Pag {index + 1}</Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton
+                            disabled={state.length === 1}
+                            onClick={() => {
+                                handleRemovePage(index)
+                            }}
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Grid>
                 </Grid>
                 {value.map((word: string, i: number) => {
                     return (
-                        <Grid item alignSelf="center" key={i} xs={12}>
+                        <Grid item container key={i}>
                             <TextField
                                 label="Palavra"
                                 name="word"

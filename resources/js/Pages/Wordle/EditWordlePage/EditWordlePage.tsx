@@ -1,10 +1,11 @@
 import React, { FormEventHandler, useEffect, useState } from 'react'
-import { Button, Grid, Alert, Box, CircularProgress, Typography, TextField } from '@mui/material'
-import LayoutPicker from '../../../components/LayoutSelect/LayoutSelect'
-import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import { Button, Grid, Alert, CircularProgress, Typography, TextField } from '@mui/material'
 import { useParams } from 'react-router-dom'
-import { useUpdateWordleMutation, useGetWordleBySlugQuery } from '../../../services/games'
-import { getError } from '../../../utils/errors'
+
+import { useUpdateWordleMutation, useGetWordleBySlugQuery } from 'services/games'
+import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import { getError } from 'utils/errors'
 
 const EditWordSearch = () => {
     const { slug } = useParams()
@@ -15,12 +16,6 @@ const EditWordSearch = () => {
     const { data, error, isLoading } = useGetWordleBySlugQuery(slug as string)
     const [updateWordle, response] = useUpdateWordleMutation()
 
-    const handleLayout = (event: React.ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return
-        }
-        setLayout(newLayout)
-    }
     const handleSubmit: FormEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault()
         let body = {
@@ -64,69 +59,58 @@ const EditWordSearch = () => {
                     setOpen(false)
                 }}
             />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                component="form"
+                justifyContent="center"
+                onSubmit={handleSubmit}
+                sx={{ marginTop: 8 }}
+                spacing={3}
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Organize as Letras</b>
-                        </Typography>
-                    </Grid>
-                    <LayoutPicker callback={handleLayout} selectedLayout={layout} />
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                /* @ts-ignore*/
-                                <Grid item align="center" xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('')
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {/* @ts-ignore */}
-                            <Grid item align="center" xs={12}>
-                                <TextField
-                                    label="Palavra"
-                                    name="word"
-                                    variant="outlined"
-                                    value={word}
-                                    onChange={(event) => setWord(event.target.value)}
-                                    required
-                                />
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore*/}
-                    <Grid item align="center" xs={12}>
-                        {response.isLoading ? (
-                            <CircularProgress />
-                        ) : (
+                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Organize as Letras</b>
+                    </Typography>
+                </Grid>
+                <LayoutPicker value={layout} setValue={setLayout} />
+                <Grid item lg={12}>
+                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
+                        {alert && (
                             <Grid item xs={12}>
-                                <Button
-                                    size="large"
-                                    type="submit"
-                                    variant="outlined"
-                                    disabled={Boolean(data?.approved_at)}
+                                <Alert
+                                    severity="warning"
+                                    onClick={() => {
+                                        setAlert('')
+                                    }}
                                 >
-                                    Salvar
-                                </Button>
+                                    {alert}
+                                </Alert>
                             </Grid>
                         )}
+                        <Grid item xs={12}>
+                            <TextField
+                                label="Palavra"
+                                name="word"
+                                variant="outlined"
+                                value={word}
+                                onChange={(event) => setWord(event.target.value)}
+                                required
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Box>
+                <Grid item xs={12}>
+                    {response.isLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Grid item xs={12}>
+                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                                Salvar
+                            </Button>
+                        </Grid>
+                    )}
+                </Grid>
+            </Grid>
         </>
     )
 }

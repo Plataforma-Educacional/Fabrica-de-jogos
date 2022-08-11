@@ -1,39 +1,39 @@
-import React, { ChangeEvent, FormEventHandler, useEffect, useState } from 'react'
-import { Button, Grid, TextField, Alert, SelectChangeEvent, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
+import React, { ChangeEvent, FormEvent, FormEventHandler, useEffect, useState } from 'react'
+import { Button, Grid, TextField, Alert, Typography } from '@mui/material'
 import { convertToRaw, EditorState } from 'draft-js'
-import draftToText from '../../../utils/draftToText'
-import SuccessModal from '../../../components/SuccessModal/SuccessModal'
+import AddIcon from '@mui/icons-material/Add'
 import { useSelector } from 'react-redux'
+
+import DisciplineSelect from 'components/DisciplineSelect/DisciplineSelect'
+import BackFAButton from 'components/BackFAButton/BackFAButton'
+import SeriesSelect from 'components/SeriesSelect/SeriesSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+import SuccessModal from 'components/SuccessModal/SuccessModal'
+import { useCreateGameObjectMutation } from 'services/portal'
+import { useCreateWordSearchMutation } from 'services/games'
 import WordTipCell from 'components/WordTipCell/WordTipCell'
-import Copyright from '../../../components/Copyright/Copyright'
-import { Box } from '@mui/system'
-import BackFAButton from '../../../components/BackFAButton/BackFAButton'
-import { RootState } from '../../../store'
-import { useCreateWordSearchMutation } from '../../../services/games'
-import { useCreateGameObjectMutation } from '../../../services/portal'
-import { gameObj, wordObj } from '../../../types'
-import SeriesSelect from '../../../components/SeriesSelect/SeriesSelect'
-import DisciplineSelect from '../../../components/DisciplineSelect/DisciplineSelect'
-import LayoutSelect from '../../../components/LayoutSelect/LayoutSelect'
-import { getError } from '../../../utils/errors'
+import draftToText from 'utils/draftToText'
+import { gameObj, wordObj } from 'types'
+import { getError } from 'utils/errors'
+import { RootState } from 'store'
+
+const initialState: wordObj[] = [
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+]
 
 const NewWordSearchPage = () => {
     const { token, origin } = useSelector((state: RootState) => state.user)
-    const initialState: wordObj[] = [
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-    ]
     const [open, setOpen] = useState(false)
     const [alert, setAlert] = useState('')
     const [words, setWords] = useState(initialState)
@@ -43,6 +43,7 @@ const NewWordSearchPage = () => {
     const [discipline, setDiscipline] = useState<string>('')
     const [createWordSearch, response] = useCreateWordSearchMutation()
     const [createGameObject, responsePortal] = useCreateGameObjectMutation()
+
     const handleAddWord = () => {
         if (words.length >= 8) {
             setAlert('O numero máximo de palavras nesse jogo é 8!')
@@ -55,66 +56,15 @@ const NewWordSearchPage = () => {
         })
         setWords(p)
     }
-    const handleRemoveWord = (index: number) => {
-        if (words.length === 1) {
-            return
-        }
-        let p = [...words]
-        p.splice(index, 1)
-        setWords(p)
-    }
-    const handleWordChange = (event: ChangeEvent<HTMLInputElement>, index: number) => {
-        let p = [...words]
-        let word = p[index]
-        word.word = event.target.value
-        p.splice(index, 1, word)
-        setWords(p)
-    }
-    const handleTipChange = (editorState: EditorState, index: number) => {
-        let p = [...words]
-        let word = p[index]
-        word.tip = editorState
-        p.splice(index, 1, word)
-        setWords(p)
-    }
-    const handleLayout = (event: ChangeEvent<HTMLInputElement>, newLayout: number) => {
-        if (newLayout === null) {
-            return
-        }
-        setLayout(newLayout)
-    }
+
     const handleClose = () => {
         setName('')
-        setWords([
-            {
-                word: '',
-                tip: EditorState.createEmpty(),
-            },
-            {
-                word: '',
-                tip: EditorState.createEmpty(),
-            },
-            {
-                word: '',
-                tip: EditorState.createEmpty(),
-            },
-        ])
+        setWords([...initialState])
         setLayout(1)
         setOpen(false)
     }
-    const seriesChange = (event: SelectChangeEvent<typeof serie>) => {
-        const value = event.target.value
-        if (value !== null) {
-            setSerie(typeof value === 'string' ? value.split(',') : value)
-        }
-    }
-    const disciplineChange = (event: SelectChangeEvent) => {
-        const value = event.target.value
-        if (value !== null && value !== discipline) {
-            setDiscipline(value)
-        }
-    }
-    const handleSubmit: FormEventHandler = (event: ChangeEvent<HTMLInputElement>) => {
+
+    const handleSubmit: FormEventHandler = (event: FormEvent<HTMLInputElement>) => {
         event.preventDefault()
         if (words.length < 3) {
             setAlert('O jogo deve ter no mínimo 3 palavras!')
@@ -179,112 +129,84 @@ const NewWordSearchPage = () => {
         <>
             <SuccessModal open={open} handleClose={handleClose} />
             <BackFAButton />
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'row',
-                }}
+            <Grid
+                container
+                marginTop={2}
+                alignItems="center"
+                justifyContent="center"
+                direction="column"
+                component="form"
+                onSubmit={handleSubmit}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                    <Grid item alignSelf="center" textAlign="center" xs={12}>
-                        <Typography color="primary" variant="h2" component="h2">
-                            <b>Caça-Palavras</b>
-                        </Typography>
+                <Grid item>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Caça-Palavras</b>
+                    </Typography>
+                </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
                     </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                    </Grid>
+                </Grid>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
                     <Grid item xs={12}>
-                        <Grid container justifyContent="center" spacing={1} display="flex">
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                xl={4}
-                                lg={3}
-                                md={12}
-                                justifyContent={{ lg: 'flex-end', md: 'none' }}
-                                display={{ lg: 'flex', md: 'block' }}
-                            >
-                                <SeriesSelect serie={serie} callback={seriesChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xl={4} lg={3}>
-                                <TextField
-                                    label="Nome"
-                                    name="name"
-                                    variant="outlined"
-                                    value={name}
-                                    onChange={(event) => setName(event.target.value)}
-                                    required
-                                    sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                    fullWidth
-                                />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid
-                                align="center"
-                                item
-                                justifyContent={{
-                                    lg: 'flex-start',
-                                    md: 'none',
-                                }}
-                                display={{ lg: 'flex', md: 'block' }}
-                                xl={4}
-                                lg={3}
-                                md={12}
-                            >
-                                <DisciplineSelect discipline={discipline} callback={disciplineChange} />
-                            </Grid>
-                            {/* @ts-ignore*/}
-                            <Grid item align="center" xs={12}>
-                                <LayoutSelect callback={handleLayout} selectedLayout={layout} />
-                            </Grid>
-                        </Grid>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
                         <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
                             Adicionar Palavra
                         </Button>
                     </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" lg={12}>
-                        <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                            {alert && (
-                                /* @ts-ignore */
-                                <Grid item align="center" xs={12}>
-                                    <Alert
-                                        severity="warning"
-                                        onClick={() => {
-                                            setAlert('')
-                                        }}
-                                    >
-                                        {alert}
-                                    </Alert>
-                                </Grid>
-                            )}
-                            {words.map((item: wordObj, index: number) => {
-                                return (
-                                    <WordTipCell
-                                        item={item}
-                                        key={index}
-                                        index={index}
-                                        handleWordChange={handleWordChange}
-                                        handleRemoveWord={handleRemoveWord}
-                                        handleTipChange={handleTipChange}
-                                    />
-                                )
-                            })}
-                        </Grid>
-                    </Grid>
-                    {/* @ts-ignore */}
-                    <Grid item align="center" xs={12}>
-                        <Button size="large" type="submit" variant="outlined">
-                            Criar
-                        </Button>
-                    </Grid>
+                    {words.map((item: wordObj, index: number) => {
+                        return (
+                            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                <WordTipCell index={index} value={item} state={words} setState={setWords} />
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-            </Box>
+                <Grid item xs={12}>
+                    <Button size="large" type="submit" variant="outlined">
+                        Criar
+                    </Button>
+                </Grid>
+            </Grid>
         </>
     )
 }

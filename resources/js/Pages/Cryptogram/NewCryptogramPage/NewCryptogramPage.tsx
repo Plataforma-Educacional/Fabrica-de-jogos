@@ -129,90 +129,77 @@ const NewCryptogramPage: FunctionComponent = () => {
             <BackFAButton />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item textAlign="center">
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Criptograma</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Grid container justifyContent="center" spacing={1} display="flex">
-                        <Grid
-                            alignSelf="center"
-                            item
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            justifyContent={{ lg: 'flex-end', md: 'none' }}
-                            display={{ lg: 'flex', md: 'block' }}
-                        >
-                            <SeriesSelect value={serie} setValue={setSerie} />
-                        </Grid>
-                        <Grid item alignSelf="center" xl={4} lg={3}>
-                            <TextField
-                                label="Nome"
-                                name="name"
-                                variant="outlined"
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                required
-                                sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid
-                            alignSelf="center"
-                            item
-                            justifyContent={{
-                                lg: 'flex-start',
-                                md: 'none',
-                            }}
-                            display={{ lg: 'flex', md: 'block' }}
-                            xl={4}
-                            lg={3}
-                            md={12}
-                        >
-                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                        </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
+                    </Grid>
+                </Grid>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
                         <Grid item alignSelf="center" xs={12}>
-                            <LayoutSelect value={layout} setValue={setLayout} />
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
                         </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar Palavra
+                        </Button>
                     </Grid>
-                </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Palavra
-                    </Button>
-                </Grid>
-                <Grid item alignSelf="center" lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item alignSelf="center" xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
+                    {words.map((item: wordObj, index: number) => {
+                        return (
+                            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                <WordTipCell index={index} value={item} state={words} setState={setWords} />
                             </Grid>
-                        )}
-                        {words.map((item: wordObj, index: number) => {
-                            return (
-                                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-                                    <WordTipCell index={index} value={item} state={words} setState={setWords} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

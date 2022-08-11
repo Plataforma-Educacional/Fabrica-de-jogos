@@ -43,7 +43,7 @@ const GroupSortCell: FunctionComponent<Props> = ({ index, value, state, setState
                 <Grid container alignSelf="center" alignItems="flex-start" justifyContent="center" spacing={2}>
                     <Grid item xs={12}>
                         <TextField
-                            label="Título"
+                            label="Grupo"
                             variant="filled"
                             value={value.title}
                             onChange={(event) => handleTitleChange(event, index)}
@@ -54,46 +54,51 @@ const GroupSortCell: FunctionComponent<Props> = ({ index, value, state, setState
                             required
                         />
                     </Grid>
-                    {value.items.length < 5 && (
-                        <Grid item xs={12}>
-                            <Button onClick={() => handleAddItem(index)} variant="contained" size="small">
-                                Adicionar Item
-                            </Button>
-                        </Grid>
-                    )}
+                    <Grid item xs={12}>
+                        <Button
+                            disabled={value.items.length === 5}
+                            onClick={() => handleAddItem(index)}
+                            variant="contained"
+                            size="small"
+                        >
+                            Adicionar Item
+                        </Button>
+                    </Grid>
                     {value.items.map((item, i) => {
                         return (
-                            <Grid key={i} item xs={12} md={6}>
-                                <Grid
-                                    container
-                                    alignSelf="center"
-                                    alignItems="flex-start"
-                                    justifyContent="center"
-                                    spacing={0}
-                                >
-                                    <Grid item xs={10}>
-                                        <TextField
-                                            variant="outlined"
-                                            label={'Item ' + (i + 1)}
-                                            fullWidth
-                                            size="small"
-                                            inputProps={{
-                                                maxLength: 12,
-                                            }}
-                                            value={item}
-                                            onChange={(event) => handleItemChange(event, index, i)}
-                                            required
-                                        />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                        <IconButton
-                                            onClick={() => {
-                                                handleRemoveItem(index, i)
-                                            }}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
-                                    </Grid>
+                            <Grid
+                                key={i}
+                                item
+                                container
+                                alignSelf="center"
+                                alignItems="flex-start"
+                                justifyContent="center"
+                                spacing={0}
+                                xs={12}
+                                md={6}
+                            >
+                                <Grid item xs={10}>
+                                    <TextField
+                                        variant="outlined"
+                                        label={'Item ' + (i + 1)}
+                                        fullWidth
+                                        size="small"
+                                        inputProps={{
+                                            maxLength: 12,
+                                        }}
+                                        value={item}
+                                        onChange={(event) => handleItemChange(event, index, i)}
+                                        required
+                                    />
+                                </Grid>
+                                <Grid item xs={1}>
+                                    <IconButton
+                                        onClick={() => {
+                                            handleRemoveItem(index, i)
+                                        }}
+                                    >
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
                                 </Grid>
                             </Grid>
                         )

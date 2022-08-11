@@ -28,27 +28,21 @@ const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => 
 
     return (
         <Paper elevation={3} sx={{ p: 2 }}>
-            <Grid container alignSelf="center" alignItems="flex-start" justifyContent="center" spacing={2}>
-                <Grid item xs={12}>
-                    <Typography color="primary" variant="h5">
+            <Grid container direction="column" alignItems="center" justifyContent="center" spacing={2}>
+                <Grid item>
+                    <Typography color={correct ? 'success.main' : 'error'} variant="h5">
                         <b>{correct ? 'Palavras Corretas' : 'Palavras Erradas'}</b>
                     </Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Button onClick={handleAdd} variant="contained" size="small">
+                <Grid item>
+                    <Button onClick={handleAdd} color={correct ? 'success' : 'error'} variant="contained" size="small">
                         Adicionar {correct ? 'Resposta' : 'Alternativa'}
                     </Button>
                 </Grid>
-                {value.map((item, i) => {
-                    return (
-                        <Grid key={i} item xs={12} md={6}>
-                            <Grid
-                                container
-                                alignSelf="center"
-                                alignItems="flex-start"
-                                justifyContent="center"
-                                spacing={0}
-                            >
+                <Grid item container spacing={2} justifyContent="center">
+                    {value.map((item, i) => {
+                        return (
+                            <Grid key={i} item container alignItems="flex-start" justifyContent="center" xs={12} md={6}>
                                 <Grid item xs={10}>
                                     <TextField
                                         variant="outlined"
@@ -64,8 +58,9 @@ const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => 
                                         required
                                     />
                                 </Grid>
-                                <Grid item xs={2}>
+                                <Grid item xs={1}>
                                     <IconButton
+                                        disabled={value.length === 1}
                                         onClick={() => {
                                             handleRemove(i)
                                         }}
@@ -74,9 +69,9 @@ const BalloonCell: FunctionComponent<Props> = ({ value, setValue, correct }) => 
                                     </IconButton>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                    )
-                })}
+                        )
+                    })}
+                </Grid>
             </Grid>
         </Paper>
     )

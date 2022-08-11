@@ -14,13 +14,11 @@ import {
 type Props = {
     editorState: EditorState
     onChange: Function
-    index?: number
-    i?: number
     label: string
     maxLength: number
 }
 
-const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index, i, label, maxLength }) => {
+const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, label, maxLength }) => {
     const activeStyles = {
         BOLD: false,
         ITALIC: false,
@@ -41,22 +39,22 @@ const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index,
     }
 
     const onUnderlineClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'), index, i)
+        onChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'))
     }
     const onBoldClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'), index, i)
+        onChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'))
     }
     const onItalicClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'), index, i)
+        onChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'))
     }
     const onStrikethroughClick = () => {
-        onChange(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'), index, i)
+        onChange(RichUtils.toggleInlineStyle(editorState, 'STRIKETHROUGH'))
     }
     const handleUndo = (): void => {
-        onChange(EditorState.undo(editorState), index, i)
+        onChange(EditorState.undo(editorState))
     }
     const handleRedo = (): void => {
-        onChange(EditorState.redo(editorState), index, i)
+        onChange(EditorState.redo(editorState))
     }
 
     const getSelectedTextLength = (): number => {
@@ -120,16 +118,8 @@ const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index,
 
     return (
         <>
-            <Grid
-                sx={{
-                    marginBottom: 1,
-                    marginTop: 1,
-                }}
-                container
-                spacing={0}
-                justifyContent="left"
-            >
-                <Grid item xs={1} sx={{ marginRight: 1.3 }}>
+            <Grid marginTop={1} marginBottom={1} container spacing={0} justifyContent="space-evenly">
+                <Grid item xs={1} marginRight={1.3}>
                     <Paper elevation={2} sx={{ minWidth: '30px', minHeight: '30px' }}>
                         <IconButton
                             sx={{ minWidth: '30px', minHeight: '30px' }}
@@ -143,14 +133,14 @@ const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index,
                         </IconButton>
                     </Paper>
                 </Grid>
-                <Grid item xs={1} sx={{ marginRight: 1.3 }}>
+                <Grid item xs={1} marginRight={1.3}>
                     <Paper elevation={2} sx={{ minWidth: '30px', minHeight: '30px' }}>
                         <IconButton sx={{ minWidth: '30px', minHeight: '30px' }} size="small" onClick={onBoldClick}>
                             <FormatBoldOutlined fontSize="small" color={activeStyles.BOLD ? 'primary' : 'inherit'} />
                         </IconButton>
                     </Paper>
                 </Grid>
-                <Grid item xs={1} sx={{ marginRight: 1.3 }}>
+                <Grid item xs={1} marginRight={1.3}>
                     <Paper elevation={2} sx={{ minWidth: '30px', minHeight: '30px' }}>
                         <IconButton sx={{ minWidth: '30px', minHeight: '30px' }} size="small" onClick={onItalicClick}>
                             <FormatItalicOutlined
@@ -160,7 +150,7 @@ const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index,
                         </IconButton>
                     </Paper>
                 </Grid>
-                <Grid item xs={1} sx={{ marginRight: 1.3 }}>
+                <Grid item xs={1} marginRight={1.3}>
                     <Paper elevation={2} sx={{ minWidth: '30px', minHeight: '30px' }}>
                         <IconButton
                             sx={{ minWidth: '30px', minHeight: '30px' }}
@@ -201,7 +191,7 @@ const RichTextField: FunctionComponent<Props> = ({ editorState, onChange, index,
                     handleBeforeInput={handleBeforeInput}
                     handlePastedText={handlePastedText}
                     onChange={(value) => {
-                        onChange(value, index, i)
+                        onChange(value)
                     }}
                     placeholder={label}
                 />

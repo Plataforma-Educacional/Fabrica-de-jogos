@@ -21,28 +21,27 @@ const MatchUpCell: FunctionComponent<Props> = ({ index, value, state, setState }
         p.splice(index, 1)
         setState(p)
     }
+
     const handleWordChange = (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
         index: number,
         i: number
     ) => {
+        let page = [...value]
+        page[i].word = event.target.value
         let p = [...state]
-        let page = p[index]
-        let matchUp = page[i]
-        matchUp.word = event.target.value
-        page.splice(i, 1, matchUp)
         p.splice(index, 1, page)
         setState(p)
     }
+
     const handleMeaningChange = (editorState: EditorState, index: number, i: number) => {
+        let page = [...value]
+        page[i].meaning = editorState
         let p = [...state]
-        let page = p[index]
-        let matchUp = page[i]
-        matchUp.meaning = editorState
-        page.splice(i, 1, matchUp)
         p.splice(index, 1, page)
         setState(p)
     }
+
     return (
         <Paper
             elevation={5}
@@ -50,53 +49,52 @@ const MatchUpCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 padding: '15px',
             }}
         >
-            <Grid container alignSelf="center" spacing={2}>
-                <Grid item xs={10}>
-                    <Typography variant="subtitle1">Pag {(index + 1).toString()}</Typography>
-                </Grid>
-                <Grid item xs={2}>
-                    <IconButton
-                        onClick={() => {
-                            handleRemovePage(index)
-                        }}
-                    >
-                        <DeleteIcon fontSize="small" />
-                    </IconButton>
+            <Grid container direction="column" alignItems="center" justifyContent="center" spacing={2}>
+                <Grid item container>
+                    <Grid item xs={11}>
+                        <Typography variant="subtitle1">Pag {(index + 1).toString()}</Typography>
+                    </Grid>
+                    <Grid item xs={1}>
+                        <IconButton
+                            disabled={state.length === 1}
+                            onClick={() => {
+                                handleRemovePage(index)
+                            }}
+                        >
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Grid>
                 </Grid>
                 {value.map((matchUp: matchUpObj, i: number) => {
                     return (
-                        <Grid item xs={12} key={i}>
-                            <Grid container alignItems="center" spacing={2}>
-                                <Grid item xs={4}>
-                                    <TextField
-                                        variant="outlined"
-                                        label="Palavra"
-                                        required
-                                        inputProps={{
-                                            maxLength: 12,
-                                        }}
-                                        fullWidth
-                                        value={matchUp.word}
-                                        onChange={(event) => handleWordChange(event, index, i)}
-                                    />
-                                </Grid>
-                                <Grid item xs={1}>
-                                    <KeyboardDoubleArrowRight fontSize="small" />
-                                </Grid>
-                                <Grid item xs={7}>
-                                    <RichTextField
-                                        editorState={
-                                            typeof matchUp.meaning === 'string'
-                                                ? textToDraft(matchUp.meaning)
-                                                : matchUp.meaning
-                                        }
-                                        onChange={handleMeaningChange}
-                                        index={index}
-                                        i={i}
-                                        label={'Significado...'}
-                                        maxLength={80}
-                                    />
-                                </Grid>
+                        <Grid key={i} item container alignItems="center" justifyContent="center" spacing={2}>
+                            <Grid item xs={5}>
+                                <TextField
+                                    variant="outlined"
+                                    label="Palavra"
+                                    required
+                                    inputProps={{
+                                        maxLength: 12,
+                                    }}
+                                    fullWidth
+                                    value={matchUp.word}
+                                    onChange={(event) => handleWordChange(event, index, i)}
+                                />
+                            </Grid>
+                            <Grid item xs={1}>
+                                <KeyboardDoubleArrowRight fontSize="small" />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <RichTextField
+                                    editorState={
+                                        typeof matchUp.meaning === 'string'
+                                            ? textToDraft(matchUp.meaning)
+                                            : matchUp.meaning
+                                    }
+                                    onChange={(editorState: EditorState) => handleMeaningChange(editorState, index, i)}
+                                    label={'Significado...'}
+                                    maxLength={80}
+                                />
                             </Grid>
                         </Grid>
                     )

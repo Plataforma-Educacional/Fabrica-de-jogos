@@ -54,7 +54,27 @@ const NewMatchUpPage: FunctionComponent = () => {
             setAlert('O número máximo de páginas para esse jogo é 10!')
             return
         }
-        setPages([...pages, ...initialState])
+        setPages([
+            ...pages,
+            [
+                {
+                    word: '',
+                    meaning: EditorState.createEmpty(),
+                },
+                {
+                    word: '',
+                    meaning: EditorState.createEmpty(),
+                },
+                {
+                    word: '',
+                    meaning: EditorState.createEmpty(),
+                },
+                {
+                    word: '',
+                    meaning: EditorState.createEmpty(),
+                },
+            ],
+        ])
     }
     const handleClose = () => {
         setLayout(1)
@@ -129,91 +149,77 @@ const NewMatchUpPage: FunctionComponent = () => {
             <BackFAButton />
             <Grid
                 container
-                sx={{ marginTop: 8 }}
-                component="form"
-                justifyContent="center"
+                marginTop={2}
                 alignItems="center"
+                justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Combinação</b>
                     </Typography>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <Grid container justifyContent="center" spacing={1} display="flex">
-                        <Grid
-                            alignSelf="center"
-                            item
-                            xl={4}
-                            lg={3}
-                            md={12}
-                            justifyContent={{ lg: 'flex-end', md: 'none' }}
-                            display={{ lg: 'flex', md: 'block' }}
-                        >
-                            <SeriesSelect value={serie} setValue={setSerie} />
-                        </Grid>
-                        <Grid item alignSelf="center" xl={4} lg={3}>
-                            <TextField
-                                label="Nome"
-                                name="name"
-                                variant="outlined"
-                                value={name}
-                                onChange={(event) => setName(event.target.value)}
-                                required
-                                sx={{ minWidth: { sm: 290, xs: 260 } }}
-                                fullWidth
-                            />
-                        </Grid>
-                        <Grid
-                            alignSelf="center"
-                            item
-                            justifyContent={{
-                                lg: 'flex-start',
-                                md: 'none',
-                            }}
-                            display={{ lg: 'flex', md: 'block' }}
-                            xl={4}
-                            lg={3}
-                            md={12}
-                        >
-                            <DisciplineSelect value={discipline} setValue={setDiscipline} />
-                        </Grid>
-                        <Grid item alignSelf="center" xs={12}>
-                            <LayoutSelect value={layout} setValue={setLayout} />
-                        </Grid>
+                <Grid
+                    item
+                    container
+                    direction={{ lg: 'row', md: 'column' }}
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={1}
+                >
+                    <Grid item justifyContent="flex-end" display="flex" lg={4} md={12}>
+                        <SeriesSelect value={serie} setValue={setSerie} />
+                    </Grid>
+                    <Grid item lg={4} md={12}>
+                        <TextField
+                            label="Nome"
+                            name="name"
+                            variant="outlined"
+                            value={name}
+                            onChange={(event) => setName(event.target.value)}
+                            required
+                            sx={{ minWidth: { sm: 290, xs: 260 } }}
+                            fullWidth
+                        />
+                    </Grid>
+                    <Grid item justifyContent="flex-start" display="flex" lg={4} md={12}>
+                        <DisciplineSelect value={discipline} setValue={setDiscipline} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar página
-                    </Button>
-                </Grid>
-                <Grid item xs={12}>
-                    <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar página
+                        </Button>
+                    </Grid>
+                    {pages.map((page: matchUpPage, index: number) => {
+                        return (
+                            <Grid key={index} item alignSelf="center" xs={12} md={6}>
+                                <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
                             </Grid>
-                        )}
-                        {pages.map((page: matchUpPage, index: number) => {
-                            return (
-                                <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
-                                    <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
-                                </Grid>
-                            )
-                        })}
-                    </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading || responsePortal.isLoading ? (
                         <CircularProgress />
                     ) : (

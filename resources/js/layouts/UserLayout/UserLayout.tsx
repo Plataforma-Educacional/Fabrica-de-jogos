@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { CircularProgress, Container, CssBaseline } from '@mui/material'
+import { CircularProgress, Container, CssBaseline, Box } from '@mui/material'
 import { Outlet, useSearchParams } from 'react-router-dom'
 
 import Copyright from 'components/Copyright/Copyright'
