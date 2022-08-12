@@ -7,6 +7,7 @@ import SuccessModal from 'components/SuccessModal/SuccessModal'
 import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import ImageSelect from 'components/PaintSelect/PaintSelect'
 import { getError } from 'utils/errors'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const EditPaintPage: FunctionComponent = ({}) => {
     const { slug } = useParams()
@@ -58,38 +59,41 @@ const EditPaintPage: FunctionComponent = ({}) => {
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Ateliê Criativo</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        <Grid item alignSelf="center" xs={12}>
-                            <ImageSelect value={image} setValue={setImage} />
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
                         </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <ImageSelect value={image} setValue={setImage} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

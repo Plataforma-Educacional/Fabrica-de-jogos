@@ -12,6 +12,7 @@ import textToDraft from 'utils/textToDraft'
 import draftToText from 'utils/draftToText'
 import { getError } from 'utils/errors'
 import { matchUpPage } from 'types'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const initialState: matchUpPage[] = [
     [
@@ -124,42 +125,52 @@ const EditMatchUpPage: FunctionComponent = () => {
     return (
         <>
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
-            <Grid item alignSelf="center" textAlign="center" sx={{ marginTop: 8 }} xs={12}>
-                <Typography color="primary" variant="h2" component="h2">
-                    <b>Combinação</b>
-                </Typography>
-            </Grid>
-            <Grid container component="form" justifyContent="center" onSubmit={handleSubmit} spacing={3}>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item alignSelf="center" xs={12}>
-                    <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar página
-                    </Button>
+            <Grid
+                container
+                marginTop={2}
+                alignItems="center"
+                justifyContent="center"
+                direction="column"
+                component="form"
+                onSubmit={handleSubmit}
+                spacing={2}
+                textAlign="center"
+            >
+                <Grid item>
+                    <Typography color="primary" variant="h2" component="h2">
+                        <b>Combinação</b>
+                    </Typography>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
-                    <Grid container spacing={3} alignItems="flex-start" justifyContent="center">
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        {pages.map((page: matchUpPage, index: number) => {
-                            return (
-                                <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
-                                    <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
-                                </Grid>
-                            )
-                        })}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleCreatePage} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar página
+                        </Button>
+                    </Grid>
+                    {pages.map((page: matchUpPage, index: number) => {
+                        return (
+                            <Grid key={index} item alignSelf="center" xs={12} md={6} lg={4}>
+                                <MatchUpCell index={index} value={page} state={pages} setState={setPages} />
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

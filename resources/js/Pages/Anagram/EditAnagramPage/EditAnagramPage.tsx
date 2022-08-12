@@ -4,11 +4,10 @@ import AddIcon from '@mui/icons-material/Add'
 import { useParams } from 'react-router-dom'
 
 import { useGetAnagramBySlugQuery, useUpdateAnagramMutation } from 'services/games'
-import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import SuccessModal from 'components/SuccessModal/SuccessModal'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 import AnagramCell from 'components/AnagramCell/AnagramCell'
 import { getError } from 'utils/errors'
-import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const sliceIntoChunks = (arr: string[], chunkSize: number): string[][] => {
     const res = []
@@ -96,25 +95,15 @@ const EditAnagramPage: FunctionComponent = () => {
                 spacing={2}
                 textAlign="center"
             >
-                <Grid item xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Anagrama</b>
                     </Typography>
                 </Grid>
-                <Grid item>
-                    <Typography variant="subtitle2" fontSize={20} color="primary">
-                        Tema:
-                    </Typography>
-                </Grid>
-                <Grid item container alignItems="center" justifyContent="center">
-                    <LayoutSelect value={layout} setValue={setLayout} />
-                </Grid>
-                <Grid item>
-                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Pagina
-                    </Button>
-                </Grid>
                 <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
                     {alert && (
                         <Grid item xs={12}>
                             <Alert
@@ -127,6 +116,11 @@ const EditAnagramPage: FunctionComponent = () => {
                             </Alert>
                         </Grid>
                     )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar Pagina
+                        </Button>
+                    </Grid>
                     {pages.map((page: string[], index: number) => {
                         return (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -135,7 +129,7 @@ const EditAnagramPage: FunctionComponent = () => {
                         )
                     })}
                 </Grid>
-                <Grid item justifyContent="center">
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

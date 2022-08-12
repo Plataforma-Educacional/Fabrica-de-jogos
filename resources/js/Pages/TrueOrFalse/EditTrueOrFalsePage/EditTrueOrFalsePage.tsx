@@ -12,6 +12,7 @@ import { trueOrFalseQuestion } from 'types'
 import draftToText from 'utils/draftToText'
 import textToDraft from 'utils/textToDraft'
 import { getError } from 'utils/errors'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const EditTrueOrFalsePage: FunctionComponent = () => {
     const { slug } = useParams()
@@ -99,68 +100,68 @@ const EditTrueOrFalsePage: FunctionComponent = () => {
 
     return (
         <>
-            <SuccessModal
-                open={open}
-                handleClose={() => {
-                    setOpen(false)
-                }}
-            />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Verdadeiro ou Falso</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item xs={12}>
-                    <Button onClick={handleCreateQuestion} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Questão
-                    </Button>
-                </Grid>
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        {questions.map((question: trueOrFalseQuestion, index: number) => {
-                            return (
-                                <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
-                                    <TrueOrFalseCell
-                                        index={index}
-                                        value={question}
-                                        state={questions}
-                                        setState={setQuestions}
-                                    />
-                                </Grid>
-                            )
-                        })}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button
+                            onClick={handleCreateQuestion}
+                            endIcon={<AddIcon fontSize="small" />}
+                            variant="contained"
+                        >
+                            Adicionar Questão
+                        </Button>
+                    </Grid>
+                    {questions.map((question: trueOrFalseQuestion, index: number) => {
+                        return (
+                            <Grid key={index} item xs={12} sm={6} md={4} lg={3}>
+                                <TrueOrFalseCell
+                                    index={index}
+                                    value={question}
+                                    state={questions}
+                                    setState={setQuestions}
+                                />
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (
-                        <Grid item xs={12}>
-                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
-                                Salvar
-                            </Button>
-                        </Grid>
+                        <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                            Salvar
+                        </Button>
                     )}
                 </Grid>
             </Grid>

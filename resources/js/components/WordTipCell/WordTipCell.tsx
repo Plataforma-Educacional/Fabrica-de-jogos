@@ -73,9 +73,8 @@ const WordTipCell: FunctionComponent<Props> = ({ index, value, state, setState }
                 <Grid item xs={12}>
                     <RichTextField
                         editorState={value.tip as EditorState}
-                        onChange={handleTipChange}
+                        onChange={(editorState: EditorState) => handleTipChange(editorState, index)}
                         label={'Dica'}
-                        index={index}
                         maxLength={45}
                     />
                 </Grid>

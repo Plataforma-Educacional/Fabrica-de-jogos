@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useGetDragNDropBySlugQuery, useUpdateDragNDropMutation } from 'services/games'
 import FormatSelect from 'components/DragNDropFormat/DragNDropFormat'
 import SuccessModal from 'components/SuccessModal/SuccessModal'
-import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 import { getError } from 'utils/errors'
 
 const EditDragNDrop: FunctionComponent = ({}) => {
@@ -58,36 +58,41 @@ const EditDragNDrop: FunctionComponent = ({}) => {
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
                 component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Arrasta e Solta</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
                         <FormatSelect value={format} setValue={setFormat} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

@@ -12,23 +12,25 @@ import draftToText from 'utils/draftToText'
 import formatTips from 'utils/formatTips'
 import { getError } from 'utils/errors'
 import { wordObj } from 'types'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
+
+const initialState: wordObj[] = [
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+    {
+        word: '',
+        tip: EditorState.createEmpty(),
+    },
+]
 
 const EditCryptogram: FunctionComponent = () => {
     const { slug } = useParams()
-    const initialState: wordObj[] = [
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-        {
-            word: '',
-            tip: EditorState.createEmpty(),
-        },
-    ]
     const [open, setOpen] = useState(false)
     const [alert, setAlert] = useState('')
     const [words, setWords] = useState(initialState)
@@ -118,47 +120,50 @@ const EditCryptogram: FunctionComponent = () => {
             />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Criptograma</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item alignSelf="center" xs={12}>
-                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Palavra
-                    </Button>
-                </Grid>
-                <Grid item alignSelf="center" lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item alignSelf="center" xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        {words.map((item: wordObj, index: number) => {
-                            return (
-                                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-                                    <WordTipCell index={index} value={item} state={words} setState={setWords} />
-                                </Grid>
-                            )
-                        })}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item alignSelf="center" xs={12}>
+                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar Palavra
+                        </Button>
+                    </Grid>
+                    {words.map((item: wordObj, index: number) => {
+                        return (
+                            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                <WordTipCell index={index} value={item} state={words} setState={setWords} />
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

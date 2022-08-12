@@ -8,6 +8,7 @@ import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import PiecesSelect from 'components/PiecesSelect/PiecesSelect'
 import ImageSelect from 'components/PuzzleSelect/PuzzleSelect'
 import { getError } from 'utils/errors'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const EditPuzzlePage: FunctionComponent = ({}) => {
     const { slug } = useParams()
@@ -61,41 +62,44 @@ const EditPuzzlePage: FunctionComponent = ({}) => {
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Quebra-Cabeça</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        <Grid item alignSelf="center" xs={12}>
-                            <PiecesSelect value={pieces} setValue={setPieces} />
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
                         </Grid>
-                        <Grid item alignSelf="center" xs={12}>
-                            <ImageSelect value={image} setValue={setImage} />
-                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <PiecesSelect value={pieces} setValue={setPieces} />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <ImageSelect value={image} setValue={setImage} />
                     </Grid>
                 </Grid>
-                <Grid item alignSelf="center" xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (

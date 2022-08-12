@@ -76,7 +76,6 @@ const EditBalloonsPage: FunctionComponent = ({}) => {
     return (
         <>
             <SuccessModal open={open} handleClose={() => setOpen(false)} />
-            <BackFAButton />
             <Grid
                 container
                 marginTop={2}
@@ -85,7 +84,8 @@ const EditBalloonsPage: FunctionComponent = ({}) => {
                 direction="column"
                 component="form"
                 onSubmit={handleSubmit}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
                 <Grid item textAlign="center">
                     <Typography color="primary" variant="h2" component="h2">

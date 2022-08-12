@@ -12,6 +12,7 @@ import draftToText from 'utils/draftToText'
 import textToDraft from 'utils/textToDraft'
 import { getError } from 'utils/errors'
 import { wordObj } from 'types'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 
 const initialState: wordObj[] = [
     {
@@ -122,63 +123,59 @@ const EditWordSearch = () => {
 
     return (
         <>
-            <SuccessModal
-                open={open}
-                handleClose={() => {
-                    setOpen(false)
-                }}
-            />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Caça-Palavras</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item xs={12}>
-                    <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
-                        Adicionar Palavra
-                    </Button>
-                </Grid>
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
-                        {words.map((item: wordObj, index: number) => {
-                            return (
-                                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
-                                    <WordTipCell index={index} value={item} state={words} setState={setWords} />
-                                </Grid>
-                            )
-                        })}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
                     </Grid>
+                    {alert && (
+                        <Grid item xs={12}>
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
+                        </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <Button onClick={handleAddWord} endIcon={<AddIcon fontSize="small" />} variant="contained">
+                            Adicionar Palavra
+                        </Button>
+                    </Grid>
+                    {words.map((item: wordObj, index: number) => {
+                        return (
+                            <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                                <WordTipCell index={index} value={item} state={words} setState={setWords} />
+                            </Grid>
+                        )
+                    })}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (
-                        <Grid item xs={12}>
-                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
-                                Salvar
-                            </Button>
-                        </Grid>
+                        <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                            Salvar
+                        </Button>
                     )}
                 </Grid>
             </Grid>

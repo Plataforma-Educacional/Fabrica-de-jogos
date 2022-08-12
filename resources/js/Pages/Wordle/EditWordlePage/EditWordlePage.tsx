@@ -3,8 +3,8 @@ import { Button, Grid, Alert, CircularProgress, Typography, TextField } from '@m
 import { useParams } from 'react-router-dom'
 
 import { useUpdateWordleMutation, useGetWordleBySlugQuery } from 'services/games'
-import LayoutPicker from 'components/LayoutSelect/LayoutSelect'
 import SuccessModal from 'components/SuccessModal/SuccessModal'
+import LayoutSelect from 'components/LayoutSelect/LayoutSelect'
 import { getError } from 'utils/errors'
 
 const EditWordSearch = () => {
@@ -53,61 +53,57 @@ const EditWordSearch = () => {
 
     return (
         <>
-            <SuccessModal
-                open={open}
-                handleClose={() => {
-                    setOpen(false)
-                }}
-            />
+            <SuccessModal open={open} handleClose={() => setOpen(false)} />
             <Grid
                 container
-                component="form"
+                marginTop={2}
+                alignItems="center"
                 justifyContent="center"
+                direction="column"
+                component="form"
                 onSubmit={handleSubmit}
-                sx={{ marginTop: 8 }}
-                spacing={3}
+                spacing={2}
+                textAlign="center"
             >
-                <Grid item alignSelf="center" textAlign="center" xs={12}>
+                <Grid item>
                     <Typography color="primary" variant="h2" component="h2">
                         <b>Organize as Letras</b>
                     </Typography>
                 </Grid>
-                <LayoutPicker value={layout} setValue={setLayout} />
-                <Grid item lg={12}>
-                    <Grid container alignItems="flex-start" justifyContent="center" spacing={3}>
-                        {alert && (
-                            <Grid item xs={12}>
-                                <Alert
-                                    severity="warning"
-                                    onClick={() => {
-                                        setAlert('')
-                                    }}
-                                >
-                                    {alert}
-                                </Alert>
-                            </Grid>
-                        )}
+                <Grid item container alignItems="flex-start" justifyContent="center" spacing={5}>
+                    <Grid item xs={12}>
+                        <LayoutSelect value={layout} setValue={setLayout} />
+                    </Grid>
+                    {alert && (
                         <Grid item xs={12}>
-                            <TextField
-                                label="Palavra"
-                                name="word"
-                                variant="outlined"
-                                value={word}
-                                onChange={(event) => setWord(event.target.value)}
-                                required
-                            />
+                            <Alert
+                                severity="warning"
+                                onClick={() => {
+                                    setAlert('')
+                                }}
+                            >
+                                {alert}
+                            </Alert>
                         </Grid>
+                    )}
+                    <Grid item xs={12}>
+                        <TextField
+                            label="Palavra"
+                            name="word"
+                            variant="outlined"
+                            value={word}
+                            onChange={(event) => setWord(event.target.value)}
+                            required
+                        />
                     </Grid>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     {response.isLoading ? (
                         <CircularProgress />
                     ) : (
-                        <Grid item xs={12}>
-                            <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
-                                Salvar
-                            </Button>
-                        </Grid>
+                        <Button size="large" type="submit" variant="outlined" disabled={Boolean(data?.approved_at)}>
+                            Salvar
+                        </Button>
                     )}
                 </Grid>
             </Grid>

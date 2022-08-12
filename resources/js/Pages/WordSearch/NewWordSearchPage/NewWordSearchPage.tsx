@@ -201,7 +201,7 @@ const NewWordSearchPage = () => {
                         )
                     })}
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item>
                     <Button size="large" type="submit" variant="outlined">
                         Criar
                     </Button>
