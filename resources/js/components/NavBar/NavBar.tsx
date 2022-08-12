@@ -1,12 +1,16 @@
 import React, { FunctionComponent } from 'react'
 import { AppBar, Avatar, Box, Container, Grid, Toolbar, Typography } from '@mui/material'
-import { userInfoData } from '../../types'
+import { useSelector } from 'react-redux'
+import { RootState } from 'store'
 
-type Props = {
-    data?: userInfoData
-}
+import { useGetUserInfoQuery } from 'services/portal'
 
-const NavBar: FunctionComponent<Props> = ({ data }) => {
+const NavBar: FunctionComponent = () => {
+    const { token, origin } = useSelector((state: RootState) => state.user)
+    const { data, error } = useGetUserInfoQuery({ token, origin })
+
+    if (error) window.location.href = '/401'
+
     return (
         <AppBar position="sticky">
             <Container maxWidth="xl">
