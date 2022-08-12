@@ -19,16 +19,6 @@
         </style>
             <script>
                 const global = {};
-                // Check that service workers are supported
-                if ('serviceWorker' in navigator) {
-                    // Use the window load event to keep the page load performant
-                    window.addEventListener('load', () => {
-                        navigator.serviceWorker.register('/service-worker.js');
-                    });
-                }
-                else {
-                    console.log('Service Worker not supported');
-                }
             </script>
     </head>
     <body>
