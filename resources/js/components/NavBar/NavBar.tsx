@@ -7,9 +7,7 @@ import { useGetUserInfoQuery } from 'services/portal'
 
 const NavBar: FunctionComponent = () => {
     const { token, origin } = useSelector((state: RootState) => state.user)
-    const { data, error } = useGetUserInfoQuery({ token, origin })
-
-    if (error) window.location.href = '/401'
+    const { data } = useGetUserInfoQuery({ token, origin })
 
     return (
         <AppBar position="sticky">
