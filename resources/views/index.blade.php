@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#1976d2">
-        <title>Fabrica de Jogos</title>
+        <title>Fbrica de Jogos</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/ico/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/ico/favicon-32x32.png">
