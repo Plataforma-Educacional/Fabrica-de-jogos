@@ -17,9 +17,9 @@ const UserLayout = () => {
 
     useEffect(() => {
         if (searchParams.has('user_token') && searchParams.has('api_address')) {
-            localStorage.setItem('token', searchParams.get('user_token') as string)
+            window.localStorage.setItem('token', searchParams.get('user_token') as string)
             const uri = decodeURI(searchParams.get('api_address') as string).replace('/api/', '')
-            localStorage.setItem('origin', uri)
+            window.localStorage.setItem('origin', uri)
             dispatch(setBaseState())
             searchParams.delete('api_address')
             searchParams.delete('user_token')
@@ -27,7 +27,7 @@ const UserLayout = () => {
             window.location.reload()
             return
         }
-        if (!localStorage.getItem('token') || !localStorage.getItem('origin')) {
+        if (!window.localStorage.getItem('token') || !window.localStorage.getItem('origin')) {
             window.location.href = '/401'
         }
     }, [])
